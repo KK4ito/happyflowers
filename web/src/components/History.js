@@ -3,15 +3,35 @@ import Highcharts from 'react-highcharts'
 
 const chartsOptions = {
   chart: {
-    type: 'area'
+    type: 'area',
   },
   legend: false,
-  title: false,
+  plotOptions: {
+    area: {
+      marker: {
+        enabled: false
+      }
+    }
+  },
   series: [{
     animation: false,
     data: [50, 43, 35, 26, 14, 48, 40, 36, 28, 20, 50],
-    enableMouseTracking: false
+    enableMouseTracking: false,
+    lineWidth: 1,
+    fillColor: {
+      linearGradient: {
+        x1: 0,
+        x2: 0,
+        y1: 0,
+        y2: 1
+      },
+      stops: [
+          [0, '#4cadeb'],
+          [1, 'rgba(76, 173, 235, 0.05)']
+      ]
+    }
   }],
+  title: false,
   yAxis: {
     title: false,
     labels: {
