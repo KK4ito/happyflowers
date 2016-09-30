@@ -4,7 +4,7 @@ import Snapshot from './components/Snapshot'
 import Stats from './components/Stats'
 import History from './components/History'
 import Stream from './components/Stream'
-import Footer from './components/Footer'
+import './App.css'
 
 const App = () => (
   <main className="site">
@@ -20,7 +20,6 @@ const App = () => (
       </div>
       <History />
       <Stream />
-      <Footer />
     </div>
   </main>
 )
