@@ -1,0 +1,15 @@
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 0.75em 1.5em;
+  color: #fff;
+  background-image: linear-gradient(to bottom right, #485563, #29323c);
+  box-shadow: 0 3px 5px rgba(30, 30, 30, 0.25);
+  z-index: 100;
+}
+
+.site-header h1 {
+  margin-bottom: 0;
+}
