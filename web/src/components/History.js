@@ -14,7 +14,6 @@ const chartsOptions = {
     }
   },
   series: [{
-    animation: false,
     data: [50, 43, 35, 26, 14, 48, 40, 36, 28, 20, 50],
     enableMouseTracking: false,
     lineWidth: 1,
