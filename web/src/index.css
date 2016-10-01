@@ -182,7 +182,7 @@ a:hover {
 
 [data-button] {
   display: inline-block;
-  padding: 0.75em 0.75em;
+  padding: 0.75em 1em;
   margin: 0;
   color: #fff;
   font-weight: bold;

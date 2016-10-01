@@ -3,11 +3,11 @@ import Highcharts from 'react-highcharts'
 
 const chartsOptions = {
   chart: {
-    type: 'area',
+    type: 'areaspline',
   },
   legend: false,
   plotOptions: {
-    area: {
+    areaspline: {
       marker: {
         enabled: false
       }
