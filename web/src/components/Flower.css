@@ -1,0 +1,8 @@
+.flower {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(16.5em + 2px);
+}
