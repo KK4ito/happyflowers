@@ -1,9 +1,9 @@
 import React from 'react'
 import { render } from 'react-dom'
-import App from './App'
+import Dashboard from './pages/Dashboard'
 import './index.css'
 
 render(
-  <App />,
+  <Dashboard />,
   document.getElementById('root')
 )

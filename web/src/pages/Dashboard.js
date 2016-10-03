@@ -1,12 +1,12 @@
 import React from 'react'
-import Header from './components/Header'
-import Snapshot from './components/Snapshot'
-import Stats from './components/Stats'
-import History from './components/History'
-import Stream from './components/Stream'
-import './App.css'
+import Header from '../components/Header'
+import Snapshot from '../components/Snapshot'
+import Stats from '../components/Stats'
+import History from '../components/History'
+import Stream from '../components/Stream'
+import './Dashboard.css'
 
-const App = () => (
+const Dashboard = () => (
   <main className="site">
     <Header />
     <div className="wrap">
@@ -24,4 +24,4 @@ const App = () => (
   </main>
 )
 
-export default App
+export default Dashboard
