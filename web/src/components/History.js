@@ -29,11 +29,44 @@ const chartsOptions = {
       },
       stops: [
           [0, '#4cadeb'],
-          [1, 'rgba(76, 173, 235, 0.05)']
+          [1, '#fff']
       ]
     }
   }],
   title: false,
+  xAxis: {
+    plotLines: [{
+      color: 'rgba(0, 0, 0, 0.5)',
+      value: 1,
+      width: 2,
+      zIndex: 2
+    }, {
+      color: 'rgba(0, 0, 0, 0.5)',
+      value: 3,
+      width: 2,
+      zIndex: 2
+    }, {
+      color: 'rgba(0, 0, 0, 0.5)',
+      value: 5,
+      width: 2,
+      zIndex: 2
+    }, {
+      color: 'rgba(0, 0, 255, 0.5)',
+      value: 4,
+      width: 2,
+      zIndex: 2
+    }, {
+      color: 'rgba(0, 0, 0, 0.5)',
+      value: 7,
+      width: 2,
+      zIndex: 2
+    }, {
+      color: 'rgba(0, 0, 0, 0.5)',
+      value: 9,
+      width: 2,
+      zIndex: 2
+    }]
+  },
   yAxis: {
     title: false,
     labels: {
