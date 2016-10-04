@@ -10,6 +10,10 @@
   z-index: 100;
 }
 
-.site-header h1 {
+.site-title {
   margin-bottom: 0;
+}
+
+.site-title a {
+  border-bottom: 0;
 }

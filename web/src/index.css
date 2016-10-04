@@ -212,6 +212,10 @@ a:hover {
   background-color: #b4b4b4;
 }
 
+[data-button] + [data-button] {
+  margin-left: 0.75em;
+}
+
 /**
  * WIDGETS
  */
@@ -268,6 +272,18 @@ a:hover {
  * FORMS
  */
 
+label {
+  display: block;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (min-width: 50em) {
+  label {
+    line-height: calc(3em + 2px);
+  }
+}
+
 .text-input {
   padding: 0.75em;
   border: 1px solid #dadada;
@@ -287,4 +303,11 @@ a:hover {
 .full-width {
   display: block;
   width: 100%;
+}
+
+.separator {
+  display: block;
+  border-top: 1px solid #dadada;
+  border-bottom: 0;
+  margin: 1.5em 0 1.5em 1.5em;
 }
