@@ -36,32 +36,12 @@ const chartsOptions = {
   title: false,
   xAxis: {
     plotLines: [{
-      color: 'rgba(0, 0, 0, 0.5)',
-      value: 1,
-      width: 2,
-      zIndex: 2
-    }, {
-      color: 'rgba(0, 0, 0, 0.5)',
-      value: 3,
-      width: 2,
-      zIndex: 2
-    }, {
-      color: 'rgba(0, 0, 0, 0.5)',
-      value: 5,
-      width: 2,
-      zIndex: 2
-    }, {
       color: 'rgba(0, 0, 255, 0.5)',
       value: 4,
       width: 2,
       zIndex: 2
     }, {
-      color: 'rgba(0, 0, 0, 0.5)',
-      value: 7,
-      width: 2,
-      zIndex: 2
-    }, {
-      color: 'rgba(0, 0, 0, 0.5)',
+      color: 'rgba(0, 0, 255, 0.5)',
       value: 9,
       width: 2,
       zIndex: 2
@@ -69,6 +49,17 @@ const chartsOptions = {
   },
   yAxis: {
     title: false,
+    plotLines: [{
+      color: 'rgba(235, 84, 76, 0.5)',
+      value: 30,
+      width: 2,
+      zIndex: 5
+    }, {
+      color: 'rgba(129, 235, 76, 0.5)',
+      value: 60,
+      width: 2,
+      zIndex: 5
+    }],
     labels: {
       formatter: function () {
         return this.value + '%'
