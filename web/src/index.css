@@ -234,6 +234,15 @@ a:hover {
   border-radius: 3px 3px 0 0;
 }
 
+.widget-title .tooltip {
+  float: right;
+  padding: 0.4em 0 0.4em 0.4em;
+}
+
+.widget-title [data-icon] {
+  margin: 0;
+}
+
 .widget-body {
   padding: 1.5em;
 }
@@ -253,7 +262,7 @@ a:hover {
 [data-icon~="loupe"] {
   width: 20px;
   height: 20px;
-  background-position: -72px 0;
+  background-position: -108px 0;
 }
 
 [data-icon~="drop"] {
@@ -266,6 +275,12 @@ a:hover {
   width: 20px;
   height: 20px;
   background-position: -36px 0;
+}
+
+[data-icon~="help"] {
+  width: 20px;
+  height: 20px;
+  background-position: -72px 0;
 }
 
 /**

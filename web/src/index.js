@@ -8,9 +8,12 @@ import './index.css'
 
 render(
   <Router history={browserHistory}>
-    <Route path="/" component={Dashboard} />
-    <Route path="/settings" component={Settings} />
-    <Route path="/login" component={Login} />
+    <Route path="/"
+           component={Dashboard} />
+    <Route path="/settings"
+           component={Settings} />
+    <Route path="/login"
+           component={Login} />
   </Router>,
   document.getElementById('root')
 )

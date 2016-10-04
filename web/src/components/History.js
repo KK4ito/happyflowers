@@ -1,9 +1,11 @@
 import React from 'react'
 import Highcharts from 'react-highcharts'
+import './History.css'
 
 const chartsOptions = {
   chart: {
     type: 'area',
+    zoomType: 'x'
   },
   legend: false,
   plotOptions: {
@@ -44,10 +46,19 @@ const chartsOptions = {
 
 const History = () => (
   <section className="history widget spaced">
-    <h2 className="widget-title">History</h2>
-      <div className="widget-body">
-        <Highcharts config={chartsOptions} />
+    <h2 className="widget-title">
+      History
+      <div className="tooltip">
+      <span data-icon="help">
+        <span className="tooltip-body">
+          Click and drag the chart to view a section in more detail.
+        </span>
+      </span>
       </div>
+    </h2>
+    <div className="widget-body">
+      <Highcharts config={chartsOptions} />
+    </div>
   </section>
 )
 
