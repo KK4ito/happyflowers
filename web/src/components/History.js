@@ -49,16 +49,10 @@ const chartsOptions = {
   },
   yAxis: {
     title: false,
-    plotLines: [{
-      color: 'rgba(235, 84, 76, 0.5)',
-      value: 30,
-      width: 2,
-      zIndex: 5
-    }, {
-      color: 'rgba(129, 235, 76, 0.5)',
-      value: 60,
-      width: 2,
-      zIndex: 5
+    plotBands: [{
+      from: 30,
+      to: 50,
+      color: 'rgba(129, 235, 76, 0.2)'
     }],
     labels: {
       formatter: function () {
