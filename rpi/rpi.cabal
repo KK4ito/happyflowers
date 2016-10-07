@@ -6,4 +6,6 @@ cabal-version: >=1.8
 executable rpi
   main-is: Main.hs
   build-depends: base,
-                 scotty
+                 scotty,
+                 aeson,
+                 http-types
