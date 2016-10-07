@@ -30,7 +30,6 @@ data Measurement = Measurement {
 instance ToJSON Measurement
 
 data History = Hisotry {
-  snapshot :: Int,
   events :: [Event],
   measurements :: [Measurement]
 } deriving (Show, Generic)
