@@ -3,7 +3,6 @@ import { render } from 'react-dom'
 import { Router, Route, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
-import createLogger from 'redux-logger'
 import thunk from 'redux-thunk'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
@@ -11,11 +10,16 @@ import Settings from './pages/Settings'
 import reducer from './reducers'
 import './index.css'
 
-const logger = createLogger()
+const middlewares = [thunk]
+
+if (process.env.NODE_ENV === 'development') {
+  const logger = require('redux-logger')()
+  middlewares.push(logger)
+}
 
 const store = createStore(
   reducer,
-  applyMiddleware(thunk, logger)
+  applyMiddleware(...middlewares)
 )
 
 render(
