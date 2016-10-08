@@ -8,4 +8,5 @@ executable rpi
   build-depends: base,
                  scotty,
                  aeson,
-                 http-types
+                 http-types,
+                 directory
