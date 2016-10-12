@@ -1,7 +1,10 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 
+import Control.Monad.Trans (liftIO)
 import Data.Aeson (ToJSON)
+import Database.SQLite.Simple
+import Database.SQLite.Simple.FromRow
 import GHC.Generics
 import Network.HTTP.Types.Status (notImplemented501, unauthorized401)
 import System.Directory
@@ -15,6 +18,8 @@ data Settings = Settings {
 } deriving (Show, Generic)
 
 instance ToJSON Settings
+instance FromRow Settings where
+  fromRow = Settings <$> field <*> field <*> field <*> field
 
 data Event = Event {
   eventType :: String,
@@ -52,7 +57,10 @@ readPwd file = do
 
 main = scotty 3000 $ do
   get "/settings" $ do
-    status notImplemented501
+    conn <- liftIO (open "happyflowers.db")
+    rows <- liftIO (query_ conn "SELECT * FROM settings" :: IO [Settings])
+    json $ head rows
+    liftIO (close conn)
   put "/settings" $ do
     status notImplemented501
   get "/history" $ do

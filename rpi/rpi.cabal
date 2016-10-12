@@ -9,4 +9,6 @@ executable rpi
                  scotty,
                  aeson,
                  http-types,
-                 directory
+                 directory,
+                 sqlite-simple,
+                 mtl
