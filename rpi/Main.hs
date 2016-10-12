@@ -54,21 +54,25 @@ getPassword = do
   return $ filter (/= '\n') val
 
 main = scotty 3000 $ do
+
   get "/settings" $ do
     -- TODO: Check JWT validity
     conn <- liftIO (open "happyflowers.db")
     rows <- liftIO (query_ conn "SELECT * FROM settings" :: IO [Settings])
-    json $ head rows
+    json (head rows)
     liftIO (close conn)
+
   put "/settings" $ do
     -- TODO: Check JWT validity
     status notImplemented501
+
   get "/history" $ do
     conn <- liftIO (open "happyflowers.db")
     events <- liftIO (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days')" :: IO [Event])
     measurements <- liftIO (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days')" :: IO [Measurement])
-    json $ History { events = events, measurements = measurements }
+    json History { events = events, measurements = measurements }
     liftIO (close conn)
+
   post "/auth" $ do
     pw <- param "password"
     syspw <- liftIO getPassword
