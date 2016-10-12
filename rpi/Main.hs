@@ -22,38 +22,31 @@ instance FromRow Settings where
   fromRow = Settings <$> field <*> field <*> field <*> field
 
 data Event = Event {
+  eventId :: Int,
   eventType :: String,
   eventTimestamp :: Int
 } deriving (Show, Generic)
 
 instance ToJSON Event
+instance FromRow Event where
+  fromRow = Event <$> field <*> field <*> field
 
 data Measurement = Measurement {
+  measurementId :: Int,
   measurementValue :: Int,
   measurementTimestamp :: Int
 } deriving (Show, Generic)
 
 instance ToJSON Measurement
+instance FromRow Measurement where
+  fromRow = Measurement <$> field <*> field <*> field
 
-data History = Hisotry {
+data History = History {
   events :: [Event],
   measurements :: [Measurement]
 } deriving (Show, Generic)
 
 instance ToJSON History
-
-configFile :: FilePath
-configFile = "rpi.cfg"
-
-readPwd :: FilePath -> IO String
-readPwd file = do
-  exists <- doesFileExist file
-  if not exists
-    then error "Config file does not exist"
-    else do
-      content <- readFile file
-      let pwd = if null content then error "Config file is empty" else content
-      return pwd
 
 main = scotty 3000 $ do
   get "/settings" $ do
@@ -64,7 +57,11 @@ main = scotty 3000 $ do
   put "/settings" $ do
     status notImplemented501
   get "/history" $ do
-    status notImplemented501
+    conn <- liftIO (open "happyflowers.db")
+    events <- liftIO (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days')" :: IO [Event])
+    measurements <- liftIO (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days')" :: IO [Measurement])
+    json $ History { events = events, measurements = measurements }
+    liftIO (close conn)
   post "/auth" $ do
     -- TODO: read config file, check if config password matches password from request
     -- body, give ok or unauthorized
