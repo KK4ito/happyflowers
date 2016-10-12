@@ -216,6 +216,11 @@ a:hover {
   margin-left: 0.75em;
 }
 
+[data-button][disabled] {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
 /**
  * WIDGETS
  */
@@ -325,4 +330,9 @@ label {
   border-top: 1px solid #dadada;
   border-bottom: 0;
   margin: 1.5em 0 1.5em 1.5em;
+}
+
+.is-invalid,
+input:focus.is-invalid {
+  border-color: #eb544c;
 }

@@ -8,10 +8,22 @@ class Settings extends React.Component {
     super(props)
 
     this.state = {
-      name: "",
-      upper: 0,
-      lower: 0,
-      interval: 0
+      name: {
+        value: "",
+        valid: true
+      },
+      upper: {
+        value: 60,
+        valid: true
+      },
+      lower: {
+        value: 40,
+        valid: true
+      },
+      interval: {
+        value: 60,
+        valid: true
+      }
     }
   }
 
@@ -21,10 +33,22 @@ class Settings extends React.Component {
 
   componentWillReceiveProps({ settings }) {
     this.setState({
-      name: settings.name,
-      upper: settings.upper,
-      lower: settings.lower,
-      interval: settings.interval
+      name: {
+        ...this.state.name,
+        value: settings.name
+      },
+      upper: {
+        ...this.state.upper,
+        value: settings.upper
+      },
+      lower: {
+        ...this.state.lower,
+        value: settings.lower
+      },
+      interval: {
+        ...this.state.interval,
+        value: settings.interval
+      }
     })
   }
 
@@ -49,10 +73,10 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="name"
                            type="text"
-                           className="text-input full-width spaced"
+                           className={`text-input full-width spaced ${!this.state.name.valid ? 'is-invalid' : ''}`}
                            placeholder="Give your plant a nice name"
-                           value={this.state.name}
-                           onChange={ev => this.setState({ name: ev.target.value })} />
+                           value={this.state.name.value}
+                           onChange={ev => this.setState({ name: { value: ev.target.value, valid: ev.target.value.length > 0 } })} />
                   </div>
                   <hr className="separator" />
                   <div data-col="L1-4">
@@ -64,12 +88,14 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="upper"
                            type="number"
-                           className="text-input full-width spaced"
+                           className={`text-input full-width spaced ${!this.state.upper.valid ? 'is-invalid' : ''}`}
                            placeholder="Enter the upper limit in percent (default 80)"
-                           value={this.state.upper}
-                           onChange={ev => this.setState({ upper: ev.target.value })} />
+                           value={this.state.upper.value}
+                           min="0"
+                           max="100"
+                           onChange={ev => this.setState({ upper: { value: +ev.target.value, valid: +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > this.state.lower.value } })} />
                     <p>
-                      The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped.
+                      The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped. A number between 0 and 100 is expected. Make sure the number is greater than the lower level.
                     </p>
                   </div>
                   <div data-col="L1-4">
@@ -81,12 +107,14 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="lower"
                            type="number"
-                           className="text-input full-width spaced"
+                           className={`text-input full-width spaced ${!this.state.lower.valid ? 'is-invalid' : ''}`}
                            placeholder="Enter the lower limit in percent (default 40)"
-                           value={this.state.lower}
-                           onChange={ev => this.setState({ lower: ev.target.value })} />
+                           value={this.state.lower.value}
+                           min="0"
+                           max="100"
+                           onChange={ev => this.setState({ lower: { value: +ev.target.value, valid: +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < this.state.upper.value } })} />
                     <p>
-                      The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level.
+                      The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
                     </p>
                   </div>
                   <div data-col="L1-4">
@@ -98,17 +126,19 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="interval"
                            type="number"
-                           className="text-input full-width spaced"
+                           className={`text-input full-width spaced ${!this.state.interval.valid ? 'is-invalid' : ''}`}
                            placeholder="Enter measurement interval in minutes (default 60)"
-                           value={this.state.interval}
-                           onChange={ev => this.setState({ interval: ev.target.value })} />
+                           value={this.state.interval.value}
+                           min="0"
+                           onChange={ev => this.setState({ interval: { value: +ev.target.value, valid: +ev.target.value % 1 === 0 && +ev.target.value > 0 } })} />
                     <p>
-                      The measurement interval determines the regularity at which the soil moisture percentage is measured. An interval of 60 minutes or more is recommended to ensure optimal performance.
+                      The measurement interval determines the regularity at which the soil moisture percentage is measured. An interval of 60 minutes or more is recommended to ensure optimal performance. A number greater than 0 is expected.
                     </p>
                   </div>
                 </div>
                 <input type="submit"
                        data-button="block"
+                       disabled={!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid}
                        value="Save settings" />
               </form>
             </div>
