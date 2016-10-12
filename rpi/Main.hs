@@ -2,11 +2,11 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 import Control.Monad.Trans (liftIO)
-import Data.Aeson (ToJSON)
+import Data.Aeson (ToJSON, (.=), object)
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
-import Network.HTTP.Types.Status (notImplemented501, unauthorized401)
+import Network.HTTP.Types.Status (ok200, notImplemented501, unauthorized401)
 import System.Directory
 import Web.Scotty
 
@@ -48,13 +48,20 @@ data History = History {
 
 instance ToJSON History
 
+getPassword :: IO String
+getPassword = do
+  val <- readFile "rpi.cfg"
+  return $ filter (/= '\n') val
+
 main = scotty 3000 $ do
   get "/settings" $ do
+    -- TODO: Check JWT validity
     conn <- liftIO (open "happyflowers.db")
     rows <- liftIO (query_ conn "SELECT * FROM settings" :: IO [Settings])
     json $ head rows
     liftIO (close conn)
   put "/settings" $ do
+    -- TODO: Check JWT validity
     status notImplemented501
   get "/history" $ do
     conn <- liftIO (open "happyflowers.db")
@@ -63,6 +70,7 @@ main = scotty 3000 $ do
     json $ History { events = events, measurements = measurements }
     liftIO (close conn)
   post "/auth" $ do
-    -- TODO: read config file, check if config password matches password from request
-    -- body, give ok or unauthorized
-    status unauthorized401
+    pw <- param "password"
+    syspw <- liftIO getPassword
+    if pw == syspw then status ok200 else status unauthorized401
+    -- TODO: Send JWT if pw == syspw
