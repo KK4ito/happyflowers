@@ -5,15 +5,14 @@ export const fetchSettings = () => (dispatch) => {
     type: 'FETCH_SETTINGS_REQUEST'
   })
 
-  axios.get('/settings')
+  axios.get('http://localhost:5000/settings')
     .then(res => {
       dispatch({
         type: 'FETCH_SETTINGS_SUCCESS',
-        data: res
+        data: res.data
       })
     })
     .catch(err => {
-      console.log(err)
       dispatch({
         type: 'FETCH_SETTINGS_ERROR'
       })

@@ -7,6 +7,7 @@ import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
 import Network.HTTP.Types.Status (ok200, notImplemented501, unauthorized401)
+import Network.Wai.Middleware.Cors
 import System.Directory
 import Web.Scotty
 
@@ -53,7 +54,9 @@ getPassword = do
   val <- readFile "rpi.cfg"
   return $ filter (/= '\n') val
 
-main = scotty 3000 $ do
+main = scotty 5000 $ do
+
+  middleware simpleCors
 
   get "/settings" $ do
     -- TODO: Check JWT validity

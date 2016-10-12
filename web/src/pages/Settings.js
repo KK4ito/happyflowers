@@ -4,13 +4,31 @@ import Header from '../components/Header'
 import { fetchSettings } from '../actions'
 
 class Settings extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      name: "",
+      upper: 0,
+      lower: 0,
+      interval: 0
+    }
+  }
+
   componentDidMount() {
     this.props.fetchSettings()
   }
 
-  render() {
-    const { name, upper, lower, interval } = this.props
+  componentWillReceiveProps({ settings }) {
+    this.setState({
+      name: settings.name,
+      upper: settings.upper,
+      lower: settings.lower,
+      interval: settings.interval
+    })
+  }
 
+  render() {
     return (
       <main className="site">
         <Header />
@@ -33,7 +51,8 @@ class Settings extends React.Component {
                            type="text"
                            className="text-input full-width spaced"
                            placeholder="Give your plant a nice name"
-                           value={name} />
+                           value={this.state.name}
+                           onChange={ev => this.setState({ name: ev.target.value })} />
                   </div>
                   <hr className="separator" />
                   <div data-col="L1-4">
@@ -44,10 +63,11 @@ class Settings extends React.Component {
                   </div>
                   <div data-col="L3-4">
                     <input id="upper"
-                           type="text"
+                           type="number"
                            className="text-input full-width spaced"
                            placeholder="Enter the upper limit in percent (default 80)"
-                           value={upper} />
+                           value={this.state.upper}
+                           onChange={ev => this.setState({ upper: ev.target.value })} />
                     <p>
                       The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped.
                     </p>
@@ -60,10 +80,11 @@ class Settings extends React.Component {
                   </div>
                   <div data-col="L3-4">
                     <input id="lower"
-                           type="text"
+                           type="number"
                            className="text-input full-width spaced"
                            placeholder="Enter the lower limit in percent (default 40)"
-                           value={lower} />
+                           value={this.state.lower}
+                           onChange={ev => this.setState({ lower: ev.target.value })} />
                     <p>
                       The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level.
                     </p>
@@ -76,10 +97,11 @@ class Settings extends React.Component {
                   </div>
                   <div data-col="L3-4">
                     <input id="interval"
-                           type="text"
+                           type="number"
                            className="text-input full-width spaced"
                            placeholder="Enter measurement interval in minutes (default 60)"
-                           value={interval} />
+                           value={this.state.interval}
+                           onChange={ev => this.setState({ interval: ev.target.value })} />
                     <p>
                       The measurement interval determines the regularity at which the soil moisture percentage is measured. An interval of 60 minutes or more is recommended to ensure optimal performance.
                     </p>

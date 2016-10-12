@@ -11,4 +11,5 @@ executable rpi
                  http-types,
                  directory,
                  sqlite-simple,
-                 mtl
+                 mtl,
+                 wai-cors
