@@ -67,9 +67,6 @@ main = scotty 5000 $ do
     json (head rows)
     liftIO (close conn)
 
-  -- TODO: /settings needs to be a PUT request, but they are not allowed when
-  -- CORS is enabled. This is a limitation during the development phase.
-
   put "/settings" $ do
     -- TODO: Check JWT validity
     name <- (param "name") :: ActionM String
