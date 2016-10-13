@@ -1,10 +1,11 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import './Stats.css'
 
-const Stats = () => (
+const Stats = ({ name }) => (
   <section className="stats widget spaced">
     <h2 className="widget-title">
-      Cecelia
+      {name || 'happy flower'}
     </h2>
     <div className="widget-body">
       <ul className="stats-list unstyled-list">
@@ -43,4 +44,10 @@ const Stats = () => (
   </section>
 )
 
-export default Stats
+const mapStateToProps = (state) => ({
+  name: state.settings.data.name
+})
+
+export default connect(
+  mapStateToProps
+)(Stats)

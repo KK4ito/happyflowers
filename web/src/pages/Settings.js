@@ -150,6 +150,7 @@ class Settings extends React.Component {
                       The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
                     </p>
                   </div>
+                  <hr className="separator" />
                   <div data-col="L1-4">
                     <label htmlFor="interval"
                            className="spaced">
@@ -172,7 +173,7 @@ class Settings extends React.Component {
                 <input type="submit"
                        data-button="block"
                        disabled={!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid || this.state.pristine || this.props.isSubmitting}
-                       value="Save settings"
+                       value={this.props.isSubmitting ? 'Saving…' : 'Save settings'}
                        onClick={this.submitForm} />
               </form>
             </div>

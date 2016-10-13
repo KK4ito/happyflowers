@@ -17,7 +17,7 @@ const chartsOptions = {
   },
   series: [{
     animation: false,
-    data: [50, 43, 35, 26, 14, 48, 40, 36, 28, 20, 50],
+    data: [70, 63, 55, 46, 34, 68, 60, 56, 48, 40, 70],
     enableMouseTracking: false,
     lineWidth: 1,
     fillColor: {
@@ -48,10 +48,12 @@ const chartsOptions = {
     }]
   },
   yAxis: {
+    min: 0,
+    max: 100,
     title: false,
     plotBands: [{
-      from: 30,
-      to: 50,
+      from: 40,
+      to: 80,
       color: 'rgba(129, 235, 76, 0.2)'
     }],
     labels: {
