@@ -56,7 +56,9 @@ getPassword = do
 
 main = scotty 5000 $ do
 
-  middleware simpleCors
+  middleware $ cors $ const $ Just simpleCorsResourcePolicy {
+    corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
+  }
 
   get "/settings" $ do
     -- TODO: Check JWT validity
@@ -68,7 +70,7 @@ main = scotty 5000 $ do
   -- TODO: /settings needs to be a PUT request, but they are not allowed when
   -- CORS is enabled. This is a limitation during the development phase.
 
-  post "/settings" $ do
+  put "/settings" $ do
     -- TODO: Check JWT validity
     name <- (param "name") :: ActionM String
     upper <- (param "upper") :: ActionM Int

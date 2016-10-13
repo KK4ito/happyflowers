@@ -24,10 +24,7 @@ export const submitSettings = (data) => (dispatch) => {
     type: 'SUBMIT_SETTINGS_REQUEST'
   })
 
-  // TODO: /settings needs to be a PUT request, but they are not allowed when
-  // CORS is enabled. This is a limitation during the development phase.
-
-  axios.post('http://localhost:5000/settings', data)
+  axios.put('http://localhost:5000/settings', data)
     .then(res => {
       dispatch({
         type: 'SUBMIT_SETTINGS_SUCCESS',

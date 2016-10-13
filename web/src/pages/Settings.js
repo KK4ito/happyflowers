@@ -8,25 +8,27 @@ class Settings extends React.Component {
     super(props)
 
     this.state = {
+      pristine: true,
       name: {
         value: "",
         valid: true
       },
       upper: {
-        value: 60,
+        value: 0,
         valid: true
       },
       lower: {
-        value: 40,
+        value: 0,
         valid: true
       },
       interval: {
-        value: 60,
+        value: 0,
         valid: true
       }
     }
 
     this.submitForm = this.submitForm.bind(this)
+    this.handleTextChange = this.handleTextChange.bind(this)
   }
 
   componentDidMount() {
@@ -34,22 +36,27 @@ class Settings extends React.Component {
   }
 
   componentWillReceiveProps({ settings }) {
+    if (!Object.keys(settings).length) {
+      return
+    }
+
     this.setState({
+      pristine: true,
       name: {
-        ...this.state.name,
-        value: settings.name
+        value: settings.name,
+        valid: true
       },
       upper: {
-        ...this.state.upper,
-        value: settings.upper
+        value: settings.upper,
+        valid: true
       },
       lower: {
-        ...this.state.lower,
-        value: settings.lower
+        value: settings.lower,
+        valid: true
       },
       interval: {
-        ...this.state.interval,
-        value: settings.interval
+        value: settings.interval,
+        valid: true
       }
     })
   }
@@ -69,6 +76,13 @@ class Settings extends React.Component {
     fd.append('interval', this.state.interval.value)
 
     this.props.submitSettings(fd)
+  }
+
+  handleTextChange(key, value, valid) {
+    this.setState({
+      pristine: false,
+      [key]: { value, valid }
+    })
   }
 
   render() {
@@ -95,7 +109,7 @@ class Settings extends React.Component {
                            className={`text-input full-width spaced ${!this.state.name.valid ? 'is-invalid' : ''}`}
                            placeholder="Give your plant a nice name"
                            value={this.state.name.value}
-                           onChange={ev => this.setState({ name: { value: ev.target.value, valid: ev.target.value.length > 0 } })} />
+                           onChange={ev => this.handleTextChange('name', ev.target.value, ev.target.value.length > 0)} />
                   </div>
                   <hr className="separator" />
                   <div data-col="L1-4">
@@ -112,7 +126,7 @@ class Settings extends React.Component {
                            value={this.state.upper.value}
                            min="0"
                            max="100"
-                           onChange={ev => this.setState({ upper: { value: +ev.target.value, valid: +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > this.state.lower.value } })} />
+                           onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > this.state.lower.value)} />
                     <p>
                       The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped. A number between 0 and 100 is expected. Make sure the number is greater than the lower level.
                     </p>
@@ -131,7 +145,7 @@ class Settings extends React.Component {
                            value={this.state.lower.value}
                            min="0"
                            max="100"
-                           onChange={ev => this.setState({ lower: { value: +ev.target.value, valid: +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < this.state.upper.value } })} />
+                           onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < this.state.upper.value)} />
                     <p>
                       The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
                     </p>
@@ -149,7 +163,7 @@ class Settings extends React.Component {
                            placeholder="Enter measurement interval in minutes (default 60)"
                            value={this.state.interval.value}
                            min="0"
-                           onChange={ev => this.setState({ interval: { value: +ev.target.value, valid: +ev.target.value % 1 === 0 && +ev.target.value > 0 } })} />
+                           onChange={ev => this.handleTextChange('interval', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value > 0)} />
                     <p>
                       The measurement interval determines the regularity at which the soil moisture percentage is measured. An interval of 60 minutes or more is recommended to ensure optimal performance. A number greater than 0 is expected.
                     </p>
@@ -157,7 +171,7 @@ class Settings extends React.Component {
                 </div>
                 <input type="submit"
                        data-button="block"
-                       disabled={!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid}
+                       disabled={!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid || this.state.pristine || this.props.isSubmitting}
                        value="Save settings"
                        onClick={this.submitForm} />
               </form>
@@ -170,7 +184,9 @@ class Settings extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  settings: state.settings.data
+  settings: state.settings.data,
+  isFetching: state.settings.isFetching,
+  isSubmitting: state.settings.isSubmitting
 })
 
 export default connect(
