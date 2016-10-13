@@ -65,9 +65,19 @@ main = scotty 5000 $ do
     json (head rows)
     liftIO (close conn)
 
-  put "/settings" $ do
+  -- TODO: /settings needs to be a PUT request, but they are not allowed when
+  -- CORS is enabled. This is a limitation during the development phase.
+
+  post "/settings" $ do
     -- TODO: Check JWT validity
-    status notImplemented501
+    name <- (param "name") :: ActionM String
+    upper <- (param "upper") :: ActionM Int
+    lower <- (param "lower") :: ActionM Int
+    interval <- (param "interval") :: ActionM Int
+    conn <- liftIO (open "happyflowers.db")
+    liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" (name, upper, lower, interval))
+    json Settings { name = name, upper = upper, lower = lower, interval = interval }
+    liftIO (close conn)
 
   get "/history" $ do
     conn <- liftIO (open "happyflowers.db")

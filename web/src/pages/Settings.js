@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Header from '../components/Header'
-import { fetchSettings } from '../actions'
+import { fetchSettings, submitSettings } from '../actions'
 
 class Settings extends React.Component {
   constructor(props) {
@@ -25,6 +25,8 @@ class Settings extends React.Component {
         valid: true
       }
     }
+
+    this.submitForm = this.submitForm.bind(this)
   }
 
   componentDidMount() {
@@ -50,6 +52,23 @@ class Settings extends React.Component {
         value: settings.interval
       }
     })
+  }
+
+  submitForm(event) {
+    event.preventDefault()
+
+    if (!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid) {
+      return
+    }
+
+    let fd = new FormData()
+
+    fd.append('name', this.state.name.value)
+    fd.append('upper', this.state.upper.value)
+    fd.append('lower', this.state.lower.value)
+    fd.append('interval', this.state.interval.value)
+
+    this.props.submitSettings(fd)
   }
 
   render() {
@@ -139,7 +158,8 @@ class Settings extends React.Component {
                 <input type="submit"
                        data-button="block"
                        disabled={!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid}
-                       value="Save settings" />
+                       value="Save settings"
+                       onClick={this.submitForm} />
               </form>
             </div>
           </section>
@@ -155,5 +175,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(
   mapStateToProps,
-  { fetchSettings }
+  { fetchSettings, submitSettings }
 )(Settings)
