@@ -86,8 +86,10 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+a:hover,
+a:focus {
   border-bottom-style: solid;
+  outline: none;
 }
 
 /**
@@ -194,8 +196,10 @@ a:hover {
   transition: background-color 0.25s ease-in-out;
 }
 
-[data-button]:hover {
+[data-button]:hover,
+[data-button]:focus {
   background-color: #63b8ee;
+  outline: none;
 }
 
 [data-button~="block"] {
@@ -208,7 +212,8 @@ a:hover {
   background-color: #9c9c9c;
 }
 
-[data-button~="secondary"]:hover {
+[data-button~="secondary"]:hover,
+[data-button~="secondary"]:focus {
   background-color: #b4b4b4;
 }
 
