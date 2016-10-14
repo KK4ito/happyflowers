@@ -80,8 +80,8 @@ main = scotty 5000 $ do
 
   get "/history" $ do
     conn <- liftIO (open "happyflowers.db")
-    events <- liftIO (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days')" :: IO [Event])
-    measurements <- liftIO (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days')" :: IO [Measurement])
+    events <- liftIO (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC" :: IO [Event])
+    measurements <- liftIO (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC" :: IO [Measurement])
     json History { events = events, measurements = measurements }
     liftIO (close conn)
 

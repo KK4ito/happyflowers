@@ -18,6 +18,9 @@ const defaultOptions = {
     }
   },
   title: false,
+  xAxis: {
+    type: 'datetime'
+  },
   yAxis: {
     min: 0,
     max: 100,
@@ -49,7 +52,6 @@ const defaultSeries = {
 }
 
 const defaultLines = {
-  color: 'rgba(0, 0, 255, 0.5)',
   width: 2,
   zIndex: 2
 }
@@ -63,12 +65,15 @@ const History = ({ events, measurements, settings, isFetching }) => {
     ...defaultOptions,
     series: [{
       ...defaultSeries,
-      data: measurements.map(m => m.measurementValue)
+      data: measurements.map(m => [ (new Date(m.measurementTimestamp)).getTime(), m.measurementValue ])
     }],
     xAxis: {
+      ...defaultOptions.xAxis,
+      minTickInterval: 1000 * 60 * settings.interval,
       plotLines: events.map(e => ({
         ...defaultLines,
-        value: e.eventTimestamp
+        color: e.eventType === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
+        value: (new Date(e.eventTimestamp)).getTime()
       }))
     },
     yAxis: {
