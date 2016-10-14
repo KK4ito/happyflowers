@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Header from '../components/Header'
+import Loader from '../components/Loader'
 import { fetchSettings, submitSettings } from '../actions'
 
 class Settings extends React.Component {
@@ -91,6 +92,7 @@ class Settings extends React.Component {
         <Header />
         <div className="wrap">
           <section className="widget spaced">
+            <Loader loading={this.props.isFetching} />
             <h2 className="widget-title">
               Settings
             </h2>

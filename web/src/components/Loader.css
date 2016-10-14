@@ -1,0 +1,70 @@
+.loader-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(30, 30, 30, 0.8);
+  border-radius: 3px;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s linear 0.1s, opacity 0.1s linear;
+  z-index: 50;
+}
+
+.is-loading {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}
+
+.loader {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translateY(-25px);
+}
+
+.loader > div:nth-child(0) {
+  animation-delay: -0.8s;
+}
+
+.loader > div:nth-child(1) {
+  animation-delay: -0.6s;
+}
+
+.loader > div:nth-child(2) {
+  animation-delay: -0.4s;
+}
+
+.loader > div:nth-child(3) {
+  animation-delay: -0.2s;
+}
+
+.loader > div {
+  animation-fill-mode: both;
+  position: absolute;
+  top: -2px;
+  left: -26px;
+  width: 50px;
+  height: 50px;
+  border-radius: 100%;
+  border: 2px solid #fff;
+  animation: loader 1.25s 0s infinite cubic-bezier(0.21, 0.53, 0.56, 0.8);
+}
+
+@keyframes loader {
+  0% {
+    transform: scale(0.1);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  100% {
+    opacity: 0.0;
+  }
+}

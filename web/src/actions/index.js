@@ -5,7 +5,7 @@ export const fetchSettings = () => (dispatch) => {
     type: 'FETCH_SETTINGS_REQUEST'
   })
 
-  axios.get('http://localhost:5000/settings')
+  return axios.get('http://localhost:5000/settings')
     .then(res => {
       dispatch({
         type: 'FETCH_SETTINGS_SUCCESS',
@@ -17,6 +17,8 @@ export const fetchSettings = () => (dispatch) => {
         type: 'FETCH_SETTINGS_ERROR'
       })
     })
+
+
 }
 
 export const submitSettings = (data) => (dispatch) => {
@@ -24,7 +26,7 @@ export const submitSettings = (data) => (dispatch) => {
     type: 'SUBMIT_SETTINGS_REQUEST'
   })
 
-  axios.put('http://localhost:5000/settings', data)
+  return axios.put('http://localhost:5000/settings', data)
     .then(res => {
       dispatch({
         type: 'SUBMIT_SETTINGS_SUCCESS',
