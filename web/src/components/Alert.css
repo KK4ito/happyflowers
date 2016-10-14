@@ -1,0 +1,103 @@
+/* Common, default styles for the notification box */
+
+.s-alert-box,
+.s-alert-box * {
+  box-sizing: border-box;
+}
+
+.s-alert-box {
+  position: fixed;
+  background: rgba(42, 45, 50, 0.85);
+  padding: 22px;
+  line-height: 1.4;
+  z-index: 1000;
+  pointer-events: none;
+  color: rgba(250, 251, 255, 0.95);
+  font-size: 100%;
+  transition: top .4s, bottom .4s;
+}
+
+.s-alert-box.s-alert-show {
+  pointer-events: auto;
+}
+
+.s-alert-box a {
+  color: inherit;
+  opacity: 0.7;
+  font-weight: 700;
+}
+
+.s-alert-box a:hover,
+.s-alert-box a:focus {
+  opacity: 1;
+}
+
+.s-alert-box p {
+  margin: 0;
+}
+
+.s-alert-box.s-alert-show,
+.s-alert-box.s-alert-visible {
+  pointer-events: auto;
+}
+
+.s-alert-close {
+  display: none;
+}
+
+/* positions */
+
+.s-alert-bottom {
+  width: auto;
+  bottom: 1.5em;
+  left: 1.5em;
+  right: 1.5em;
+  top: auto;
+  border-radius: 3px;
+  box-shadow: 0 3px 5px rgba(30, 30, 30, 0.15);
+}
+
+/* conditions */
+
+.s-alert-success {
+  background-color: #f0f5ea;
+  color: #5ca300;
+}
+
+.s-alert-error {
+  background-color: #f5ebeb;
+  color: #ec3c3c;
+}
+
+[class^="s-alert-effect-"].s-alert-hide,
+[class*=" s-alert-effect-"].s-alert-hide {
+  animation-direction: reverse;
+}
+
+/* height measurement helper */
+
+.s-alert-box-height {
+  visibility: hidden;
+  position: fixed;
+}
+
+/* Slide */
+
+.s-alert-show,
+.s-alert-hide {
+  animation-name: slide;
+  animation-duration: 0.15s;
+  animation-timing-function: linear;
+}
+
+/* Generated with Bounce.js. Edit at http://goo.gl/akZHSq */
+
+@keyframes slide {
+  0% {
+    transform: translateY(calc(100% + 1.5em));
+  }
+
+  100% {
+    transform: translateY(0%);
+  }
+}

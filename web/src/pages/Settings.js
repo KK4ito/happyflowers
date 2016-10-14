@@ -1,8 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Alert from 'react-s-alert'
 import Header from '../components/Header'
 import Loader from '../components/Loader'
 import { fetchSettings, submitSettings } from '../actions'
+import '../components/Alert.css'
 
 class Settings extends React.Component {
   constructor(props) {
@@ -34,6 +36,9 @@ class Settings extends React.Component {
 
   componentDidMount() {
     this.props.fetchSettings()
+      .catch(() => {
+        Alert.error('Could not retrieve settings.')
+      })
   }
 
   componentWillReceiveProps({ settings }) {
@@ -77,6 +82,12 @@ class Settings extends React.Component {
     fd.append('interval', this.state.interval.value)
 
     this.props.submitSettings(fd)
+      .then(() => {
+        Alert.success('Settings saved successfully.');
+      })
+      .catch(() => {
+        Alert.error('Could not save settings.')
+      })
   }
 
   handleTextChange(key, value, valid) {
@@ -181,6 +192,7 @@ class Settings extends React.Component {
             </div>
           </section>
         </div>
+        <Alert stack={{limit: 3}} timeout={2000} effect="slide" position="bottom" />
       </main>
     )
   }
