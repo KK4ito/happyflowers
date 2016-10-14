@@ -5,11 +5,12 @@ import Snapshot from '../components/Snapshot'
 import Stats from '../components/Stats'
 import History from '../components/History'
 import Stream from '../components/Stream'
-import { fetchSettings } from '../actions'
+import { fetchSettings, fetchHistory } from '../actions'
 
 class Dashboard extends React.Component {
   componentDidMount() {
     this.props.fetchSettings()
+    this.props.fetchHistory()
   }
 
   render() {
@@ -35,5 +36,5 @@ class Dashboard extends React.Component {
 
 export default connect(
   null,
-  { fetchSettings }
+  { fetchSettings, fetchHistory }
 )(Dashboard)

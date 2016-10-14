@@ -1,9 +1,11 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Loader from './Loader'
 import './Stats.css'
 
-const Stats = ({ name }) => (
+const Stats = ({ name, isFetching }) => (
   <section className="stats widget spaced">
+    <Loader loading={isFetching} />
     <h2 className="widget-title">
       {name || 'happy flower'}
     </h2>
@@ -45,7 +47,8 @@ const Stats = ({ name }) => (
 )
 
 const mapStateToProps = (state) => ({
-  name: state.settings.data.name
+  name: state.settings.data.name,
+  isFetching: state.settings.isFetching || state.history.isFetching
 })
 
 export default connect(

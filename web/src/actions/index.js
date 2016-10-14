@@ -6,7 +6,7 @@ export const requestFetchSettings = () => ({
 
 export const succeedFetchSettings = (data) => ({
   type: 'FETCH_SETTINGS_SUCCESS',
-  data: data
+  data
 })
 
 export const failFetchSettings = () => ({
@@ -31,7 +31,7 @@ export const requestSubmitSettings = () => ({
 
 export const succeedSubmitSettings = (data) => ({
   type: 'SUBMIT_SETTINGS_SUCCESS',
-  data: data
+  data
 })
 
 export const failSubmitSettings = () => ({
@@ -47,5 +47,31 @@ export const submitSettings = (data) => (dispatch) => {
     })
     .catch(err => {
       dispatch(failSubmitSettings())
+    })
+}
+
+export const requestFetchHistory = () => ({
+  type: 'FETCH_HISTORY_REQUEST'
+})
+
+export const succeedFetchHistory = (measurements, events) => ({
+  type: 'FETCH_HISTORY_SUCCESS',
+  measurements,
+  events
+})
+
+export const failFetchHistory = () => ({
+  type: 'FETCH_HISTORY_ERROR'
+})
+
+export const fetchHistory = () => (dispatch) => {
+  dispatch(requestFetchHistory())
+
+  return axios.get('http://localhost:5000/history')
+    .then(res => {
+      dispatch(succeedFetchHistory(res.data.measurements, res.data.events))
+    })
+    .catch(err => {
+      dispatch(failFetchHistory())
     })
 }

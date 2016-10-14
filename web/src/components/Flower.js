@@ -1,12 +1,12 @@
 import React from 'react'
 import './Flower.css'
 
-const Flower = () => (
+const Flower = ({ value }) => (
   <svg className="flower" width="285" height="285" viewBox="0 0 285 285" xmlns="http://www.w3.org/2000/svg">
     <g fill="none" fillRule="evenodd">
       <g transform="translate(15 15)" strokeWidth="30" strokeLinecap="round">
         <circle stroke="#CFCFCF" strokeDasharray="801,801" cx="127.5" cy="127.5" r="127.5" />
-        <path d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5" stroke="#4CADEB" strokeDasharray="601,839" />
+        <path d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5" stroke="#4CADEB" strokeDasharray={`${601 * value / 100},839`} />
       </g>
       <g transform="translate(52 52)">
         <g fill="#32465D">

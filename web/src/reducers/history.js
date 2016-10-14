@@ -3,7 +3,8 @@ import { combineReducers } from 'redux'
 const snapshot = (state = 0, action) => {
   switch (action.type) {
     case 'FETCH_HISTORY_SUCCESS':
-      return action.measurements.slice(-1).pop().measurementValue
+      const latest = action.measurements.slice(-1).pop()
+      return (latest && latest.measurementValue) || 0
     case 'MEASUREMENT_RECEIVED':
       return action.measurement.measurementValue
     default:
