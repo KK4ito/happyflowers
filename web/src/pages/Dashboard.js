@@ -6,7 +6,6 @@ import Stats from '../components/Stats'
 import History from '../components/History'
 import Stream from '../components/Stream'
 import { fetchSettings } from '../actions'
-import './Dashboard.css'
 
 class Dashboard extends React.Component {
   componentDidMount() {

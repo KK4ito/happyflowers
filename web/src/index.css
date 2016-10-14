@@ -25,11 +25,26 @@ body {
 
 body {
   margin: 0;
-  padding: 7.5em 0 0;
+  padding: 0;
   font: 100%/1.5 "Open Sans", sans-serif;
   background-size: cover;
   background-position: center center;
   background-attachment: fixed;
+}
+
+.site {
+  display: inline-block;
+  width: 100%;
+}
+
+@media (min-width: 50em) {
+  body {
+    padding: 7.5em 0 0;
+  }
+  
+  .site {
+    padding-bottom: 1.5em;
+  }
 }
 
 /**
