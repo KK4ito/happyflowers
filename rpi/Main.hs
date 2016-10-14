@@ -25,7 +25,7 @@ instance FromRow Settings where
 data Event = Event {
   eventId :: Int,
   eventType :: String,
-  eventTimestamp :: Int
+  eventTimestamp :: String
 } deriving (Show, Generic)
 
 instance ToJSON Event
@@ -35,7 +35,7 @@ instance FromRow Event where
 data Measurement = Measurement {
   measurementId :: Int,
   measurementValue :: Int,
-  measurementTimestamp :: Int
+  measurementTimestamp :: String
 } deriving (Show, Generic)
 
 instance ToJSON Measurement

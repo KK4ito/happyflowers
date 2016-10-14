@@ -63,12 +63,12 @@ const History = ({ events, measurements, settings, isFetching }) => {
     ...defaultOptions,
     series: [{
       ...defaultSeries,
-      data: measurements
+      data: measurements.map(m => m.measurementValue)
     }],
     xAxis: {
-      plotLines: events.map(i => ({
+      plotLines: events.map(e => ({
         ...defaultLines,
-        value: i
+        value: e.eventTimestamp
       }))
     },
     yAxis: {

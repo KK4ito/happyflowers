@@ -1,13 +1,16 @@
 BEGIN TRANSACTION;
 
-INSERT INTO EVENTS (type, timestamp) VALUES
+INSERT INTO settings (name, upper, lower, interval) VALUES
+("Cecelia", 80, 40, 60);
+
+INSERT INTO events (type, timestamp) VALUES
 ("automatic", "2016-10-01T20:10:01"),
 ("automatic", "2016-10-07T20:10:01"),
 ("manual", "2016-10-09T20:10:01"),
 ("automatic", "2016-10-12T20:10:01"),
 ("automatic", "2016-10-13T20:10:01");
 
-INSERT INTO MEASUREMENTS (value, timestamp) VALUES
+INSERT INTO measurements (value, timestamp) VALUES
 (38,"2016-10-3T6:10:01"),
 (31,"2016-10-4T18:10:01"),
 (40,"2016-10-13T15:10:01"),
