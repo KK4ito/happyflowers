@@ -1,9 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import timeago from 'timeago.js'
 import Loader from './Loader'
 import './Stats.css'
 
-const Stats = ({ name, isFetching }) => (
+const ta = new timeago()
+
+const Stats = ({ name, timestamps, isFetching }) => (
   <section className="stats widget spaced">
     <Loader loading={isFetching} />
     <h2 className="widget-title">
@@ -14,29 +17,23 @@ const Stats = ({ name, isFetching }) => (
         <li>
           <span data-icon="loupe" />
           <h3 className="stats-heading">
-            Last checked
+            Last measurement
           </h3>
-          <span title="30. Sep. 2016 — 17:37">
-            30 seconds ago
-          </span>
+          {(timestamps.measurement && ta.format(timestamps.measurement)) || 'more than two weeks ago'}
         </li>
         <li>
           <span data-icon="drop" />
           <h3 className="stats-heading">
             Last automatic watering
           </h3>
-          <span title="30. Sep. 2016 — 17:35">
-            2 minutes ago
-          </span>
+          {(timestamps.automatic && ta.format(timestamps.automatic)) || 'more than two weeks ago'}
         </li>
         <li>
         <span data-icon="hand" />
           <h3 className="stats-heading">
             Last manual watering
           </h3>
-          <span title="30. Sep. 2016 — 17:07">
-            30 minutes ago
-          </span>
+          {(timestamps.manual && ta.format(timestamps.manual)) || 'more than two weeks ago'}
         </li>
       </ul>
       <button data-button="block secondary">
@@ -48,6 +45,11 @@ const Stats = ({ name, isFetching }) => (
 
 const mapStateToProps = (state) => ({
   name: state.settings.data.name,
+  timestamps: {
+    measurement: state.history.measurements.map(m => m.measurementTimestamp).slice(-1).pop(),
+    automatic: state.history.events.filter(e => e.eventType === 'automatic').map(e => e.eventTimestamp).slice(-1).pop(),
+    manual: state.history.events.filter(e => e.eventType === 'manual').map(e => e.eventTimestamp).slice(-1).pop()
+  },
   isFetching: state.settings.isFetching || state.history.isFetching
 })
 
