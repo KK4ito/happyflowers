@@ -198,7 +198,7 @@ class Settings extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   settings: state.settings.data,
   isFetching: state.settings.isFetching,
   isSubmitting: state.settings.isSubmitting

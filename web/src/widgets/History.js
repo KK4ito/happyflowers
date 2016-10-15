@@ -1,8 +1,8 @@
 import React from 'react'
 import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
-import Loader from './Loader'
-import './History.css'
+import Widget from './Widget'
+import Loader from '../components/Loader'
 
 const defaultOptions = {
   chart: {
@@ -87,26 +87,15 @@ const History = ({ events, measurements, settings, isFetching }) => {
   }
 
   return (
-    <section className="history widget spaced">
-      <Loader loading={isFetching} />
-      <h2 className="widget-title">
-        History
-        <div className="tooltip">
-        <span data-icon="help">
-          <span className="tooltip-body">
-            Click and drag the chart to view a section in more detail.
-          </span>
-        </span>
-        </div>
-      </h2>
+    <Widget title="History" tooltip={"Click and drag the chart to view a section in more detail."} isLoading={isFetching}>
       <div className="widget-body">
         <Highcharts config={chartOptions} />
       </div>
-    </section>
+    </Widget>
   )
 }
 
-const mapStateToProps = (state) => ({
+const mapStateToProps = state => ({
   events: state.history.events,
   measurements: state.history.measurements,
   settings: state.settings.data,

@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import Header from '../components/Header'
-import Snapshot from '../components/Snapshot'
-import Stats from '../components/Stats'
-import History from '../components/History'
-import Stream from '../components/Stream'
+import Snapshot from '../widgets/Snapshot'
+import Stats from '../widgets/Stats'
+import History from '../widgets/History'
+import Stream from '../widgets/Stream'
 import { fetchSettings, fetchHistory } from '../actions'
 
 class Dashboard extends React.Component {

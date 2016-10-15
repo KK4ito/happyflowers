@@ -11,18 +11,17 @@ const Header = () => (
           </a>
         </h1>
       </div>
-      <div data-col="L1-4"
-           className="text-right">
+      <div data-col="L1-4">
         <div data-grid>
           <div data-col="1-2">
             <a data-button="block secondary"
-              href="settings">
+               href="settings">
               Settings
             </a>
           </div>
           <div data-col="1-2">
             <a data-button="block secondary"
-              href="">
+               href="">
               Logout
             </a>
           </div>

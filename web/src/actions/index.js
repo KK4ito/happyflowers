@@ -14,7 +14,7 @@ export const submitSettingsRequest = createAction('SUBMIT_SETTINGS_REQUEST')
 export const submitSettingsSuccess = createAction('SUBMIT_SETTINGS_SUCCESS')
 export const submitSettingsError = createAction('SUBMIT_SETTINGS_ERROR')
 
-export const submitSettings = (data) => ({
+export const submitSettings = data => ({
   actions: [ submitSettingsRequest, submitSettingsSuccess, submitSettingsError ],
   apiCall: () => axios.put('http://localhost:5000/settings', data),
   payload: { data }

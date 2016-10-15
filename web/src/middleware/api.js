@@ -1,4 +1,4 @@
-export default ({ dispatch, getState }) => next => action => {
+const api = ({ dispatch, getState }) => next => action => {
   const { actions, apiCall, payload = {} } = action
 
   if (!actions) {
@@ -21,3 +21,5 @@ export default ({ dispatch, getState }) => next => action => {
     .then(res => dispatch(successAction({ ...payload, res })))
     .catch(err => dispatch(errorAction({ ...payload, err })))
 }
+
+export default api
