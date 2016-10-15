@@ -8,7 +8,7 @@ const Login = () => (
     </h1>
     <input className="text-input full-width spaced"
            type="password"
-           placeholder="Enter your password" />
+           placeholder="Enter the password" />
     <input data-button="block"
            type="submit"
            value="Sign in" />

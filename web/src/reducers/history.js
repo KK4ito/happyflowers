@@ -1,50 +1,30 @@
 import { combineReducers } from 'redux'
+import { handleActions } from 'redux-actions'
+import * as actions from '../actions'
 
-const snapshot = (state = 0, action) => {
-  switch (action.type) {
-    case 'FETCH_HISTORY_SUCCESS':
-      const latest = action.measurements.slice(-1).pop()
-      return (latest && latest.measurementValue) || 0
-    case 'MEASUREMENT_RECEIVED':
-      return action.measurement.measurementValue
-    default:
-      return state
-  }
-}
+const snapshot = handleActions({
+  [actions.fetchHistorySuccess]: (state, action) => {
+    const latest = action.payload.res.data.measurements.slice(-1).pop()
+    return (latest && latest.measurementValue) || 0
+  },
+  [actions.measurementReceived]: (state, action) => action.measurement.measurementValue
+}, 0)
 
-const events = (state = [], action) => {
-  switch (action.type) {
-    case 'FETCH_HISTORY_SUCCESS':
-      return action.events
-    case 'EVENT_RECEIVED':
-      return [...state, action.event]
-    default:
-      return state
-  }
-}
+const events = handleActions({
+  [actions.fetchHistorySuccess]: (state, action) => action.payload.res.data.events,
+  [actions.eventReceived]: (state, action) => [...state, action.payload]
+}, [])
 
-const measurements = (state = [], action) => {
-  switch (action.type) {
-    case 'FETCH_HISTORY_SUCCESS':
-      return action.measurements
-    case 'MEASUREMENT_RECEIVED':
-      return [...state, action.measurement]
-    default:
-      return state
-  }
-}
+const measurements = handleActions({
+  [actions.fetchHistorySuccess]: (state, action) => action.payload.res.data.measurements,
+  [actions.measurementReceived]: (state, action) => [...state, action.payload]
+}, [])
 
-const isFetching = (state = false, action) => {
-  switch (action.type) {
-    case 'FETCH_HISTORY_REQUEST':
-      return true
-    case 'FETCH_HISTORY_SUCCESS':
-    case 'FETCH_HISTORY_ERROR':
-      return false
-    default:
-     return state
-  }
-}
+const isFetching = handleActions({
+  [actions.fetchHistoryRequest]: () => true,
+  [actions.fetchHistorySuccess]: () => false,
+  [actions.fetchHistoryError]: () => false
+}, false)
 
 export default combineReducers({
   snapshot,

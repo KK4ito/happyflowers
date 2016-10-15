@@ -9,8 +9,8 @@ import { fetchSettings, fetchHistory } from '../actions'
 
 class Dashboard extends React.Component {
   componentDidMount() {
-    this.props.fetchSettings()
-    this.props.fetchHistory()
+    this.props.dispatch(fetchSettings())
+    this.props.dispatch(fetchHistory())
   }
 
   render() {
@@ -34,7 +34,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default connect(
-  null,
-  { fetchSettings, fetchHistory }
-)(Dashboard)
+export default connect()(Dashboard)

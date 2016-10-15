@@ -1,38 +1,23 @@
 import { combineReducers } from 'redux'
+import { handleActions } from 'redux-actions'
+import * as actions from '../actions'
 
-const data = (state = {}, action) => {
-  switch (action.type) {
-    case 'FETCH_SETTINGS_SUCCESS':
-    case 'SUBMIT_SETTINGS_SUCCESS':
-      return action.data
-    default:
-      return state
-  }
-}
+const data = handleActions({
+  [actions.fetchSettingsSuccess]: (state, action) => action.payload.res.data,
+  [actions.submitSettingsSuccess]: (state, action) => action.payload.res.data
+}, {})
 
-const isFetching = (state = false, action) => {
-  switch (action.type) {
-    case 'FETCH_SETTINGS_REQUEST':
-      return true
-    case 'FETCH_SETTINGS_SUCCESS':
-    case 'FETCH_SETTINGS_ERROR':
-      return false
-    default:
-      return state
-  }
-}
+const isFetching = handleActions({
+  [actions.fetchSettingsRequest]: () => true,
+  [actions.fetchSettingsSuccess]: () => false,
+  [actions.fetchSettingsError]: () => false
+}, false)
 
-const isSubmitting = (state = false, action) => {
-  switch (action.type) {
-    case 'SUBMIT_SETTINGS_REQUEST':
-      return true
-    case 'SUBMIT_SETTINGS_SUCCESS':
-    case 'SUBMIT_SETTINGS_ERROR':
-      return false
-    default:
-      return state
-  }
-}
+const isSubmitting = handleActions({
+  [actions.submitSettingsRequest]: () => true,
+  [actions.submitSettingsSuccess]: () => false,
+  [actions.submitSettingsError]: () => false
+}, false)
 
 export default combineReducers({
   data,

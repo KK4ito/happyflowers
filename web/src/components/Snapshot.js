@@ -21,6 +21,4 @@ const mapStateToProps = (state) => ({
   isFetching: state.history.isFetching
 })
 
-export default connect(
-  mapStateToProps
-)(Snapshot)
+export default connect(mapStateToProps)(Snapshot)

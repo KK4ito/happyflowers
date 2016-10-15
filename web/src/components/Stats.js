@@ -53,6 +53,4 @@ const mapStateToProps = (state) => ({
   isFetching: state.settings.isFetching || state.history.isFetching
 })
 
-export default connect(
-  mapStateToProps
-)(Stats)
+export default connect(mapStateToProps)(Stats)

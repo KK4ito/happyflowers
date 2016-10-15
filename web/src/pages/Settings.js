@@ -14,19 +14,19 @@ class Settings extends React.Component {
       pristine: true,
       name: {
         value: "",
-        valid: true
+        valid: false
       },
       upper: {
         value: 0,
-        valid: true
+        valid: false
       },
       lower: {
         value: 0,
-        valid: true
+        valid: false
       },
       interval: {
         value: 0,
-        valid: true
+        valid: false
       }
     }
 
@@ -35,7 +35,7 @@ class Settings extends React.Component {
   }
 
   componentDidMount() {
-    this.props.fetchSettings()
+    this.props.dispatch(fetchSettings())
       .catch(() => {
         Alert.error('Could not retrieve settings.')
       })
@@ -81,7 +81,7 @@ class Settings extends React.Component {
     fd.append('lower', this.state.lower.value)
     fd.append('interval', this.state.interval.value)
 
-    this.props.submitSettings(fd)
+    this.props.dispatch(submitSettings(fd))
       .then(() => {
         Alert.success('Settings saved successfully.');
       })
@@ -204,7 +204,4 @@ const mapStateToProps = (state) => ({
   isSubmitting: state.settings.isSubmitting
 })
 
-export default connect(
-  mapStateToProps,
-  { fetchSettings, submitSettings }
-)(Settings)
+export default connect(mapStateToProps)(Settings)
