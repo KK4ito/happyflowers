@@ -3,8 +3,8 @@ import { handleActions } from 'redux-actions'
 import * as actions from '../actions'
 
 const data = handleActions({
-  [actions.fetchSettingsSuccess]: (state, action) => action.payload.res.data,
-  [actions.submitSettingsSuccess]: (state, action) => action.payload.res.data
+  [actions.fetchSettingsSuccess]: (_, { payload }) => payload.res.data,
+  [actions.submitSettingsSuccess]: (_, { payload }) => payload.res.data
 }, {})
 
 const isFetching = handleActions({
