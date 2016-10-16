@@ -42,26 +42,26 @@ class Settings extends React.Component {
   }
 
   componentWillReceiveProps({ settings }) {
-    if (!Object.keys(settings).length) {
+    if (settings.isEmpty()) {
       return
     }
 
     this.setState({
       pristine: true,
       name: {
-        value: settings.name,
+        value: settings.get('name'),
         valid: true
       },
       upper: {
-        value: settings.upper,
+        value: settings.get('upper'),
         valid: true
       },
       lower: {
-        value: settings.lower,
+        value: settings.get('lower'),
         valid: true
       },
       interval: {
-        value: settings.interval,
+        value: settings.get('interval'),
         valid: true
       }
     })

@@ -1,11 +1,12 @@
 import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
+import { Map } from 'immutable'
 import * as actions from '../actions'
 
 const data = handleActions({
-  [actions.fetchSettingsSuccess]: (_, { payload }) => payload.res.data,
-  [actions.submitSettingsSuccess]: (_, { payload }) => payload.res.data
-}, {})
+  [actions.fetchSettingsSuccess]: (_, { payload }) => Map(payload.res.data),
+  [actions.submitSettingsSuccess]: (_, { payload }) => Map(payload.res.data)
+}, Map())
 
 const isFetching = handleActions({
   [actions.fetchSettingsRequest]: () => true,

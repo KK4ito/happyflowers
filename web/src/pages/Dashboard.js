@@ -9,8 +9,10 @@ import { fetchSettings, fetchHistory } from '../actions'
 
 class Dashboard extends React.Component {
   componentDidMount() {
-    this.props.dispatch(fetchSettings())
-    this.props.dispatch(fetchHistory())
+    const { dispatch } = this.props
+
+    dispatch(fetchSettings())
+    dispatch(fetchHistory())
   }
 
   render() {

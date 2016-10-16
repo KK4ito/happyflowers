@@ -2,11 +2,24 @@ import React from 'react'
 import './Flower.css'
 
 const Flower = ({ value }) => (
-  <svg className="flower" width="285" height="285" viewBox="0 0 285 285" xmlns="http://www.w3.org/2000/svg">
-    <g fill="none" fillRule="evenodd">
-      <g transform="translate(15 15)" strokeWidth="30" strokeLinecap="round">
-        <circle stroke="#CFCFCF" strokeDasharray="801,801" cx="127.5" cy="127.5" r="127.5" />
-        <path d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5" stroke="#4CADEB" strokeDasharray={`${601 * value / 100},839`} />
+  <svg className="flower"
+       width="285"
+       height="285"
+       viewBox="0 0 285 285"
+       xmlns="http://www.w3.org/2000/svg">
+    <g fill="none"
+       fillRule="evenodd">
+      <g transform="translate(15 15)"
+         strokeWidth="30"
+         strokeLinecap="round">
+        <circle stroke="#CFCFCF"
+                strokeDasharray="801,801"
+                cx="127.5"
+                cy="127.5"
+                r="127.5" />
+        <path d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5"
+              stroke="#4CADEB"
+              strokeDasharray={`${601 * value / 100},839`} />
       </g>
       <g transform="translate(52 52)">
         <g fill="#32465D">
@@ -27,7 +40,11 @@ const Flower = ({ value }) => (
           <path d="M71.798 72.05s1.59-21.522-10.7-33.815c-12.294-12.293-33.817-10.7-33.817-10.7S25.69 49.056 37.983 61.35c12.293 12.293 33.816 10.7 33.816 10.7z" />
           <path d="M79.9 66.283s-20.494-6.766-27.146-22.827C46.1 27.394 55.808 8.12 55.808 8.12S76.3 14.884 82.954 30.946c6.653 16.06-3.054 35.336-3.054 35.336z" />
         </g>
-        <ellipse fill="#ECEAD5" cx="89.855" cy="91" rx="40.503" ry="40.503" />
+        <ellipse fill="#ECEAD5"
+                 cx="89.855"
+                 cy="91"
+                 rx="40.503"
+                 ry="40.503" />
       </g>
     </g>
   </svg>

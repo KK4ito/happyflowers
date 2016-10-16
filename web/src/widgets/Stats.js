@@ -14,21 +14,21 @@ const Stats = ({ name, timestamps, isFetching }) => (
         <h3 className="stats-heading">
           Last measurement
         </h3>
-        {(timestamps.measurement && ta.format(timestamps.measurement)) || 'more than two weeks ago'}
+        {(timestamps.measurement && ta.format(timestamps.measurement.get('measurementTimestamp'))) || 'more than two weeks ago'}
       </li>
       <li>
         <span data-icon="drop" />
         <h3 className="stats-heading">
           Last automatic watering
         </h3>
-        {(timestamps.automatic && ta.format(timestamps.automatic)) || 'more than two weeks ago'}
+        {(timestamps.automatic && ta.format(timestamps.automatic.get('eventTimestamp'))) || 'more than two weeks ago'}
       </li>
       <li>
       <span data-icon="hand" />
         <h3 className="stats-heading">
           Last manual watering
         </h3>
-        {(timestamps.manual && ta.format(timestamps.manual)) || 'more than two weeks ago'}
+        {(timestamps.manual && ta.format(timestamps.manual.get('eventTimestamp'))) || 'more than two weeks ago'}
       </li>
     </ul>
     <button data-button="block secondary">
@@ -38,11 +38,11 @@ const Stats = ({ name, timestamps, isFetching }) => (
 )
 
 const mapStateToProps = state => ({
-  name: state.settings.data.name,
+  name: state.settings.data.get('name'),
   timestamps: {
-    measurement: state.history.measurements.map(m => m.measurementTimestamp).slice(-1).pop(),
-    automatic: state.history.events.filter(e => e.eventType === 'automatic').map(e => e.eventTimestamp).slice(-1).pop(),
-    manual: state.history.events.filter(e => e.eventType === 'manual').map(e => e.eventTimestamp).slice(-1).pop()
+    measurement: state.history.measurements.last(),
+    automatic: state.history.events.filter(e => e.get('eventType') === 'automatic').last(),
+    manual: state.history.events.filter(e => e.get('eventType') === 'manual').last()
   },
   isFetching: state.settings.isFetching || state.history.isFetching
 })

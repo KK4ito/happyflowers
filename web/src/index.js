@@ -4,6 +4,7 @@ import { Router, Route, browserHistory } from 'react-router'
 import { Provider } from 'react-redux'
 import { createStore, applyMiddleware } from 'redux'
 import thunk from 'redux-thunk'
+import { List } from 'immutable'
 import api from './middleware/api'
 import Dashboard from './pages/Dashboard'
 import Login from './pages/Login'
@@ -11,15 +12,15 @@ import Settings from './pages/Settings'
 import reducer from './reducers'
 import './index.css'
 
-let middlewares = [api, thunk]
+let middlewares = List.of(api, thunk)
 
 if (process.env.NODE_ENV === 'development') {
-  middlewares = [...middlewares, require('redux-logger')()]
+  middlewares.push(require('redux-logger')())
 }
 
 const store = createStore(
   reducer,
-  applyMiddleware(...middlewares)
+  applyMiddleware(...middlewares.toJS())
 )
 
 render(

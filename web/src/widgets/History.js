@@ -2,7 +2,6 @@ import React from 'react'
 import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
 import Widget from './Widget'
-import Loader from '../components/Loader'
 
 const defaultOptions = {
   chart: {
@@ -65,23 +64,23 @@ const History = ({ events, measurements, settings, isFetching }) => {
     ...defaultOptions,
     series: [{
       ...defaultSeries,
-      data: measurements.map(m => [ (new Date(m.measurementTimestamp)).getTime(), m.measurementValue ])
+      data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS()
     }],
     xAxis: {
       ...defaultOptions.xAxis,
-      minTickInterval: 1000 * 60 * settings.interval,
+      minTickInterval: 1000 * 60 * settings.get('interval'),
       plotLines: events.map(e => ({
         ...defaultLines,
-        color: e.eventType === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
-        value: (new Date(e.eventTimestamp)).getTime()
-      }))
+        color: e.get('eventType') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
+        value: (new Date(e.get('eventTimestamp'))).getTime()
+      })).toJS()
     },
     yAxis: {
       ...defaultOptions.yAxis,
       plotBands: [{
         ...defaultBands,
-        from: settings.lower,
-        to: settings.upper
+        from: settings.get('lower'),
+        to: settings.get('upper')
       }]
     }
   }
