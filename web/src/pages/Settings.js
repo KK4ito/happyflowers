@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Map } from 'immutable'
 import Alert from 'react-s-alert'
 import Header from '../components/Header'
 import Loader from '../components/Loader'
@@ -12,22 +13,22 @@ class Settings extends React.Component {
 
     this.state = {
       pristine: true,
-      name: {
+      name: Map({
         value: "",
         valid: false
-      },
-      upper: {
+      }),
+      upper: Map({
         value: 0,
         valid: false
-      },
-      lower: {
+      }),
+      lower: Map({
         value: 0,
         valid: false
-      },
-      interval: {
+      }),
+      interval: Map({
         value: 0,
         valid: false
-      }
+      })
     }
 
     this.submitForm = this.submitForm.bind(this)
@@ -48,38 +49,38 @@ class Settings extends React.Component {
 
     this.setState({
       pristine: true,
-      name: {
+      name: Map({
         value: settings.get('name'),
         valid: true
-      },
-      upper: {
+      }),
+      upper: Map({
         value: settings.get('upper'),
         valid: true
-      },
-      lower: {
+      }),
+      lower: Map({
         value: settings.get('lower'),
         valid: true
-      },
-      interval: {
+      }),
+      interval: Map({
         value: settings.get('interval'),
         valid: true
-      }
+      })
     })
   }
 
   submitForm(event) {
     event.preventDefault()
 
-    if (!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid) {
+    if (!this.state.name.get('valid') || !this.state.upper.get('valid') || !this.state.lower.get('valid') || !this.state.interval.get('valid')) {
       return
     }
 
     let fd = new FormData()
 
-    fd.append('name', this.state.name.value)
-    fd.append('upper', this.state.upper.value)
-    fd.append('lower', this.state.lower.value)
-    fd.append('interval', this.state.interval.value)
+    fd.append('name', this.state.name.get('value'))
+    fd.append('upper', this.state.upper.get('value'))
+    fd.append('lower', this.state.lower.get('value'))
+    fd.append('interval', this.state.interval.get('value'))
 
     this.props.dispatch(submitSettings(fd))
       .then(() => {
@@ -93,11 +94,13 @@ class Settings extends React.Component {
   handleTextChange(key, value, valid) {
     this.setState({
       pristine: false,
-      [key]: { value, valid }
+      [key]: Map({ value, valid })
     })
   }
 
   render() {
+    const { name, upper, lower, interval } = this.state
+
     return (
       <main className="site">
         <Header />
@@ -119,9 +122,9 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="name"
                            type="text"
-                           className={`text-input full-width spaced ${!this.state.name.valid ? 'is-invalid' : ''}`}
+                           className={`text-input full-width spaced ${!name.get('valid') ? 'is-invalid' : ''}`}
                            placeholder="Give your plant a nice name"
-                           value={this.state.name.value}
+                           value={name.get('value')}
                            onChange={ev => this.handleTextChange('name', ev.target.value, ev.target.value.length > 0)} />
                   </div>
                   <hr className="separator" />
@@ -134,12 +137,12 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="upper"
                            type="number"
-                           className={`text-input full-width spaced ${!this.state.upper.valid ? 'is-invalid' : ''}`}
+                           className={`text-input full-width spaced ${!upper.get('valid') ? 'is-invalid' : ''}`}
                            placeholder="Enter the upper limit in percent (default 80)"
-                           value={this.state.upper.value}
+                           value={upper.get('value')}
                            min="0"
                            max="100"
-                           onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > this.state.lower.value)} />
+                           onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > lower.get('value'))} />
                     <p>
                       The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped. A number between 0 and 100 is expected. Make sure the number is greater than the lower level.
                     </p>
@@ -153,12 +156,12 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="lower"
                            type="number"
-                           className={`text-input full-width spaced ${!this.state.lower.valid ? 'is-invalid' : ''}`}
+                           className={`text-input full-width spaced ${!lower.get('valid') ? 'is-invalid' : ''}`}
                            placeholder="Enter the lower limit in percent (default 40)"
-                           value={this.state.lower.value}
+                           value={lower.get('value')}
                            min="0"
                            max="100"
-                           onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < this.state.upper.value)} />
+                           onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < upper.get('value'))} />
                     <p>
                       The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
                     </p>
@@ -173,9 +176,9 @@ class Settings extends React.Component {
                   <div data-col="L3-4">
                     <input id="interval"
                            type="number"
-                           className={`text-input full-width spaced ${!this.state.interval.valid ? 'is-invalid' : ''}`}
+                           className={`text-input full-width spaced ${!interval.get('valid') ? 'is-invalid' : ''}`}
                            placeholder="Enter measurement interval in minutes (default 60)"
-                           value={this.state.interval.value}
+                           value={interval.get('value')}
                            min="0"
                            onChange={ev => this.handleTextChange('interval', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value > 0)} />
                     <p>
@@ -185,7 +188,7 @@ class Settings extends React.Component {
                 </div>
                 <input type="submit"
                        data-button="block"
-                       disabled={!this.state.name.valid || !this.state.upper.valid || !this.state.lower.valid || !this.state.interval.valid || this.state.pristine || this.props.isSubmitting}
+                       disabled={!name.get('valid') || !upper.get('valid') || !lower.get('valid') || !interval.get('valid') || this.state.pristine || this.props.isSubmitting}
                        value={this.props.isSubmitting ? 'Saving…' : 'Save settings'}
                        onClick={this.submitForm} />
               </form>

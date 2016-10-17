@@ -1,9 +1,10 @@
 import React from 'react'
 import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
+import { Map } from 'immutable'
 import Widget from './Widget'
 
-const defaultOptions = {
+const defaultOptions = Map({
   chart: {
     type: 'area',
     zoomType: 'x'
@@ -30,9 +31,9 @@ const defaultOptions = {
       }
     }
   }
-}
+})
 
-const defaultSeries = {
+const defaultSeries = Map({
   animation: false,
   enableMouseTracking: false,
   lineWidth: 1,
@@ -48,47 +49,39 @@ const defaultSeries = {
       [1, '#fff']
     ]
   }
-}
+})
 
-const defaultLines = {
+const defaultLines = Map({
   width: 2,
   zIndex: 2
-}
+})
 
-const defaultBands = {
+const defaultBands = Map({
   color: 'rgba(129, 235, 76, 0.2)'
-}
+})
 
 const History = ({ events, measurements, settings, isFetching }) => {
-  const chartOptions = {
-    ...defaultOptions,
-    series: [{
-      ...defaultSeries,
-      data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS()
-    }],
-    xAxis: {
-      ...defaultOptions.xAxis,
-      minTickInterval: 1000 * 60 * settings.get('interval'),
-      plotLines: events.map(e => ({
-        ...defaultLines,
-        color: e.get('eventType') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
-        value: (new Date(e.get('eventTimestamp'))).getTime()
-      })).toJS()
-    },
-    yAxis: {
-      ...defaultOptions.yAxis,
-      plotBands: [{
-        ...defaultBands,
-        from: settings.get('lower'),
-        to: settings.get('upper')
-      }]
-    }
-  }
+  const chartOptions = defaultOptions
+    .set('series', [ defaultSeries
+      .set('data', measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS()).toJS()
+    ])
+    .set('xAxis', Map(defaultOptions.get('xAxis'))
+      .set('minTickInterval', 1000 * 60 * settings.get('interval'))
+      .set('plotLines', events.map(e => (defaultLines
+        .set('color', e.get('eventType') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)')
+        .set('value', (new Date(e.get('eventTimestamp'))).getTime()).toJS()))
+      )
+    )
+    .set('yAxis', Map(defaultOptions.get('yAxis'))
+      .set('plotBands', [ defaultBands
+        .set('from', settings.get('lower')).set('to', settings.get('upper')).toJS()
+      ])
+    )
 
   return (
-    <Widget title="History" tooltip={"Click and drag the chart to view a section in more detail."} isLoading={isFetching}>
+    <Widget title="History" tooltip="Click and drag the chart to view a section in more detail." isLoading={isFetching}>
       <div className="widget-body">
-        <Highcharts config={chartOptions} />
+        <Highcharts config={chartOptions.toJS()} />
       </div>
     </Widget>
   )
