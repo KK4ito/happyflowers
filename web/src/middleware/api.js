@@ -1,5 +1,5 @@
 const api = ({ dispatch, getState }) => next => action => {
-  const { actions, apiCall, payload = {} } = action
+  const { actions, apiCall, payload = {}, successCallback = () => {}, errorCallback = () => {} } = action
 
   if (!actions) {
     return next(action)
@@ -20,9 +20,11 @@ const api = ({ dispatch, getState }) => next => action => {
   return apiCall()
     .then(res => {
       dispatch(successAction({ ...payload, res }))
+      successCallback(res)
     })
     .catch(err => {
       dispatch(errorAction({ ...payload, err }))
+      errorCallback(err)
       throw err
     })
 }

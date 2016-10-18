@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import { logoutRequest } from '../actions'
+import { logout } from '../actions'
 import './Header.css'
 
 const Header = ({ isLoggedIn, dispatch }) => (
@@ -25,7 +25,7 @@ const Header = ({ isLoggedIn, dispatch }) => (
           <div data-col={isLoggedIn ? '1-2' : ''}>
             {isLoggedIn && (<a data-button="block secondary"
                onClick={() => {
-                 dispatch(logoutRequest())
+                 dispatch(logout())
                  browserHistory.push('/login')
                }}>
               Logout

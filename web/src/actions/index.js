@@ -35,7 +35,13 @@ export const loginError = createAction('LOGIN_ERROR')
 
 export const login = data => ({
   actions: [ loginRequest, loginSuccess, loginError ],
-  apiCall: () => axios.post('http://localhost:5000/auth', data)
+  apiCall: () => axios.post('http://localhost:5000/auth', data),
+  successCallback: res => window.sessionStorage.setItem('jwt', res.data)
 })
 
 export const logoutRequest = createAction('LOGOUT_REQUEST')
+
+export const logout = () => dispatch => {
+  window.sessionStorage.removeItem('jwt')
+  dispatch(logoutRequest())
+}

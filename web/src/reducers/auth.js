@@ -3,15 +3,9 @@ import { handleActions } from 'redux-actions'
 import * as actions from '../actions'
 
 const jwt = handleActions({
-  [actions.loginSuccess]: (_, { payload }) => {
-    window.sessionStorage.setItem('jwt', payload.res.data)
-    return payload.res.data
-  },
+  [actions.loginSuccess]: (_, { payload }) => payload.res.data,
   [actions.loginError]: () => '',
-  [actions.logoutRequest]: () => {
-    window.sessionStorage.removeItem('jwt')
-    return ''
-  }
+  [actions.logoutRequest]: () => ''
 }, window.sessionStorage.getItem('jwt') || '')
 
 const isLoggingIn = handleActions({
