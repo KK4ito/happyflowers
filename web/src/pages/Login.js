@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import Alert from 'react-s-alert'
+import Loader from '../components/Loader'
 import { login } from '../actions'
 import './Login.css'
 
@@ -26,7 +27,6 @@ class Login extends React.Component {
     event.preventDefault()
 
     let fd = new FormData()
-
     fd.append('password', this.state.password)
 
     this.props.dispatch(login(fd))
@@ -38,6 +38,7 @@ class Login extends React.Component {
     return (
       <main className="site">
         <form className="login">
+          <Loader loading={this.props.isLoggingIn} />
           <h1 className="form-title">
             happy flowers
           </h1>
@@ -47,7 +48,7 @@ class Login extends React.Component {
                  onChange={ev => this.setState({ password: ev.target.value })}
                  placeholder="Enter the password" />
           <input data-button="block"
-                 disabled={!this.state.password.length}
+                 disabled={!this.state.password.length || this.props.isLoggingIn}
                  type="submit"
                  value="Sign in"
                  onClick={this.login} />
@@ -59,7 +60,8 @@ class Login extends React.Component {
 }
 
 const mapStateToProps = state => ({
-  jwt: state.auth.jwt
+  jwt: state.auth.jwt,
+  isLoggingIn: state.auth.isLoggingIn
 })
 
 export default connect(mapStateToProps)(Login)

@@ -15,7 +15,7 @@ import './index.css'
 let middlewares = List.of(api, thunk)
 
 if (process.env.NODE_ENV === 'development') {
-  middlewares.push(require('redux-logger')())
+  middlewares = middlewares.push(require('redux-logger')())
 }
 
 const store = createStore(

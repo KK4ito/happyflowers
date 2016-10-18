@@ -87,12 +87,8 @@ class Settings extends React.Component {
     fd.append('token', this.props.jwt)
 
     this.props.dispatch(submitSettings(fd))
-      .then(() => {
-        Alert.success('Settings saved successfully.');
-      })
-      .catch(() => {
-        Alert.error('Could not save settings.')
-      })
+      .then(() => Alert.success('Settings saved successfully.'))
+      .catch(() => Alert.error('Could not save settings.'))
   }
 
   handleTextChange(key, value, valid) {
