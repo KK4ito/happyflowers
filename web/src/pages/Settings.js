@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
 import { Map } from 'immutable'
 import Alert from 'react-s-alert'
 import Header from '../components/Header'
@@ -14,7 +15,7 @@ class Settings extends React.Component {
     this.state = {
       pristine: true,
       name: Map({
-        value: "",
+        value: '',
         valid: false
       }),
       upper: Map({
@@ -36,6 +37,10 @@ class Settings extends React.Component {
   }
 
   componentDidMount() {
+    if (!this.props.jwt) {
+      browserHistory.push('/login')
+    }
+
     this.props.dispatch(fetchSettings())
       .catch(err => Alert.error('Could not retrieve settings.'))
   }
@@ -79,6 +84,7 @@ class Settings extends React.Component {
     fd.append('upper', this.state.upper.get('value'))
     fd.append('lower', this.state.lower.get('value'))
     fd.append('interval', this.state.interval.get('value'))
+    fd.append('token', this.props.jwt)
 
     this.props.dispatch(submitSettings(fd))
       .then(() => {
@@ -200,6 +206,7 @@ class Settings extends React.Component {
 }
 
 const mapStateToProps = state => ({
+  jwt: state.auth.jwt,
   settings: state.settings.data,
   isFetching: state.settings.isFetching,
   isSubmitting: state.settings.isSubmitting

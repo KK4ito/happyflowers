@@ -6,7 +6,7 @@ import './Stats.css'
 
 const ta = new timeago()
 
-const Stats = ({ name, timestamps, isFetching }) => (
+const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
   <Widget title={name || 'happy flower'} isLoading={isFetching}>
     <ul className="stats-list unstyled-list">
       <li>
@@ -31,13 +31,14 @@ const Stats = ({ name, timestamps, isFetching }) => (
         {(timestamps.manual && ta.format(timestamps.manual.get('eventTimestamp'))) || 'more than two weeks ago'}
       </li>
     </ul>
-    <button data-button="block secondary">
+    <button data-button="block secondary" disabled={!isLoggedIn}>
       Start pump manually
     </button>
   </Widget>
 )
 
 const mapStateToProps = state => ({
+  isLoggedIn: state.auth.jwt,
   name: state.settings.data.get('name'),
   timestamps: {
     measurement: state.history.measurements.last(),

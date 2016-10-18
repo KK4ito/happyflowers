@@ -1,7 +1,10 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { browserHistory } from 'react-router'
+import { logoutRequest } from '../actions'
 import './Header.css'
 
-const Header = () => (
+const Header = ({ isLoggedIn, dispatch }) => (
   <header className="site-header">
     <div data-grid>
       <div data-col="L3-4">
@@ -13,17 +16,24 @@ const Header = () => (
       </div>
       <div data-col="L1-4">
         <div data-grid>
-          <div data-col="1-2">
+          {isLoggedIn && (<div data-col="1-2">
             <a data-button="block secondary"
                href="settings">
               Settings
             </a>
-          </div>
-          <div data-col="1-2">
-            <a data-button="block secondary"
-               href="">
+          </div>)}
+          <div data-col={isLoggedIn ? '1-2' : ''}>
+            {isLoggedIn && (<a data-button="block secondary"
+               onClick={() => {
+                 dispatch(logoutRequest())
+                 browserHistory.push('/login')
+               }}>
               Logout
-            </a>
+            </a>)}
+            {!isLoggedIn && (<a data-button="block secondary"
+               onClick={() => browserHistory.push('/login')}>
+              Login
+            </a>)}
           </div>
         </div>
       </div>
@@ -31,4 +41,8 @@ const Header = () => (
   </header>
 )
 
-export default Header
+const mapStateToProps = state => ({
+  isLoggedIn: state.auth.jwt
+})
+
+export default connect(mapStateToProps)(Header)

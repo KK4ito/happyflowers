@@ -12,4 +12,8 @@ executable rpi
                  directory,
                  sqlite-simple,
                  mtl,
-                 wai-cors
+                 wai-cors,
+                 jose-jwt,
+                 bytestring,
+                 scotty-cookie,
+                 text

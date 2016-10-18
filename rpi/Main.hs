@@ -4,13 +4,19 @@
 import Control.Exception
 import Control.Monad.Trans (liftIO)
 import Data.Aeson (ToJSON)
+import qualified Data.ByteString.Char8 as C
+import qualified Data.Text as T
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
+import Jose.Jws
+import Jose.Jwa
+import Jose.Jwt
 import Network.HTTP.Types.Status (ok200, internalServerError500, unauthorized401)
 import Network.Wai.Middleware.Cors
 import System.Directory
 import Web.Scotty
+import Web.Scotty.Cookie
 
 data Settings = Settings {
   name :: String,
@@ -62,7 +68,6 @@ main = scotty 5000 $ do
   }
 
   get "/settings" $ do
-    -- TODO: Check JWT validity
     conn <- liftIO (open "happyflowers.db")
     rows <- liftIO (try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings]))
     case rows of
@@ -71,15 +76,19 @@ main = scotty 5000 $ do
     liftIO (close conn)
 
   put "/settings" $ do
-    -- TODO: Check JWT validity
-    name <- (param "name") :: ActionM String
-    upper <- (param "upper") :: ActionM Int
-    lower <- (param "lower") :: ActionM Int
-    interval <- (param "interval") :: ActionM Int
-    conn <- liftIO (open "happyflowers.db")
-    liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" (name, upper, lower, interval))
-    json Settings { name = name, upper = upper, lower = lower, interval = interval }
-    liftIO (close conn)
+    token <- (param "token") :: ActionM String
+    let jwt = hmacDecode "hppyflwrs" $ C.pack token
+    case jwt of
+      Right _ -> do
+        name <- (param "name") :: ActionM String
+        upper <- (param "upper") :: ActionM Int
+        lower <- (param "lower") :: ActionM Int
+        interval <- (param "interval" ) :: ActionM Int
+        conn <- liftIO (open "happyflowers.db")
+        liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" (name, upper, lower, interval))
+        json Settings { name = name, upper = upper, lower = lower, interval = interval }
+        liftIO (close conn)
+      Left e -> status unauthorized401
 
   get "/history" $ do
     conn <- liftIO (open "happyflowers.db")
@@ -89,7 +98,13 @@ main = scotty 5000 $ do
     liftIO (close conn)
 
   post "/auth" $ do
-    pw <- param "password"
+    pw <- (param "password") :: ActionM String
     syspw <- liftIO getPassword
-    if pw == syspw then status ok200 else status unauthorized401
-    -- TODO: Send JWT if pw == syspw
+    if pw == syspw
+      then do
+        let jwt = hmacEncode HS384 "hppyflwrs" "hello"
+        case jwt of
+          Right j -> do
+            json j
+      else do
+        status unauthorized401

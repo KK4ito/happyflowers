@@ -18,7 +18,9 @@ const api = ({ dispatch, getState }) => next => action => {
   dispatch(requestAction(payload))
 
   return apiCall()
-    .then(res => dispatch(successAction({ ...payload, res })))
+    .then(res => {
+      dispatch(successAction({ ...payload, res }))
+    })
     .catch(err => {
       dispatch(errorAction({ ...payload, err }))
       throw err

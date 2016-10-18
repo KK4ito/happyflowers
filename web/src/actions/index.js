@@ -28,3 +28,14 @@ export const fetchHistory = () => ({
   actions: [ fetchHistoryRequest, fetchHistorySuccess, fetchHistoryError ],
   apiCall: () => axios.get('http://localhost:5000/history')
 })
+
+export const loginRequest = createAction('LOGIN_REQUEST')
+export const loginSuccess = createAction('LOGIN_SUCCESS')
+export const loginError = createAction('LOGIN_ERROR')
+
+export const login = data => ({
+  actions: [ loginRequest, loginSuccess, loginError ],
+  apiCall: () => axios.post('http://localhost:5000/auth', data)
+})
+
+export const logoutRequest = createAction('LOGOUT_REQUEST')
