@@ -1,12 +1,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE DeriveGeneric #-}
 
+import Control.Exception
 import Control.Monad.Trans (liftIO)
-import Data.Aeson (ToJSON, (.=), object)
+import Data.Aeson (ToJSON)
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
-import Network.HTTP.Types.Status (ok200, notImplemented501, unauthorized401)
+import Network.HTTP.Types.Status (ok200, internalServerError500, unauthorized401)
 import Network.Wai.Middleware.Cors
 import System.Directory
 import Web.Scotty
@@ -63,8 +64,10 @@ main = scotty 5000 $ do
   get "/settings" $ do
     -- TODO: Check JWT validity
     conn <- liftIO (open "happyflowers.db")
-    rows <- liftIO (query_ conn "SELECT * FROM settings" :: IO [Settings])
-    json (head rows)
+    rows <- liftIO (try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings]))
+    case rows of
+      Left e -> status internalServerError500
+      Right r -> if length r > 0 then json (head r) else status internalServerError500
     liftIO (close conn)
 
   put "/settings" $ do

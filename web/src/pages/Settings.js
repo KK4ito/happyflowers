@@ -37,9 +37,7 @@ class Settings extends React.Component {
 
   componentDidMount() {
     this.props.dispatch(fetchSettings())
-      .catch(() => {
-        Alert.error('Could not retrieve settings.')
-      })
+      .catch(err => Alert.error('Could not retrieve settings.'))
   }
 
   componentWillReceiveProps({ settings }) {

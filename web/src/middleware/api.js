@@ -19,7 +19,10 @@ const api = ({ dispatch, getState }) => next => action => {
 
   return apiCall()
     .then(res => dispatch(successAction({ ...payload, res })))
-    .catch(err => dispatch(errorAction({ ...payload, err })))
+    .catch(err => {
+      dispatch(errorAction({ ...payload, err }))
+      throw err
+    })
 }
 
 export default api
