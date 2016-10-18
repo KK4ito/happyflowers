@@ -5,7 +5,6 @@ import Control.Exception
 import Control.Monad.Trans (liftIO)
 import Data.Aeson (ToJSON)
 import qualified Data.ByteString.Char8 as C
-import qualified Data.Text as T
 import Database.SQLite.Simple
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
