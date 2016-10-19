@@ -50,10 +50,13 @@ class Login extends React.Component {
           <input data-button="block"
                  disabled={!this.state.password.length || this.props.isLoggingIn}
                  type="submit"
-                 value="Sign in"
+                 value={this.props.isLoggingIn ? 'Signing in…' : 'Sign In'}
                  onClick={this.login} />
         </form>
-        <Alert stack={{limit: 3}} timeout={2000} effect="slide" position="bottom" />
+        <Alert stack={{limit: 3}}
+               timeout={2000}
+               effect="slide"
+               position="bottom" />
       </main>
     )
   }

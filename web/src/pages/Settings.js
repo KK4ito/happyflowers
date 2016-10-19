@@ -195,7 +195,10 @@ class Settings extends React.Component {
             </div>
           </section>
         </div>
-        <Alert stack={{limit: 3}} timeout={2000} effect="slide" position="bottom" />
+        <Alert stack={{limit: 3}}
+               timeout={2000}
+               effect="slide"
+               position="bottom" />
       </main>
     )
   }
