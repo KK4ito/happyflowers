@@ -123,7 +123,6 @@ class Settings extends React.Component {
                     <input id="name"
                            type="text"
                            className={`text-input full-width spaced ${!name.get('valid') ? 'is-invalid' : ''}`}
-                           placeholder="Give your plant a nice name"
                            value={name.get('value')}
                            onChange={ev => this.handleTextChange('name', ev.target.value, ev.target.value.length > 0)} />
                   </div>
@@ -138,7 +137,6 @@ class Settings extends React.Component {
                     <input id="upper"
                            type="number"
                            className={`text-input full-width spaced ${!upper.get('valid') ? 'is-invalid' : ''}`}
-                           placeholder="Enter the upper limit in percent (default 80)"
                            value={upper.get('value')}
                            min="0"
                            max="100"
@@ -157,7 +155,6 @@ class Settings extends React.Component {
                     <input id="lower"
                            type="number"
                            className={`text-input full-width spaced ${!lower.get('valid') ? 'is-invalid' : ''}`}
-                           placeholder="Enter the lower limit in percent (default 40)"
                            value={lower.get('value')}
                            min="0"
                            max="100"
@@ -177,7 +174,6 @@ class Settings extends React.Component {
                     <input id="interval"
                            type="number"
                            className={`text-input full-width spaced ${!interval.get('valid') ? 'is-invalid' : ''}`}
-                           placeholder="Enter measurement interval in minutes (default 60)"
                            value={interval.get('value')}
                            min="0"
                            onChange={ev => this.handleTextChange('interval', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value > 0)} />
