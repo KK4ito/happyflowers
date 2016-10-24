@@ -7,12 +7,10 @@ module REST.API (
 import Control.Exception
 import Control.Monad.Trans (liftIO)
 import qualified Data.ByteString.Char8 as C
-import qualified Data.Text as T
-import Data.Text.Lazy.Encoding
+import Data.Text (Text)
 import Database.SQLite.Simple
 import Jose.Jws
 import Jose.Jwa
-import Jose.Jwt
 import Network.HTTP.Types as H
 import Network.HTTP.Types.Status (ok200, internalServerError500, unauthorized401)
 import Network.Wai.Middleware.Cors
@@ -21,12 +19,11 @@ import Network.Wai.Middleware.Static
 import REST.Config
 import REST.Model
 import Web.Scotty
-import Web.Scotty.Cookie
 
 pathConversion :: PathsAndQueries -> H.RequestHeaders -> PathsAndQueries
 pathConversion (pieces, queries) _ = piecesConvert pieces queries
   where
-    piecesConvert :: [T.Text] -> H.Query -> PathsAndQueries
+    piecesConvert :: [Text] -> H.Query -> PathsAndQueries
     piecesConvert ["api", method] qs = (["api", method], qs)
     piecesConvert ps qs = (["/"], qs)
 

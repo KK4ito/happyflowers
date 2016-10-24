@@ -6,16 +6,14 @@ cabal-version: >=1.8
 executable rpi
   main-is: Main.hs
   build-depends: base,
-                 scotty,
-                 aeson,
-                 http-types,
-                 directory,
-                 sqlite-simple,
                  mtl,
-                 wai-cors,
-                 jose-jwt,
                  bytestring,
-                 scotty-cookie,
                  text,
+                 sqlite-simple,
+                 jose-jwt,
+                 http-types,
+                 wai-cors,
+                 wai-extra,
                  wai-middleware-static,
-                 wai-extra
+                 scotty,
+                 aeson
