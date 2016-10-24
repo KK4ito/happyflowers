@@ -1,6 +1,15 @@
 import React from 'react'
 import './Flower.css'
 
+/**
+ * Functional component representing the current moisture level of the plant.
+ * The component renders SVG code.
+ *
+ * @param {object} props - Standard React props, destructured to only get the
+ *                         value prop.
+ *
+ * @return {string} - HTML markup for the component.
+ */
 const Flower = ({ value }) => (
   <svg className="flower"
        width="285"

@@ -1,5 +1,14 @@
+/**
+ * API middleware to facilitate calling the API and dispatching actions for the
+ * request and the successful or erroneous response. The action must contain the
+ * actions to be dispatched for each step and API code to be called.
+ *
+ * @return {Promise} The Promise returned by the API call.
+ */
 const api = ({ dispatch, getState }) => next => action => {
   const { actions, apiCall, payload = {}, successCallback = () => {}, errorCallback = () => {} } = action
+
+  // Exit early if any of the parameters are invalid.
 
   if (!actions) {
     return next(action)
@@ -14,6 +23,10 @@ const api = ({ dispatch, getState }) => next => action => {
   }
 
   const [ requestAction, successAction, errorAction ] = actions
+
+  // Dispatch the request action, followed by a call to the API, which in turn
+  // dispatches either a success action or an error action. Errors are re-thrown
+  // to allow catching them further down the chain.
 
   dispatch(requestAction(payload))
 

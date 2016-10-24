@@ -8,9 +8,23 @@ import Loader from '../components/Loader'
 import { fetchSettings, submitSettings } from '../actions'
 import '../components/Alert.css'
 
+/**
+ * Class representing the settings screen of the application.
+ *
+ * @extends React.Component
+ */
 class Settings extends React.Component {
+  /**
+   * Create a Settings component. Sets initial state and binds class methods.
+   *
+   * @param {object} props - Standard react props to be passed to the parent
+   *                         constructor.
+   */
   constructor(props) {
     super(props)
+
+    // The state contains values and validity for all settings fields. They all
+    // consist of an immutable Map.
 
     this.state = {
       pristine: true,
@@ -36,19 +50,39 @@ class Settings extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
   }
 
+  /**
+   * Lifecycle method that is executed whenever the component is mounted.
+   * Redirects the user if they're not logged in, otherwise attempts to retrieve
+   * settings.
+   */
   componentDidMount() {
     if (!this.props.jwt) {
       browserHistory.push('/login')
     }
 
+    // Show an error message if fetching the application settings was not
+    // successful.
+
     this.props.dispatch(fetchSettings())
       .catch(err => Alert.error('Could not retrieve settings.'))
   }
 
+  /**
+   *
+   * @param {object} props - Standard React props, destructured to only get the
+   *                         immutable settings Map.
+   */
   componentWillReceiveProps({ settings }) {
+
+    // Don't change the state if there are no settings to display.
+
     if (settings.isEmpty()) {
       return
     }
+
+    // The new state is built based on the settings Map, passed through the
+    // props. All values are considered to be valid and the form is considered
+    // pristine.
 
     this.setState({
       pristine: true,
@@ -71,12 +105,25 @@ class Settings extends React.Component {
     })
   }
 
+  /**
+   * Attempt to save the edited settings.
+   *
+   * @param {object} event - Submit event from the settings form. Used to
+   *                         prevent the default behaviour in favour of AJAX
+   *                         functionality.
+   */
   submitForm(event) {
     event.preventDefault()
 
-    if (!this.state.name.get('valid') || !this.state.upper.get('valid') || !this.state.lower.get('valid') || !this.state.interval.get('valid')) {
+    // Exit early if the form is still pristine or any of the required fields
+    // are invalid.
+
+    if (this.state.pristine || !this.state.name.get('valid') || !this.state.upper.get('valid') || !this.state.lower.get('valid') || !this.state.interval.get('valid')) {
       return
     }
+
+    // Create a FormData object used to submit all required data along with the
+    // request.
 
     let fd = new FormData()
 
@@ -86,11 +133,24 @@ class Settings extends React.Component {
     fd.append('interval', this.state.interval.get('value'))
     fd.append('token', this.props.jwt)
 
+    // Inform the user about the response, showing confirmation or error if the
+    // request was successful or erroneous, respectively.
+
     this.props.dispatch(submitSettings(fd))
       .then(() => Alert.success('Settings saved successfully.'))
       .catch(() => Alert.error('Could not save settings.'))
   }
 
+  /**
+   * Handle change in the value of any input fields.
+   *
+   * @param {string} key - The key of the field for which the state should be
+   *                       updated.
+   * @param {string} value - The new value that is to be stored for the field.
+   * @param {boolean} valid - A boolean that determines whether the value of the
+   *                          field is valid. It is up to the caller to
+   *                          determine the logic behind the validation.
+   */
   handleTextChange(key, value, valid) {
     this.setState({
       pristine: false,
@@ -98,6 +158,11 @@ class Settings extends React.Component {
     })
   }
 
+  /**
+   * Renders the component.
+   *
+   * @return {string} - HTML markup for the component.
+   */
   render() {
     const { name, upper, lower, interval } = this.state
 
@@ -200,6 +265,12 @@ class Settings extends React.Component {
   }
 }
 
+/**
+ * Map Redux state to React props for the Login component.
+ *
+ * @param {object} state - The Redux state, injected by the <code>connect</code>
+ *                         function.
+ */
 const mapStateToProps = state => ({
   jwt: state.auth.jwt,
   settings: state.settings.data,

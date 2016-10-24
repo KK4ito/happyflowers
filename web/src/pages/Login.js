@@ -6,7 +6,18 @@ import Loader from '../components/Loader'
 import { login } from '../actions'
 import './Login.css'
 
+/**
+ * Class representing the login screen of the application.
+ *
+ * @extends React.Component
+ */
 class Login extends React.Component {
+  /**
+   * Create a Login component. Sets initial state and binds class methods.
+   *
+   * @param {object} props - Standard react props to be passed to the parent
+   *                         constructor.
+   */
   constructor(props) {
     super(props)
 
@@ -17,6 +28,11 @@ class Login extends React.Component {
     this.login = this.login.bind(this)
   }
 
+  /**
+   * Lifecycle method that is executed whenever the component is mounted.
+   * Redirects the user if they're already logged in, otherwise focuses the
+   * password input.
+   */
   componentDidMount() {
     if (this.props.jwt) {
       browserHistory.push('/')
@@ -25,17 +41,35 @@ class Login extends React.Component {
     this.password.focus()
   }
 
+  /**
+   * Attempt to log in the user.
+   *
+   * @param {object} event - Submit event from the log in form. Used to prevent
+   *                         the default behaviour in favour of AJAX
+   *                         functionality.
+   */
   login(event) {
     event.preventDefault()
 
+    // Create a FormData object used to submit all required data along with the
+    // request.
+
     let fd = new FormData()
     fd.append('password', this.state.password)
+
+    // Redirect the user to the dashboard upon successful login, otherwise show
+    // an error message.
 
     this.props.dispatch(login(fd))
       .then(() => browserHistory.push('/'))
       .catch(() => Alert.error('The server was unable to verify your password.'))
   }
 
+  /**
+   * Renders the component.
+   *
+   * @return {string} - HTML markup for the component.
+   */
   render() {
     return (
       <main className="site">
@@ -65,6 +99,12 @@ class Login extends React.Component {
   }
 }
 
+/**
+ * Map Redux state to React props for the Login component.
+ *
+ * @param {object} state - The Redux state, injected by the <code>connect</code>
+ *                         function.
+ */
 const mapStateToProps = state => ({
   jwt: state.auth.jwt,
   isLoggingIn: state.auth.isLoggingIn

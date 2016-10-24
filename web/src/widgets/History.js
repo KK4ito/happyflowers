@@ -4,6 +4,9 @@ import { connect } from 'react-redux'
 import { Map } from 'immutable'
 import Widget from './Widget'
 
+// Default settings to use for the charts. See http://www.highcharts.com/docs
+// for more information about possible configuration options.
+
 const defaultOptions = Map({
   chart: {
     type: 'area',
@@ -33,6 +36,9 @@ const defaultOptions = Map({
   }
 })
 
+// Default settings to use for the data series, i.e. the graph marking the
+// changing moisture levels.
+
 const defaultSeries = Map({
   animation: false,
   enableMouseTracking: false,
@@ -51,16 +57,36 @@ const defaultSeries = Map({
   }
 })
 
+// Default settings to use for the vertial lines, i.e. the lines marking the
+// manual and automatic watering events.
+
 const defaultLines = Map({
   width: 2,
   zIndex: 2
 })
 
+// Default settings to use for the horizontal bands, i.e. the band marking the
+// area between lower and upper moisture limits.
+
 const defaultBands = Map({
   color: 'rgba(129, 235, 76, 0.2)'
 })
 
+/**
+ * Functional component representing the history widget, i.e. the widget
+ * containing historical data about the moisture levels of the flower and
+ * relevant events.
+ *
+ * @param {object} props - Standard React props, destructured to only get the
+ *                         events, measurements, settings and isFetching props.
+ *
+ * @return {string} - HTML markup for the component.
+ */
 const History = ({ events, measurements, settings, isFetching }) => {
+
+  // Merge the default chart options with options based on the props passed to
+  // the component.
+
   const chartOptions = defaultOptions
     .set('series', [ defaultSeries
       .set('data', measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS()).toJS()
@@ -87,6 +113,12 @@ const History = ({ events, measurements, settings, isFetching }) => {
   )
 }
 
+/**
+ * Map Redux state to React props for the Login component.
+ *
+ * @param {object} state - The Redux state, injected by the <code>connect</code>
+ *                         function.
+ */
 const mapStateToProps = state => ({
   events: state.history.events,
   measurements: state.history.measurements,

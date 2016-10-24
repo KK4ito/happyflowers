@@ -4,6 +4,15 @@ import { browserHistory } from 'react-router'
 import { logout } from '../actions'
 import './Header.css'
 
+/**
+ * Functional component representing the website header containing the document
+ * title and navigation.
+ *
+ * @param {object} props - Standard React props, destructured to only get the
+ *                         isLoggedIn and dispatch props.
+ *
+ * @return {string} - HTML markup for the component.
+ */
 const Header = ({ isLoggedIn, dispatch }) => (
   <header className="site-header">
     <div data-grid>
@@ -47,6 +56,12 @@ const Header = ({ isLoggedIn, dispatch }) => (
   </header>
 )
 
+/**
+ * Map Redux state to React props for the Header component.
+ *
+ * @param {object} state - The Redux state, injected by the <code>connect</code>
+ *                         function.
+ */
 const mapStateToProps = state => ({
   isLoggedIn: state.auth.jwt
 })

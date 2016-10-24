@@ -12,7 +12,12 @@ import Settings from './pages/Settings'
 import reducer from './reducers'
 import './index.css'
 
+// By default, the application always contains the API and thunk middlewares.
+
 let middlewares = List.of(api, thunk)
+
+// During development, redux-logger is added to the middleware chain in order to
+// log all Redux actions.
 
 if (process.env.NODE_ENV === 'development') {
   middlewares = middlewares.push(require('redux-logger')())
