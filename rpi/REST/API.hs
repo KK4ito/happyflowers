@@ -7,16 +7,28 @@ module REST.API (
 import Control.Exception
 import Control.Monad.Trans (liftIO)
 import qualified Data.ByteString.Char8 as C
+import qualified Data.Text as T
+import Data.Text.Lazy.Encoding
 import Database.SQLite.Simple
 import Jose.Jws
 import Jose.Jwa
 import Jose.Jwt
+import Network.HTTP.Types as H
 import Network.HTTP.Types.Status (ok200, internalServerError500, unauthorized401)
 import Network.Wai.Middleware.Cors
+import Network.Wai.Middleware.Rewrite
+import Network.Wai.Middleware.Static
 import REST.Config
 import REST.Model
 import Web.Scotty
 import Web.Scotty.Cookie
+
+pathConversion :: PathsAndQueries -> H.RequestHeaders -> PathsAndQueries
+pathConversion (pieces, queries) _ = piecesConvert pieces queries
+  where
+    piecesConvert :: [T.Text] -> H.Query -> PathsAndQueries
+    piecesConvert ["api", method] qs = (["api", method], qs)
+    piecesConvert ps qs = (["/"], qs)
 
 api = scotty 5000 $ do
 
@@ -24,7 +36,11 @@ api = scotty 5000 $ do
     corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
   }
 
-  get "/settings" $ do
+  middleware $ staticPolicy (addBase "../web/build/")
+
+  middleware $ rewritePureWithQueries pathConversion
+
+  get "/api/settings/" $ do
     conn <- liftIO (open "happyflowers.db")
     rows <- liftIO (try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings]))
     case rows of
@@ -32,7 +48,7 @@ api = scotty 5000 $ do
       Right r -> if length r > 0 then json (head r) else status internalServerError500
     liftIO (close conn)
 
-  put "/settings" $ do
+  put "/api/settings/" $ do
     token <- (param "token") :: ActionM String
     let jwt = hmacDecode "hppyflwrs" $ C.pack token
     case jwt of
@@ -47,14 +63,14 @@ api = scotty 5000 $ do
         liftIO (close conn)
       Left e -> status unauthorized401
 
-  get "/history" $ do
+  get "/api/history/" $ do
     conn <- liftIO (open "happyflowers.db")
     events <- liftIO (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC" :: IO [Event])
     measurements <- liftIO (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC" :: IO [Measurement])
     json History { events = events, measurements = measurements }
     liftIO (close conn)
 
-  post "/auth" $ do
+  post "/api/auth/" $ do
     pw <- (param "password") :: ActionM String
     syspw <- liftIO getPassword
     if pw == syspw
@@ -65,3 +81,6 @@ api = scotty 5000 $ do
             json j
       else do
         status unauthorized401
+
+  get "/" $ do
+    file "../web/build/index.html"

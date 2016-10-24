@@ -21,6 +21,8 @@ class Login extends React.Component {
     if (this.props.jwt) {
       browserHistory.push('/')
     }
+
+    this.password.focus()
   }
 
   login(event) {
@@ -43,6 +45,7 @@ class Login extends React.Component {
             happy flowers
           </h1>
           <input className="text-input full-width spaced"
+                 ref={n => this.password = n}
                  type="password"
                  value={this.state.password}
                  onChange={ev => this.setState({ password: ev.target.value })}

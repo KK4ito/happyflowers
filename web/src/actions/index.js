@@ -7,7 +7,7 @@ export const fetchSettingsError = createAction('FETCH_SETTINGS_ERROR')
 
 export const fetchSettings = () => ({
   actions: [ fetchSettingsRequest, fetchSettingsSuccess, fetchSettingsError ],
-  apiCall: () => axios.get('http://localhost:5000/settings')
+  apiCall: () => axios.get(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings`)
 })
 
 export const submitSettingsRequest = createAction('SUBMIT_SETTINGS_REQUEST')
@@ -16,7 +16,7 @@ export const submitSettingsError = createAction('SUBMIT_SETTINGS_ERROR')
 
 export const submitSettings = data => ({
   actions: [ submitSettingsRequest, submitSettingsSuccess, submitSettingsError ],
-  apiCall: () => axios.put('http://localhost:5000/settings', data),
+  apiCall: () => axios.put(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings`, data),
   payload: { data }
 })
 
@@ -26,7 +26,7 @@ export const fetchHistoryError = createAction('FETCH_HISTORY_ERROR')
 
 export const fetchHistory = () => ({
   actions: [ fetchHistoryRequest, fetchHistorySuccess, fetchHistoryError ],
-  apiCall: () => axios.get('http://localhost:5000/history')
+  apiCall: () => axios.get(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/history`)
 })
 
 export const loginRequest = createAction('LOGIN_REQUEST')
@@ -35,7 +35,7 @@ export const loginError = createAction('LOGIN_ERROR')
 
 export const login = data => ({
   actions: [ loginRequest, loginSuccess, loginError ],
-  apiCall: () => axios.post('http://localhost:5000/auth', data),
+  apiCall: () => axios.post(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/auth`, data),
   successCallback: res => window.sessionStorage.setItem('jwt', res.data)
 })
 

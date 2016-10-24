@@ -16,4 +16,6 @@ executable rpi
                  jose-jwt,
                  bytestring,
                  scotty-cookie,
-                 text
+                 text,
+                 wai-middleware-static,
+                 wai-extra
