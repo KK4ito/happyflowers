@@ -1,4 +1,5 @@
 import React from 'react'
+import IPropTypes from 'react-immutable-proptypes'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import { Map } from 'immutable'
@@ -14,6 +15,14 @@ import '../components/Alert.css'
  * @extends React.Component
  */
 class Settings extends React.Component {
+  static propTypes = {
+    dispatch: React.PropTypes.func.isRequired,
+    jwt: React.PropTypes.string,
+    settings: IPropTypes.map.isRequired,
+    isFetching: React.PropTypes.bool,
+    isSubmitting: React.PropTypes.bool
+  }
+
   /**
    * Create a Settings component. Sets initial state and binds class methods.
    *

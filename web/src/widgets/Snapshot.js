@@ -19,6 +19,11 @@ const Snapshot = ({ snapshot, isFetching }) => (
   </Widget>
 )
 
+Snapshot.propTypes = {
+  snapshot: React.PropTypes.number.isRequired,
+  isFetching: React.PropTypes.bool
+}
+
 /**
  * Map Redux state to React props for the Login component.
  *

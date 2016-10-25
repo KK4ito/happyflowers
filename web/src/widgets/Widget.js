@@ -25,4 +25,11 @@ const Widget = ({ title, tooltip, isLoading, children }) => (
   </section>
 )
 
+Widget.propTypes = {
+  title: React.PropTypes.string.isRequired,
+  tooltip: React.PropTypes.string,
+  isLoading: React.PropTypes.bool,
+  children: React.PropTypes.node
+}
+
 export default Widget

@@ -20,4 +20,8 @@ const Loader = ({ loading }) => (
   </div>
 )
 
+Loader.propTypes = {
+  loading: React.PropTypes.bool
+}
+
 export default Loader

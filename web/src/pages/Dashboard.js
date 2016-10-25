@@ -14,6 +14,10 @@ import { fetchSettings, fetchHistory } from '../actions'
  * @extends React.Component
  */
 class Dashboard extends React.Component {
+  static propTypes = {
+    dispatch: React.PropTypes.func.isRequired
+  }
+  
   /**
    * Lifecycle method that is executed whenever the component is mounted.
    * Dispatches Redux actions to load required data.

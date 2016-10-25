@@ -54,6 +54,17 @@ const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
   </Widget>
 )
 
+Stats.propTypes = {
+  isLoggedIn: React.PropTypes.bool,
+  name: React.PropTypes.string,
+  timestamps: React.PropTypes.shape({
+    measurement: React.PropTypes.object,
+    automatic: React.PropTypes.object,
+    manual: React.PropTypes.object
+  }),
+  isFetching: React.PropTypes.bool
+}
+
 /**
  * Map Redux state to React props for the Login component.
  *
@@ -61,7 +72,7 @@ const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
  *                         function.
  */
 const mapStateToProps = state => ({
-  isLoggedIn: state.auth.jwt,
+  isLoggedIn: !!state.auth.jwt,
   name: state.settings.data.get('name'),
   timestamps: {
     measurement: state.history.measurements.last(),

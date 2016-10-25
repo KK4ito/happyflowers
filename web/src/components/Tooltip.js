@@ -20,4 +20,8 @@ const Tooltip = ({ text }) => (
   </div>
 )
 
+Tooltip.propTypes = {
+  text: React.PropTypes.string.isRequired
+}
+
 export default Tooltip

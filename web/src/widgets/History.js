@@ -1,4 +1,5 @@
 import React from 'react'
+import IPropTypes from 'react-immutable-proptypes'
 import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
@@ -111,6 +112,13 @@ const History = ({ events, measurements, settings, isFetching }) => {
       </div>
     </Widget>
   )
+}
+
+History.propTypes = {
+  events: IPropTypes.list.isRequired,
+  measurements: IPropTypes.list.isRequired,
+  settings: IPropTypes.map.isRequired,
+  isFetching: React.PropTypes.bool
 }
 
 /**

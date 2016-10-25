@@ -12,6 +12,12 @@ import './Login.css'
  * @extends React.Component
  */
 class Login extends React.Component {
+  static propTypes = {
+    jwt: React.PropTypes.string.isRequired,
+    isLoggingIn: React.PropTypes.bool,
+    dispatch: React.PropTypes.func.isRequired
+  }
+  
   /**
    * Create a Login component. Sets initial state and binds class methods.
    *

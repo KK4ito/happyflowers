@@ -56,6 +56,11 @@ const Header = ({ isLoggedIn, dispatch }) => (
   </header>
 )
 
+Header.propTypes = {
+  isLoggedIn: React.PropTypes.bool,
+  dispatch: React.PropTypes.func.isRequired
+}
+
 /**
  * Map Redux state to React props for the Header component.
  *
@@ -63,7 +68,7 @@ const Header = ({ isLoggedIn, dispatch }) => (
  *                         function.
  */
 const mapStateToProps = state => ({
-  isLoggedIn: state.auth.jwt
+  isLoggedIn: !!state.auth.jwt
 })
 
 export default connect(mapStateToProps)(Header)

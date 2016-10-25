@@ -59,4 +59,8 @@ const Flower = ({ value }) => (
   </svg>
 )
 
+Flower.propTypes = {
+  value: React.PropTypes.number.isRequired
+}
+
 export default Flower

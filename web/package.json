@@ -3,15 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
+    "react-immutable-proptypes": "^2.1.0",
     "react-scripts": "0.6.0"
   },
   "dependencies": {
     "axios": "^0.15.0",
-    "moment": "^2.15.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-highcharts": "^10.0.0",
-    "react-notification-system": "^0.2.10",
     "react-redux": "^4.4.5",
     "react-router": "^2.8.1",
     "react-s-alert": "^1.2.0",
