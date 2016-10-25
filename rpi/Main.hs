@@ -1,3 +1,3 @@
-import REST.API
+import HappyFlowers.API.Server
 
-main = api
+main = startServer
