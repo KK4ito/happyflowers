@@ -5,7 +5,7 @@ import Snapshot from '../widgets/Snapshot'
 import Stats from '../widgets/Stats'
 import History from '../widgets/History'
 import Stream from '../widgets/Stream'
-import { fetchSettings, fetchHistory } from '../actions'
+import { fetchSettings, fetchHistory, connectWS, disconnectWS } from '../actions'
 
 /**
  * Class representing the main dashboard of the application. It contains all
@@ -17,7 +17,7 @@ class Dashboard extends React.Component {
   static propTypes = {
     dispatch: React.PropTypes.func.isRequired
   }
-  
+
   /**
    * Lifecycle method that is executed whenever the component is mounted.
    * Dispatches Redux actions to load required data.
@@ -27,6 +27,14 @@ class Dashboard extends React.Component {
 
     dispatch(fetchSettings())
     dispatch(fetchHistory())
+    dispatch(connectWS())
+  }
+
+  /**
+   * @TODO document
+   */
+  componentWillUnmount() {
+    this.props.dispatch(disconnectWS())
   }
 
   /**

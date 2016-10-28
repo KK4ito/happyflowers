@@ -1,6 +1,8 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
 
+let socket = null
+
 /**
  * Creates a FETCH_SETTINGS_REQUEST action with no specified payload
  * transformation.
@@ -57,7 +59,19 @@ export const submitSettingsError = createAction('SUBMIT_SETTINGS_ERROR')
 export const submitSettings = data => ({
   actions: [ submitSettingsRequest, submitSettingsSuccess, submitSettingsError ],
   apiCall: () => axios.put(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings`, data),
-  payload: { data }
+  payload: { data },
+  successCallback: res => {
+    const msg = JSON.stringify({
+      type: 'settingsChanged',
+      payload: res.data
+    })
+
+    if (socket) {
+      socket.send(msg)
+    } else {
+      window.storedWSMsg = [ ...window.storedWSMsg, msg ]
+    }
+  }
 })
 
 /**
@@ -89,8 +103,7 @@ export const fetchHistory = () => ({
 })
 
 /**
- * Creates a LOGIN_REQUEST action with no specified payload
- * transformation.
+ * Creates a LOGIN_REQUEST action with no specified payload transformation.
  */
 export const loginRequest = createAction('LOGIN_REQUEST')
 
@@ -134,4 +147,59 @@ export const logoutRequest = createAction('LOGOUT_REQUEST')
 export const logout = () => dispatch => {
   window.sessionStorage.removeItem('jwt')
   dispatch(logoutRequest())
+}
+
+/**
+ * @TODO document
+ */
+export const measurementReceived = createAction('MEASUREMENT_RECEIVED')
+
+/**
+ * @TODO document
+ */
+export const eventReceived = createAction('EVENT_RECEIVED')
+
+/**
+ * @TODO document
+ */
+export const connectWS = () => dispatch => {
+  socket = new WebSocket(`ws://${window.location.hostname}:9160/`)
+
+  // Send all messages that were supposed to be sent before the WS connection
+  // could be established.
+
+  socket.onopen = () => {
+    window.storedWSMsg.forEach(m => socket.send(m))
+    window.storedWSMsg = null
+  }
+
+  // Handle messages based on their type property.
+
+  socket.onmessage = event => {
+    const msg = JSON.parse(event.data)
+
+    switch (msg.type) {
+      case 'measurementReceived':
+        dispatch(measurementReceived(msg.payload))
+        break
+      case 'eventReceived':
+        dispatch(eventReceived(msg.payload))
+        break
+      case 'settingsChanged':
+        dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))
+        break
+      default:
+        break
+    }
+  }
+
+  // TODO listen to PUMP_ACTIVATED event
+}
+
+/**
+ * @TODO document
+ */
+export const disconnectWS = () => dispatch => {
+  socket.onclose = () => socket = null
+  socket.close()
 }

@@ -6,7 +6,7 @@ import { Map } from 'immutable'
 import Alert from 'react-s-alert'
 import Header from '../components/Header'
 import Loader from '../components/Loader'
-import { fetchSettings, submitSettings } from '../actions'
+import { fetchSettings, submitSettings, connectWS, disconnectWS } from '../actions'
 import '../components/Alert.css'
 
 /**
@@ -65,15 +65,26 @@ class Settings extends React.Component {
    * settings.
    */
   componentDidMount() {
-    if (!this.props.jwt) {
+    const { dispatch, jwt } = this.props
+
+    if (!jwt) {
       browserHistory.push('/login')
     }
 
     // Show an error message if fetching the application settings was not
     // successful.
 
-    this.props.dispatch(fetchSettings())
+    dispatch(fetchSettings())
       .catch(err => Alert.error('Could not retrieve settings.'))
+
+    dispatch(connectWS())
+  }
+
+  /**
+   * @TODO document
+   */
+  componentWillUnmount() {
+    this.props.dispatch(disconnectWS())
   }
 
   /**
