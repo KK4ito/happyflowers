@@ -34,7 +34,7 @@ pathConversion :: PathsAndQueries -> H.RequestHeaders -> PathsAndQueries
 pathConversion (pieces, queries) _ = piecesConvert pieces queries
   where
     piecesConvert :: [Text] -> H.Query -> PathsAndQueries
-    piecesConvert ["api", method] qs = (["api", method], qs)
+    piecesConvert ["api", method, trail] qs = (["api", method, trail], qs)
     piecesConvert ps qs = (["/"], qs)
 
 -- | The 'startServer' function sets up a local Scotty server listening on port
