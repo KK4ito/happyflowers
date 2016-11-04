@@ -166,12 +166,16 @@ export const connectWS = () => dispatch => {
 
   // TODO figure out correct url
 
-  socket = new WebSocket(`ws://${window.location.hostname}:9160/`)
+  socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:5000' : window.location.host}/`)
 
   // Send all messages that were supposed to be sent before the WS connection
   // could be established.
 
   socket.onopen = () => {
+    if (!window.storedWSMsg) {
+      return
+    }
+
     window.storedWSMsg.forEach(m => socket.send(m))
     window.storedWSMsg = null
   }
