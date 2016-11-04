@@ -28,7 +28,7 @@ export const fetchSettingsError = createAction('FETCH_SETTINGS_ERROR')
  */
 export const fetchSettings = () => ({
   actions: [ fetchSettingsRequest, fetchSettingsSuccess, fetchSettingsError ],
-  apiCall: () => axios.get(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings/`)
+  apiCall: () => axios.get(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings`)
 })
 
 /**
@@ -58,7 +58,7 @@ export const submitSettingsError = createAction('SUBMIT_SETTINGS_ERROR')
  */
 export const submitSettings = data => ({
   actions: [ submitSettingsRequest, submitSettingsSuccess, submitSettingsError ],
-  apiCall: () => axios.put(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings/`, data),
+  apiCall: () => axios.put(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/settings`, data),
   payload: { data },
   successCallback: res => {
     const msg = JSON.stringify({
@@ -99,7 +99,7 @@ export const fetchHistoryError = createAction('FETCH_HISTORY_ERROR')
  */
 export const fetchHistory = () => ({
   actions: [ fetchHistoryRequest, fetchHistorySuccess, fetchHistoryError ],
-  apiCall: () => axios.get(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/history/`)
+  apiCall: () => axios.get(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/history`)
 })
 
 /**
@@ -128,7 +128,7 @@ export const loginError = createAction('LOGIN_ERROR')
  */
 export const login = data => ({
   actions: [ loginRequest, loginSuccess, loginError ],
-  apiCall: () => axios.post(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/auth/`, data),
+  apiCall: () => axios.post(`${process.env.NODE_ENV === 'development' ? 'http://localhost:5000' : ''}/api/auth`, data),
   successCallback: res => window.sessionStorage.setItem('jwt', res.data)
 })
 

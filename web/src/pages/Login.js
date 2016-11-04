@@ -17,7 +17,7 @@ class Login extends React.Component {
     isLoggingIn: React.PropTypes.bool,
     dispatch: React.PropTypes.func.isRequired
   }
-  
+
   /**
    * Create a Login component. Sets initial state and binds class methods.
    *
@@ -57,16 +57,14 @@ class Login extends React.Component {
   login(event) {
     event.preventDefault()
 
-    // Create a FormData object used to submit all required data along with the
-    // request.
-
-    let fd = new FormData()
-    fd.append('password', this.state.password)
-
     // Redirect the user to the dashboard upon successful login, otherwise show
     // an error message.
 
-    this.props.dispatch(login(fd))
+    const data = {
+      password: this.state.password
+    }
+
+    this.props.dispatch(login(data))
       .then(() => browserHistory.push('/'))
       .catch(() => Alert.error('The server was unable to verify your password.'))
   }

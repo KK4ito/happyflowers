@@ -31,11 +31,12 @@ import Network.Wai.Middleware.Routes
 import Network.WebSockets
 
 -- todo: improve documentation
-apiApp :: Application
-apiApp = waiApp $ do
+apiApp :: RouteM ()
+apiApp = do
   middleware corsMiddleware
   middleware staticMiddleware
-  middleware rewriteMiddleware
+  -- TODO: fix
+  -- middleware rewriteMiddleware
   route AppRoute
 
 -- todo: improve documentation
@@ -47,4 +48,6 @@ wsApp pending_conn = do
 -- | The 'startServer' function sets up a local Scotty server listening on port
 -- 5000. It contains several middlewares and reacts to a set of routes.
 startServer :: IO ()
-startServer = run 5000 $ websocketsOr defaultConnectionOptions wsApp apiApp
+startServer = do
+  putStrLn "Running server on port 5000..."
+  run 5000 $ websocketsOr defaultConnectionOptions wsApp (waiApp apiApp)

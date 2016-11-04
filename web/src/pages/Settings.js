@@ -145,18 +145,18 @@ class Settings extends React.Component {
     // Create a FormData object used to submit all required data along with the
     // request.
 
-    let fd = new FormData()
-
-    fd.append('name', this.state.name.get('value'))
-    fd.append('upper', this.state.upper.get('value'))
-    fd.append('lower', this.state.lower.get('value'))
-    fd.append('interval', this.state.interval.get('value'))
-    fd.append('token', this.props.jwt)
+    const data = {
+      name: this.state.name.get('value'),
+      upper: this.state.upper.get('value'),
+      lower: this.state.lower.get('value'),
+      interval: this.state.interval.get('value'),
+      token: this.props.jwt
+    }
 
     // Inform the user about the response, showing confirmation or error if the
     // request was successful or erroneous, respectively.
 
-    this.props.dispatch(submitSettings(fd))
+    this.props.dispatch(submitSettings(data))
       .then(() => Alert.success('Settings saved successfully.'))
       .catch(() => Alert.error('Could not save settings.'))
   }

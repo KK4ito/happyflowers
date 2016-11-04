@@ -14,14 +14,17 @@ The functions included in this module are used to route requests on the server.
 module HappyFlowers.API.Routes (
   -- * Routes
   AppRoute(..),
+  getRootR,
   getSettingsR,
   getHistoryR,
-  getRootR
+  postAuthR
   ) where
 
 import Control.Monad.Trans (liftIO)
 import Data.Aeson (encode)
 import qualified Data.ByteString.Char8 as C
+import qualified Data.Text as T
+import Data.Maybe (fromMaybe)
 import Database.SQLite.Simple
 import HappyFlowers.API.Config
 import HappyFlowers.API.Types
@@ -34,10 +37,18 @@ import Network.Wai.Middleware.Routes hiding (head)
 data AppRoute = AppRoute
 
 mkRoute "AppRoute" [parseRoutes|
-/              RootR     GET
-/api/settings/ SettingsR GET
-/api/history/  HistoryR  GET
+/             RootR     GET
+/api/settings SettingsR GET
+/api/history  HistoryR  GET
+/api/auth     AuthR     POST
 |]
+
+-- | The 'getRoot' function handles GET requests for the root route. This is
+-- used to serve the web front end. All non-API requests are rewritten to this
+-- route.
+getRootR :: Handler AppRoute
+getRootR = runHandlerM $ do
+  file "../web/build/index.html"
 
 -- | The 'getSettings' function handles GET requests for application settings.
 -- The settings are retrieved from the sqlite database. An HTTP error is
@@ -57,14 +68,14 @@ getSettingsR = runHandlerM $ do
 -- more information.
 {-putSettingsR :: Handler AppRoute
 putSettingsR = runHandlerM $ do
-  token <- "abc" -- todo: get param from request
+  Just token <- getParam "token"
   let jwt = hmacDecode "hppyflwrs" $ C.pack token
   case jwt of
     Right _ -> do
-      name <- "cecelia" -- todo: get param from request
-      upper <- 80 -- todo: get param from request
-      lower <- 40 -- todo: get param from request
-      interval <- 60 -- todo: get param from request
+      Just name <- getParam "name"
+      Just upper <- getParam "upper"
+      Just lower <- getParam "lower"
+      Just interval <- getParam "interval"
       conn <- liftIO (open "happyflowers.db")
       liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" (name, upper, lower, interval))
       liftIO (close conn)
@@ -85,22 +96,19 @@ getHistoryR = runHandlerM $ do
 -- user-entered password is parsed from the form data. It is then checked
 -- against the password stored in the configuration file. The request returns
 -- either a JWT marking successful authentication or produces an HTTP error.
-{-postAuthR :: Handler AppRoute
+postAuthR :: Handler AppRoute
 postAuthR = runHandlerM $ do
-  pw <- "abc" -- todo: get param from request
-  syspw <- liftIO getPassword
-  if pw == syspw
-    then do
-      let jwt = hmacEncode HS384 "hppyflwrs" "hello"
-      case jwt of
-        Right jwt' -> do
-          json jwt'
-    else do
-      status status401-}
-
--- | The 'getRoot' function handles GET requests for the root route. This is
--- used to serve the web front end. All non-API requests are rewritten to this
--- route.
-getRootR :: Handler AppRoute
-getRootR = runHandlerM $ do
-  file "../web/build/index.html"
+  status status401
+  {-p <- jsonBody
+  case p of
+    Left _ -> do
+      status status400
+    Right p' -> do
+      syspw <- liftIO getPassword
+      if p' == syspw
+        then do
+          let jwt = hmacEncode HS384 "hppyflwrs" "hello"
+          case jwt of
+            Right jwt' -> do
+              json jwt'
+        else status status401-}
