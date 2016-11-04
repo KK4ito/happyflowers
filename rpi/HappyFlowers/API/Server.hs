@@ -45,7 +45,7 @@ startServer = scotty 5000 $ do
   -- cross-origin requests between the webpack development server and the API.
 
   middleware $ cors $ const $ Just simpleCorsResourcePolicy {
-    corsOrigins = Just (["localhost:3000"], False),
+    corsOrigins = Just (["http://localhost:3000"], False),
     corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
   }
 
