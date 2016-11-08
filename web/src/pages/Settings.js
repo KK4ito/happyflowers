@@ -36,6 +36,7 @@ class Settings extends React.Component {
     // consist of an immutable Map.
 
     this.state = {
+      error: false,
       pristine: true,
       name: Map({
         value: '',
@@ -96,7 +97,8 @@ class Settings extends React.Component {
 
     // Don't change the state if there are no settings to display.
 
-    if (settings.isEmpty()) {
+    if (settings.isEmpty() || this.state.error) {
+      this.setState({ error: false })
       return
     }
 
@@ -147,9 +149,9 @@ class Settings extends React.Component {
 
     const data = {
       name: this.state.name.get('value'),
-      upper: this.state.upper.get('value'),
-      lower: this.state.lower.get('value'),
-      interval: this.state.interval.get('value'),
+      upper: `${this.state.upper.get('value')}`,
+      lower: `${this.state.lower.get('value')}`,
+      interval: `${this.state.interval.get('value')}`,
       token: this.props.jwt
     }
 
@@ -158,7 +160,10 @@ class Settings extends React.Component {
 
     this.props.dispatch(submitSettings(data))
       .then(() => Alert.success('Settings saved successfully.'))
-      .catch(() => Alert.error('Could not save settings.'))
+      .catch(() => {
+        this.setState({ error: true })
+        Alert.error('Could not save settings.')
+      })
   }
 
   /**

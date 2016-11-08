@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings, TemplateHaskell, QuasiQuotes, TypeFamilies, ViewPatterns, MultiParamTypeClasses, FlexibleInstances, DeriveDataTypeable, RankNTypes #-}
+{-# LANGUAGE OverloadedStrings, TemplateHaskell, QuasiQuotes, TypeFamilies, ViewPatterns, MultiParamTypeClasses, FlexibleInstances, DeriveDataTypeable, DeriveGeneric, RankNTypes #-}
 
 {-|
 Module      : HappyFlowers.API.Routes
@@ -20,12 +20,15 @@ module HappyFlowers.API.Routes (
   postAuthR
   ) where
 
+import Control.Exception (try)
 import Control.Monad.Trans (liftIO)
-import Data.Aeson (encode)
+import Data.Aeson (encode, FromJSON)
 import qualified Data.ByteString.Char8 as C
+import Data.Map (Map, (!))
 import qualified Data.Text as T
 import Data.Maybe (fromMaybe)
 import Database.SQLite.Simple
+import GHC.Generics
 import HappyFlowers.API.Config
 import HappyFlowers.API.Types
 import Jose.Jws
@@ -38,7 +41,7 @@ data AppRoute = AppRoute
 
 mkRoute "AppRoute" [parseRoutes|
 /             RootR     GET
-/api/settings SettingsR GET
+/api/settings SettingsR GET  PUT
 /api/history  HistoryR  GET
 /api/auth     AuthR     POST
 |]
@@ -56,9 +59,11 @@ getRootR = runHandlerM $ do
 getSettingsR :: Handler AppRoute
 getSettingsR = runHandlerM $ do
   conn <- liftIO (open "happyflowers.db")
-  rows <- liftIO (query_ conn "SELECT * FROM settings" :: IO [Settings])
+  rows <- liftIO (try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings]))
   liftIO (close conn)
-  json (head rows)
+  case rows of
+    Left _ -> status status500
+    Right rows' -> json (head rows')
 
 -- | The 'putSettings' function handles PUT requests for application settings.
 -- The new data is parsed from the form data passed to the request and is then
@@ -66,21 +71,28 @@ getSettingsR = runHandlerM $ do
 -- This request requires authentication using the JWT. An HTTP error is
 -- produced if the request failed to provide authentication. See 'postAuth' for
 -- more information.
-{-putSettingsR :: Handler AppRoute
+putSettingsR :: Handler AppRoute
 putSettingsR = runHandlerM $ do
-  Just token <- getParam "token"
-  let jwt = hmacDecode "hppyflwrs" $ C.pack token
-  case jwt of
-    Right _ -> do
-      Just name <- getParam "name"
-      Just upper <- getParam "upper"
-      Just lower <- getParam "lower"
-      Just interval <- getParam "interval"
-      conn <- liftIO (open "happyflowers.db")
-      liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" (name, upper, lower, interval))
-      liftIO (close conn)
-      json Settings { name = name, upper = upper, lower = lower, interval = interval }
-    Left e -> status status401-}
+  p <- jsonBody :: HandlerM sub1 master1 (Either String (Map String String))
+  case p of
+    Left _ -> status status400
+    Right p' -> do
+      let token = p' ! "token"
+      case (hmacDecode "hppyflwrs" $ C.pack token) of
+        Left e -> status status401
+        Right _ -> do
+          let name = p' ! "name"
+          let upper = read (p' ! "upper") :: Int
+          let lower = read (p' ! "lower") :: Int
+          let interval = read (p' ! "interval") :: Int
+          conn <- liftIO (open "happyflowers.db")
+          liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" (name, upper, lower, interval))
+          liftIO (close conn)
+          json Settings { name = name
+                        , upper = upper
+                        , lower = lower
+                        , interval = interval
+                        }
 
 -- | The 'getHistory' function handles GET request for historical application
 -- data. The data is retrieved from the sqlite database.
@@ -98,17 +110,17 @@ getHistoryR = runHandlerM $ do
 -- either a JWT marking successful authentication or produces an HTTP error.
 postAuthR :: Handler AppRoute
 postAuthR = runHandlerM $ do
-  status status401
-  {-p <- jsonBody
+  p <- jsonBody :: HandlerM sub1 master1 (Either String (Map String String))
   case p of
-    Left _ -> do
-      status status400
+    Left _ -> status status400
     Right p' -> do
       syspw <- liftIO getPassword
-      if p' == syspw
+      let pwd = p' ! "password"
+      if pwd == syspw
         then do
           let jwt = hmacEncode HS384 "hppyflwrs" "hello"
           case jwt of
+            Left _ -> status status500
             Right jwt' -> do
               json jwt'
-        else status status401-}
+        else status status401

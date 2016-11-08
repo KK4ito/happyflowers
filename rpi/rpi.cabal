@@ -20,4 +20,5 @@ executable rpi
                  wai-websockets,
                  websockets,
                  warp,
-                 wai-routes
+                 wai-routes,
+                 containers

@@ -24,6 +24,7 @@ import Network.Wai.Middleware.Static
 corsMiddleware :: Middleware
 corsMiddleware = cors $ const $ Just simpleCorsResourcePolicy {
   corsOrigins = Just (["http://localhost:3000"], False),
+  corsRequestHeaders = ["Content-Type"],
   corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
 }
 
