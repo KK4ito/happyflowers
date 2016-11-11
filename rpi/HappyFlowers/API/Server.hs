@@ -20,9 +20,11 @@ module HappyFlowers.API.Server (
   startServer
   ) where
 
+import Control.Concurrent (newMVar)
 import Data.Text (Text)
 import HappyFlowers.API.Routes
 import HappyFlowers.API.Middlewares
+import HappyFlowers.API.WS
 import Network.HTTP.Types as H
 import Network.Wai
 import Network.Wai.Handler.Warp (run)
@@ -42,8 +44,8 @@ apiApp = do
 -- todo: improve documentation
 wsApp :: ServerApp
 wsApp pending_conn = do
-  conn <- acceptRequest pending_conn
-  sendTextData conn ("{ \"type\": \"hello\", \"payload\": { \"data\": \"world\" } }" :: Text)
+  state <- newMVar newServerState
+  application state pending_conn
 
 -- | The 'startServer' function sets up a local Scotty server listening on port
 -- 5000. It contains several middlewares and reacts to a set of routes.

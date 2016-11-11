@@ -163,9 +163,6 @@ export const eventReceived = createAction('EVENT_RECEIVED')
  * @TODO document
  */
 export const connectWS = () => dispatch => {
-
-  // TODO figure out correct url
-
   socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:5000' : window.location.host}/`)
 
   // Send all messages that were supposed to be sent before the WS connection
@@ -183,21 +180,23 @@ export const connectWS = () => dispatch => {
   // Handle messages based on their type property.
 
   socket.onmessage = event => {
-    const msg = JSON.parse(event.data)
+    try {
+      const msg = JSON.parse(event.data)
 
-    switch (msg.type) {
-      case 'measurementReceived':
-        dispatch(measurementReceived(msg.payload))
-        break
-      case 'eventReceived':
-        dispatch(eventReceived(msg.payload))
-        break
-      case 'settingsChanged':
-        dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))
-        break
-      default:
-        break
-    }
+      switch (msg.type) {
+        case 'measurementReceived':
+          dispatch(measurementReceived(msg.payload))
+          break
+        case 'eventReceived':
+          dispatch(eventReceived(msg.payload))
+          break
+        case 'settingsChanged':
+          dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))
+          break
+        default:
+          break
+      }
+    } catch (e) {}
   }
 
   // TODO listen to PUMP_ACTIVATED event

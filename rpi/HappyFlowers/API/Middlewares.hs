@@ -22,11 +22,11 @@ import Network.Wai.Middleware.Static
 -- cross-origin requests between the webpack development server and the API.
 -- todo: improve documentation
 corsMiddleware :: Middleware
-corsMiddleware = cors $ const $ Just simpleCorsResourcePolicy {
-  corsOrigins = Just (["http://localhost:3000"], False),
-  corsRequestHeaders = ["Content-Type"],
-  corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
-}
+corsMiddleware = cors $ const $ Just simpleCorsResourcePolicy
+  { corsOrigins = Just (["http://localhost:3000", "http://localhost:5000"], False)
+  , corsRequestHeaders = ["Content-Type"]
+  , corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
+  }
 
 -- Set up a piece of middleware that allows serving static files from the
 -- compiled web front end directory.
@@ -48,5 +48,5 @@ pathConversion :: PathsAndQueries -> H.RequestHeaders -> PathsAndQueries
 pathConversion (pieces, queries) _ = piecesConvert pieces queries
   where
     piecesConvert :: [Text] -> H.Query -> PathsAndQueries
-    piecesConvert ["api", method, trail] qs = (["api", method, trail], qs)
+    piecesConvert ("api" : rest) qs = (("api" : rest), qs)
     piecesConvert ps qs = (["/"], qs)
