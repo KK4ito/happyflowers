@@ -34,11 +34,17 @@ const isSubmitting = handleActions({
   [actions.submitSettingsError]: () => false
 }, false)
 
+const isErroneous = handleActions({
+  [actions.submitSettingsSuccess]: () => false,
+  [actions.submitSettingsError]: () => true
+}, false)
+
 /**
  * Export a combination of the other reducers.
  */
 export default combineReducers({
   data,
   isFetching,
-  isSubmitting
+  isSubmitting,
+  isErroneous
 })

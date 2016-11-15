@@ -1,3 +1,3 @@
-import HappyFlowers.API.Server
+import HappyFlowers.Server
 
 main = startServer

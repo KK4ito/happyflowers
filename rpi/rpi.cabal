@@ -16,9 +16,6 @@ executable rpi
                  wai-extra,
                  wai-middleware-static,
                  aeson,
-                 wai,
-                 wai-websockets,
+                 scotty,
                  websockets,
-                 warp,
-                 wai-routes,
-                 containers
+                 wai

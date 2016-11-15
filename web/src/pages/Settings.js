@@ -36,7 +36,6 @@ class Settings extends React.Component {
     // consist of an immutable Map.
 
     this.state = {
-      error: false,
       pristine: true,
       name: Map({
         value: '',
@@ -76,7 +75,7 @@ class Settings extends React.Component {
     // successful.
 
     dispatch(fetchSettings())
-      .catch(err => Alert.error('Could not retrieve settings.'))
+      .catch(() => Alert.error('Could not retrieve settings.'))
 
     dispatch(connectWS())
   }
@@ -93,12 +92,13 @@ class Settings extends React.Component {
    * @param {object} props - Standard React props, destructured to only get the
    *                         immutable settings Map.
    */
-  componentWillReceiveProps({ settings }) {
+  componentWillReceiveProps({ settings, isSubmitting, isErroneous }) {
 
     // Don't change the state if there are no settings to display.
 
-    if (settings.isEmpty() || this.state.error) {
-      this.setState({ error: false })
+    console.log(isErroneous)
+
+    if (settings.isEmpty() || isSubmitting || isErroneous) {
       return
     }
 
@@ -160,10 +160,7 @@ class Settings extends React.Component {
 
     this.props.dispatch(submitSettings(data))
       .then(() => Alert.success('Settings saved successfully.'))
-      .catch(() => {
-        this.setState({ error: true })
-        Alert.error('Could not save settings.')
-      })
+      .catch(() => Alert.error('Could not save settings.'))
   }
 
   /**
@@ -300,7 +297,8 @@ const mapStateToProps = state => ({
   jwt: state.auth.jwt,
   settings: state.settings.data,
   isFetching: state.settings.isFetching,
-  isSubmitting: state.settings.isSubmitting
+  isSubmitting: state.settings.isSubmitting,
+  isErroneous: state.settings.isErroneous
 })
 
 export default connect(mapStateToProps)(Settings)
