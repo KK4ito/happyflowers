@@ -33,17 +33,25 @@ import Jose.Jwa
 import Network.HTTP.Types.Status (status500, status401)
 import Web.Scotty
 
+-- todo: document
+dbName :: String
+dbName = "happyflowers.db"
+
+-- todo: document
+tokenSecret :: C.ByteString
+tokenSecret = "hppyflwrs"
+
 -- | The 'getSettings' function handles GET requests for application settings.
 -- The settings are retrieved from the sqlite database. An HTTP error is
 -- produced if the settings could not be retrieved or don't contain any values.
 getSettings :: ScottyM ()
 getSettings = get "/api/settings/" $ do
-  conn <- liftIO (open "happyflowers.db")
+  conn <- liftIO (open dbName)
   rows <- liftIO (try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings]))
   liftIO (close conn)
   case rows of
-    Left e -> status status500
-    Right r -> if length r > 0 then json (head r) else status status500
+    Left _      -> status status500
+    Right rows' -> json (head rows')
 
 -- todo: document
 data PutSettingsBody =
@@ -67,23 +75,23 @@ putSettings :: ScottyM ()
 putSettings = put "/api/settings/" $ do
   body <- jsonData :: ActionM PutSettingsBody
   let t = token body
-  let jwt = hmacDecode "hppyflwrs" $ C.pack t
+  let jwt = hmacDecode tokenSecret $ C.pack t
   case jwt of
-    Left _ -> status status401
+    Left _  -> status status401
     Right _ -> do
-      conn <- liftIO (open "happyflowers.db")
+      conn <- liftIO (open dbName)
       liftIO (execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body)
       rows <- liftIO (try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings]))
       liftIO (close conn)
       case rows of
-        Left e -> status status500
-        Right r -> if length r > 0 then json (head r) else status status500
+        Left _      -> status status500
+        Right rows' -> if length rows' > 0 then json (head rows') else status status500
 
 -- | The 'getHistory' function handles GET request for historical application
 -- data. The data is retrieved from the sqlite database.
 getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ do
-  conn <- liftIO (open "happyflowers.db")
+  conn <- liftIO (open dbName)
   events <- liftIO (try (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC") :: IO (Either SQLError [Event]))
   measurements <- liftIO (try (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC") :: IO (Either SQLError [Measurement]))
   liftIO (close conn)
@@ -91,7 +99,7 @@ getHistory = get "/api/history/" $ do
     (Right events', Right measurements') -> json History { events = events'
                                                          , measurements = measurements'
                                                          }
-    otherwise -> status status500
+    otherwise                            -> status status500
 
 -- todo: improve documentation
 data PostAuthBody =
@@ -109,9 +117,9 @@ postAuth = post "/api/auth/" $ do
   syspw <- liftIO getPassword
   if pw == syspw
     then do
-      let jwt = hmacEncode HS384 "hppyflwrs" "hello"
+      let jwt = hmacEncode HS384 tokenSecret "hello"
       case jwt of
-        Left _ -> status status500
+        Left _     -> status status500
         Right jwt' -> json jwt'
     else do
       status status401
