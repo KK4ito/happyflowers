@@ -1,13 +1,14 @@
 {-|
 Module      : HappyFlowers.RPI.Sensor
-Description : Read sensor data
+Description : Read sensor data from the RPi device
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
 
-The functions included in this module are used to read the sensor data from the chirp sensor.
+The functions included in this module are used to read the sensor data from the
+RPi's sensors.
 -}
 module HappyFlowers.RPI.Sensor (
   -- * Configuration
@@ -18,10 +19,13 @@ module HappyFlowers.RPI.Sensor (
 
 import System.RaspberryPi.GPIO
 
+-- | 'address' determines the address of the port that is used to read data.
 address :: Address
 address = 0x20
 
+-- | The 'readData' function reads data from the chirp sensor through the
+-- 'address'. It relies on GPIO and I2C.
 readData :: IO ()
 readData = withGPIO . withI2C $ do
-  data <- readI2C address 0
-  putStrLn data
+  d <- readI2C address 0
+  putStrLn d

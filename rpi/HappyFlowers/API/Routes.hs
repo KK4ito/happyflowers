@@ -36,7 +36,8 @@ import           Jose.Jwa
 import           Network.HTTP.Types.Status (status401, status500)
 import           Web.Scotty
 
--- todo: document
+-- | 'tokenSecret' defines the secret string that is used for the JSON Web
+-- Token. It is used to encrypt and decrypt the token.
 tokenSecret :: C.ByteString
 tokenSecret = "hppyflwrs"
 
@@ -50,7 +51,9 @@ getSettings = get "/api/settings/" $ do
     Left _      -> status status500
     Right rows' -> json $ head rows'
 
--- todo: document
+-- | 'PutSettingsBody' defines the type that is used to parse the request body
+-- of the 'putSettings' function. It can be parsed from scotty's jsonData method
+-- and converted to a sqlite row instance so it can be stored in the database.
 data PutSettingsBody =
   PutSettingsBody { token :: String
                   , name :: String
@@ -92,7 +95,8 @@ getHistory = get "/api/history/" $ do
                                                          }
     otherwise                            -> status status500
 
--- todo: improve documentation
+-- | 'PostAuthBody' defines the type that is used to parse the request body of
+-- the 'postAuth' function. It can be parsed from scotty's jsonData method.
 data PostAuthBody =
   PostAuthBody { password :: String
                } deriving (Generic)
@@ -105,8 +109,10 @@ instance FromJSON PostAuthBody
 postAuth :: ScottyM ()
 postAuth = post "/api/auth/" $ do
   body <- jsonData :: ActionM PostAuthBody
+
   let pw = password body
   syspw <- liftIO getPassword
+
   case () of
     _ | pw == syspw -> do
         let jwt = hmacEncode HS384 tokenSecret "hello"

@@ -24,11 +24,11 @@ import Data.Aeson (ToJSON)
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
 
--- | An event marks a watering, either 'manual' or 'automatic'. It can be parsed
+-- | An event marks a watering, either `manual` or `automatic`. It can be parsed
 -- from the database and serialised to JSON.
 data Event =
   Event { eventId :: Int -- ^ The numeric ID of the event.
-        , eventType :: String -- ^ The type of the event, either 'automatic' or 'manual'.
+        , eventType :: String -- ^ The type of the event, either `automatic` or `manual`.
         , eventTimestamp :: String -- ^ The timestamp when the event occured.
         } deriving (Generic)
 

@@ -16,6 +16,10 @@ module HappyFlowers.API.Application (
   apiApp
   ) where
 
+import HappyFlowers.API.Middlewares
+import HappyFlowers.API.Routes
+import Web.Scotty
+
 -- | The 'apiApp' function sets up a Scotty server listening on a given port. It
 -- contains several middlewares and reacts to a set of routes.
 apiApp :: Int -> IO ()

@@ -26,11 +26,12 @@ import Control.Exception
 import Database.SQLite.Simple
 import HappyFlowers.Types
 
--- todo: document
+-- | 'dbName' determines which sqlite database is used for the application.
 dbName :: String
 dbName = "happyflowers.db"
 
--- todo: document
+-- | The 'querySettings' function attempts to retrieve settings data from the
+-- database.
 querySettings :: IO (Either SQLError [Settings])
 querySettings = do
   conn <- open dbName
@@ -38,14 +39,16 @@ querySettings = do
   close conn
   return rows
 
--- todo: document
+-- | The 'updateSettings' function updates the settings entry in the database
+-- with the passed data.
 updateSettings :: ToRow a => a -> IO ()
 updateSettings body = do
   conn <- open dbName
   execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
   close conn
 
--- todo: document
+-- | The 'queryHistory' function attempts to retrieve historical data. This
+-- includes recent measurements and events.
 queryHistory :: IO ((Either SQLError [Event]), (Either SQLError [Measurement]))
 queryHistory = do
   conn <- open dbName

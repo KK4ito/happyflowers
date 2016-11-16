@@ -27,9 +27,9 @@ import Network.Wai.Middleware.Cors
 import Network.Wai.Middleware.Rewrite
 import Network.Wai.Middleware.Static
 
--- Set up a piece of middleware that is used during development. It allows
--- cross-origin requests between the webpack development server and the API.
--- todo: improve documentation
+-- | The 'corsMiddleware' function sets up a piece of middleware that is used
+-- during development. It allows cross-origin requests between the webpack
+-- development server and the API.
 corsMiddleware :: Middleware
 corsMiddleware = cors $ const $ Just simpleCorsResourcePolicy
   { corsOrigins = Just (["http://localhost:3000", "http://localhost:5000"], False)
@@ -37,16 +37,14 @@ corsMiddleware = cors $ const $ Just simpleCorsResourcePolicy
   , corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
   }
 
--- Set up a piece of middleware that allows serving static files from the
--- compiled web front end directory.
--- todo: improve documentation
+-- | The 'staticMiddleware' function sets up a piece of middleware that allows
+-- serving static files from the compiled web front end directory.
 staticMiddleware :: Middleware
 staticMiddleware = staticPolicy (addBase "../web/build/")
 
--- Set up a piece of middleware that allows request rewriting. It is used to
--- route all non-API requests to the root route, where the web front end
--- handles routing.
--- todo: improve documentation
+-- | The 'rewriteMiddleware' function sets up a piece of middleware that allows
+-- request rewriting. It is used to route all non-API requests to the root
+-- route, where the web front end handles routing.
 rewriteMiddleware :: Middleware
 rewriteMiddleware = rewritePureWithQueries pathConversion
 
