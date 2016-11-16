@@ -31,21 +31,21 @@ const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
         <h3 className="stats-heading">
           Last measurement
         </h3>
-        {(timestamps.measurement && ta.format(timestamps.measurement.get('measurementTimestamp'))) || 'more than two weeks ago'}
+        {(timestamps.measurement && ta.format(timestamps.measurement.get('measurementTimestamp'))) || 'a while ago'}
       </li>
       <li>
         <span data-icon="drop" />
         <h3 className="stats-heading">
           Last automatic watering
         </h3>
-        {(timestamps.automatic && ta.format(timestamps.automatic.get('eventTimestamp'))) || 'more than two weeks ago'}
+        {(timestamps.automatic && ta.format(timestamps.automatic.get('eventTimestamp'))) || 'a while ago'}
       </li>
       <li>
       <span data-icon="hand" />
         <h3 className="stats-heading">
           Last manual watering
         </h3>
-        {(timestamps.manual && ta.format(timestamps.manual.get('eventTimestamp'))) || 'more than two weeks ago'}
+        {(timestamps.manual && ta.format(timestamps.manual.get('eventTimestamp'))) || 'a while ago'}
       </li>
     </ul>
     <button data-button="block secondary" disabled={!isLoggedIn}>

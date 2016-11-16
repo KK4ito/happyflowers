@@ -23,9 +23,11 @@ import qualified Data.Text as T
 getConfig :: T.Text -> IO String
 getConfig field = do
   val <- readFile "rpi.cfg"
+
   -- Convert the value of the file to a Text, split it into lines and then split
   -- every line at the `=` character.
   let config = map (T.split (== '=')) $ (T.lines . T.pack) val
+
   -- Config entries are parsed as [[key, value]]. The list of entries is
   -- filtered in order to retrieve the entry matching the parameter. Then the
   -- first match's value field is unpacked to a string and returned.

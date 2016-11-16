@@ -23,7 +23,11 @@ module HappyFlowers.DB (
   ) where
 
 import Control.Exception
+import Data.Time.Clock
+import Data.Time.Calendar
+import Data.Time.Format
 import Database.SQLite.Simple
+import HappyFlowers.Config
 import HappyFlowers.Types
 
 -- | 'dbName' determines which sqlite database is used for the application.
@@ -47,14 +51,26 @@ updateSettings body = do
   execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
   close conn
 
+-- | The 'getDate' function retrieves a sqlite-compatible timestamp based on the
+-- offset that is passed as a parameter.
+getDate :: Integer -> IO String
+getDate ago = do
+  time <- getCurrentTime
+  let refDate = addDays (ago * (-1)) $ utctDay time
+  return $ formatTime defaultTimeLocale "%F" refDate
+
 -- | The 'queryHistory' function attempts to retrieve historical data. This
 -- includes recent measurements and events.
 queryHistory :: IO (Either SQLError History)
 queryHistory = do
+  frame <- getConfig "frame"
+  timestamp <- getDate (read frame :: Integer)
+
   conn <- open dbName
-  events <- try (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '14days') ORDER BY timestamp ASC") :: IO (Either SQLError [Event])
-  measurements <- try (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14days') ORDER BY timestamp ASC") :: IO (Either SQLError [Measurement])
+  events <- try (query conn "SELECT * FROM events WHERE timestamp >= ? ORDER BY timestamp ASC" (Only timestamp)) :: IO (Either SQLError [Event])
+  measurements <- try (query conn "SELECT * FROM measurements WHERE timestamp >= ? ORDER BY timestamp ASC" (Only timestamp)) :: IO (Either SQLError [Measurement])
   close conn
+
   case (events, measurements) of
     (Right e, Right m) -> return $ Right History { events = e
                                                  , measurements = m

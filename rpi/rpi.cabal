@@ -18,4 +18,5 @@ executable rpi
                  aeson,
                  scotty,
                  websockets,
-                 wai
+                 wai,
+                 time
