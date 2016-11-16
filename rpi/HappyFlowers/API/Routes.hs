@@ -28,7 +28,7 @@ import           Data.Aeson (FromJSON)
 import           Database.SQLite.Simple (ToRow, toRow)
 import qualified Data.ByteString.Char8 as C
 import           GHC.Generics
-import           HappyFlowers.API.Config
+import           HappyFlowers.Config
 import           HappyFlowers.Types
 import qualified HappyFlowers.DB as DB
 import           Jose.Jws
@@ -109,7 +109,7 @@ postAuth = post "/api/auth/" $ do
   body <- jsonData :: ActionM PostAuthBody
 
   let pw = password body
-  syspw <- liftIO getPassword
+  syspw <- liftIO $ getConfig "password"
 
   case () of
     _ | pw == syspw -> do

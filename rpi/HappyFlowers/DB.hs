@@ -52,8 +52,8 @@ updateSettings body = do
 queryHistory :: IO (Either SQLError History)
 queryHistory = do
   conn <- open dbName
-  events <- try (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC") :: IO (Either SQLError [Event])
-  measurements <- try (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC") :: IO (Either SQLError [Measurement])
+  events <- try (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '14days') ORDER BY timestamp ASC") :: IO (Either SQLError [Event])
+  measurements <- try (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14days') ORDER BY timestamp ASC") :: IO (Either SQLError [Measurement])
   close conn
   case (events, measurements) of
     (Right e, Right m) -> return $ Right History { events = e
