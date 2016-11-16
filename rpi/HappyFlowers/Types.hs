@@ -30,7 +30,7 @@ data Event =
   Event { eventId :: Int -- ^ The numeric ID of the event.
         , eventType :: String -- ^ The type of the event, either 'automatic' or 'manual'.
         , eventTimestamp :: String -- ^ The timestamp when the event occured.
-        } deriving (Show, Generic)
+        } deriving (Generic)
 
 instance ToJSON Event
 instance FromRow Event where
@@ -42,7 +42,7 @@ data Measurement =
   Measurement { measurementId :: Int -- ^ The numeric ID of the measurement.
               , measurementValue :: Int  -- ^ The moisture level measured at this point.
               , measurementTimestamp :: String -- ^ The timestamp when the measurement occured.
-              } deriving (Show, Generic)
+              } deriving (Generic)
 
 instance ToJSON Measurement
 instance FromRow Measurement where
@@ -54,7 +54,7 @@ instance FromRow Measurement where
 data History =
   History { events :: [Event] -- ^ The list of events that are part of the history.
           , measurements :: [Measurement] -- ^ The list of measurements that are part of the history.
-          } deriving (Show, Generic)
+          } deriving (Generic)
 
 instance ToJSON History
 
@@ -65,7 +65,7 @@ data Settings =
            , upper :: Int -- ^ The upper moisture level for the flower.
            , lower :: Int -- ^ The lower moisture level for the flower.
            , interval :: Int -- ^ The interval at which moisture levels should be measured.
-           } deriving (Show, Generic)
+           } deriving (Generic)
 
 instance ToJSON Settings
 instance FromRow Settings where

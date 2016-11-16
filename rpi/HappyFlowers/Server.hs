@@ -23,7 +23,8 @@ module HappyFlowers.Server (
   startServer
   ) where
 
-import Control.Concurrent (forkIO, newMVar)
+import Control.Concurrent (forkIO, newMVar, threadDelay)
+import Control.Monad (forever)
 import HappyFlowers.API.Routes
 import HappyFlowers.API.Middlewares
 import HappyFlowers.API.WS
@@ -57,8 +58,8 @@ wsApp = do
 -- todo: improve documentation
 startServer :: IO ()
 startServer = do
-  -- putStrLn "API server running on port " >> print apiPort
-  -- forkIO apiApp
-  putStr "WS server running on port " >> print wsPort
-  wsApp
-  putStrLn "..."
+  putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
+  forkIO apiApp
+  putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
+  forkIO wsApp
+  forever $ threadDelay 100000

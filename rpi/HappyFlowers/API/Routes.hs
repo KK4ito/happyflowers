@@ -71,8 +71,7 @@ instance ToRow PutSettingsBody where
 putSettings :: ScottyM ()
 putSettings = put "/api/settings/" $ do
   body <- jsonData :: ActionM PutSettingsBody
-  let t = token body
-  let jwt = hmacDecode tokenSecret $ C.pack t
+  let jwt = hmacDecode tokenSecret $ C.pack $ token body
   case jwt of
     Left _  -> status status401
     Right _ -> do
