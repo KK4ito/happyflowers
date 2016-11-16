@@ -12,7 +12,7 @@ Stability   : experimental
 The types included in this module are used to represent data used throughout the
 happy flowers project.
 -}
-module HappyFlowers.API.Types (
+module HappyFlowers.Types (
   -- * Types
   Event(..),
   Measurement(..),

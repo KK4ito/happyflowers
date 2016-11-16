@@ -163,12 +163,14 @@ export const eventReceived = createAction('EVENT_RECEIVED')
  * @TODO document
  */
 export const connectWS = () => dispatch => {
-  socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:5000' : window.location.host}/`)
+  socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:9160' : window.location.host}/`)
 
   // Send all messages that were supposed to be sent before the WS connection
   // could be established.
 
   socket.onopen = () => {
+    socket.send('Hi! I am ' + Math.round(Math.random() * 15))
+
     if (!window.storedWSMsg) {
       return
     }

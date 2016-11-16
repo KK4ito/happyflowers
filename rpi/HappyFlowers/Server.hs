@@ -13,6 +13,9 @@ An implementation of the Scotty web framework offering a RESTful API and serving
 static files.
 -}
 module HappyFlowers.Server (
+  -- * Configuration
+  apiPort,
+  wsPort,
   -- * Applications
   apiApp,
   wsApp,
@@ -32,6 +35,10 @@ apiPort :: Int
 apiPort = 5000
 
 -- todo: improve documentation
+wsPort :: Int
+wsPort = 9160
+
+-- todo: improve documentation
 apiApp :: IO ()
 apiApp = scotty apiPort $ do
   middleware corsMiddleware
@@ -40,20 +47,18 @@ apiApp = scotty apiPort $ do
   getSettings >> putSettings >> getHistory >> postAuth >> getRoot
 
 -- todo: improve documentation
-wsPort :: Int
-wsPort = 9160
-
--- todo: improve documentation
 wsApp :: IO ()
 wsApp = do
   state <- newMVar newServerState
-  runServer "0.0.0.0" wsPort $ application state
+  runServer "127.0.0.1" wsPort $ application state
 
 -- | The 'startServer' function sets up a local Scotty server listening on port
 -- 5000. It contains several middlewares and reacts to a set of routes.
+-- todo: improve documentation
 startServer :: IO ()
 startServer = do
-  putStrLn "API server running on port 5000..."
-  apiApp
-  -- putStrLn "WS server running on port 9160..."
-  -- wsApp
+  -- putStrLn "API server running on port " >> print apiPort
+  -- forkIO apiApp
+  putStr "WS server running on port " >> print wsPort
+  wsApp
+  putStrLn "..."
