@@ -90,10 +90,8 @@ getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ do
   history <- liftIO DB.queryHistory
   case history of
-    (Right events', Right measurements') -> json History { events = events'
-                                                         , measurements = measurements'
-                                                         }
-    otherwise                            -> status status500
+    Right history' -> json history'
+    otherwise      -> status status500
 
 -- | 'PostAuthBody' defines the type that is used to parse the request body of
 -- the 'postAuth' function. It can be parsed from scotty's jsonData method.

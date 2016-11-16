@@ -49,10 +49,16 @@ updateSettings body = do
 
 -- | The 'queryHistory' function attempts to retrieve historical data. This
 -- includes recent measurements and events.
-queryHistory :: IO ((Either SQLError [Event]), (Either SQLError [Measurement]))
+queryHistory :: IO (Either SQLError History)
 queryHistory = do
   conn <- open dbName
   events <- try (query_ conn "SELECT * FROM events WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC") :: IO (Either SQLError [Event])
   measurements <- try (query_ conn "SELECT * FROM measurements WHERE date(timestamp) >= date('now', '-14 days') ORDER BY timestamp ASC") :: IO (Either SQLError [Measurement])
   close conn
-  return (events, measurements)
+  case (events, measurements) of
+    (Right e, Right m) -> return $ Right History { events = e
+                                                 , measurements = m
+                                                 }
+    (Left e, Right _)  -> return $ Left e
+    (Right _, Left e)  -> return $ Left e
+    (Left e1, Left e2) -> return $ Left e1
