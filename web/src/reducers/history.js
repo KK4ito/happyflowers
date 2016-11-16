@@ -12,7 +12,7 @@ const snapshot = handleActions({
     const latest = List(payload.res.data.measurements).last()
     return (latest && latest.measurementValue) || 0
   },
-  [actions.measurementReceived]: (_, { measurement }) => measurement.measurementValue
+  [actions.measurementReceived]: (_, { payload }) => payload.measurementValue
 }, 0)
 
 /**

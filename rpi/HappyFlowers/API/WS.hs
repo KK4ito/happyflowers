@@ -1,6 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module HappyFlowers.API.WS (
+  -- * Types
+  Client(..),
+  Id(..),
+  ServerState(..),
+  -- * Operations
   newServerState,
   numClients,
   clientExists,
@@ -21,61 +26,68 @@ import qualified Data.Text as T
 import qualified Data.Text.IO as T
 import qualified Network.WebSockets as WS
 
-type Client = (Text, WS.Connection)
-type ServerState = [Client]
+-- todo: document
+type Client = (Int, WS.Connection)
 
+-- todo: document
+type Id = Int
+
+-- todo: document
+type ServerState = (Id, [Client])
+
+-- todo: document
 newServerState :: ServerState
-newServerState = []
+newServerState = (0, [])
 
+-- todo: document
 numClients :: ServerState -> Int
-numClients = length
+numClients (_, clients) = length clients
 
+-- todo: document
 clientExists :: Client -> ServerState -> Bool
-clientExists client = any ((== fst client) . fst)
+clientExists client (_, clients) = any ((== fst client) . fst) clients
 
+-- todo: document
 addClient :: Client -> ServerState -> ServerState
-addClient client clients = client : clients
+addClient client (id, clients) = (id + 1, client : clients)
 
+-- todo: document
 removeClient :: Client -> ServerState -> ServerState
-removeClient client = filter ((/= fst client) . fst)
+removeClient client (id, clients) = (id, filter ((/= fst client) . fst) clients)
 
+-- todo: document
 broadcast :: Text -> ServerState -> IO ()
-broadcast message clients = do
+broadcast message (_, clients) = do
   T.putStrLn message
   forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
+-- todo: document
+talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
+talk conn state _ = forever $ do
+  msg <- WS.receiveData conn
+  readMVar state >>= broadcast msg
+
+-- todo: document
+disconnect :: Client -> MVar ServerState -> IO [Client]
+disconnect client state = do
+  modifyMVar state $ \s -> do
+    let s' = removeClient client s
+    broadcast (T.pack ((show . fst) client) `mappend` " disconnected") s'
+    return (s', snd s')
+
+-- todo: document
 application :: MVar ServerState -> WS.ServerApp
 application state pending = do
   conn <- WS.acceptRequest pending
   WS.forkPingThread conn 30
+  
+  (id, _) <- readMVar state
 
-  msg <- WS.receiveData conn
-  clients <- readMVar state
+  let client = (id, conn)
 
-  case msg of
-    _ | not (prefix `T.isPrefixOf` msg) ->
-          WS.sendTextData conn ("Wrong announcement" :: Text)
-      | any ($ fst client)
-          [T.null, T.any isPunctuation, T.any isSpace] ->
-            WS.sendTextData conn ("Name cannot " `mappend` "contain punctuation or whitespace, and " `mappend` "cannot be empty" :: Text)
-      | clientExists client clients ->
-          WS.sendTextData conn ("User already exists" :: Text)
-      | otherwise -> flip finally disconnect $ do
-          modifyMVar_ state $ \s -> do
-            let s' = addClient client s
-            WS.sendTextData conn $ "Welcome! Users: " `mappend` T.intercalate ", " (map fst s)
-            broadcast (fst client `mappend` " joined") s'
-            return s'
-          talk conn state client
-      where
-        prefix = "Hi! I am "
-        client = (T.drop (T.length prefix) msg, conn)
-        disconnect = do
-          s <- modifyMVar state $ \s ->
-            let s' = removeClient client s in return (s', s')
-          broadcast (fst client `mappend` " disconnected") s
-
-talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
-talk conn state (user, _) = forever $ do
-  msg <- WS.receiveData conn
-  readMVar state >>= broadcast (user `mappend` ": " `mappend` msg)
+  flip finally (disconnect client state) $ do
+    modifyMVar_ state $ \s -> do
+      let s' = addClient client s
+      broadcast (T.pack ((show . fst) client) `mappend` " joined") s'
+      return s'
+    talk conn state client

@@ -169,7 +169,7 @@ export const connectWS = () => dispatch => {
   // could be established.
 
   socket.onopen = () => {
-    socket.send('Hi! I am ' + Math.round(Math.random() * 15))
+    socket.send('Connect!')
 
     if (!window.storedWSMsg) {
       return
