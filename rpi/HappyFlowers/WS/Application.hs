@@ -1,6 +1,18 @@
 {-# LANGUAGE OverloadedStrings #-}
 
-module HappyFlowers.API.WS (
+{-|
+Module      : HappyFlowers.WS.Application
+Description : WebSockets server implementation for the happy flowers project
+Copyright   : (c) Sacha Schmid, 2016
+                  Rinesch Murugathas, 2016
+License     : GPL-3
+Maintainer  : schmid.sacha@gmail.com
+Stability   : experimental
+
+An implementation of a WebSockets server that simply broadcasts messages
+between clients.
+-}
+module HappyFlowers.WS.Application (
   -- * Types
   Client(..),
   Id(..),
@@ -12,7 +24,7 @@ module HappyFlowers.API.WS (
   addClient,
   removeClient,
   broadcast,
-  application,
+  server,
   talk
   ) where
 
@@ -76,11 +88,11 @@ disconnect client state = do
     return (s', snd s')
 
 -- todo: document
-application :: MVar ServerState -> WS.ServerApp
-application state pending = do
+server :: MVar ServerState -> WS.ServerApp
+server state pending = do
   conn <- WS.acceptRequest pending
   WS.forkPingThread conn 30
-  
+
   (id, _) <- readMVar state
 
   let client = (id, conn)
@@ -91,3 +103,9 @@ application state pending = do
       broadcast (T.pack ((show . fst) client) `mappend` " joined") s'
       return s'
     talk conn state client
+
+-- todo: improve documentation
+wsApp :: Int -> IO ()
+wsApp port = do
+  state <- newMVar newServerState
+  runServer "127.0.0.1" port $ server state

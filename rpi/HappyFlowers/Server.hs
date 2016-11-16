@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 {-|
-Module      : HappyFlowers.API.Server
+Module      : HappyFlowers.Server
 Description : Scotty web server implementation for the happy flowers project
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
@@ -16,18 +16,14 @@ module HappyFlowers.Server (
   -- * Configuration
   apiPort,
   wsPort,
-  -- * Applications
-  apiApp,
-  wsApp,
   -- * Operations
   startServer
   ) where
 
 import Control.Concurrent (forkIO, newMVar, threadDelay)
 import Control.Monad (forever)
-import HappyFlowers.API.Routes
-import HappyFlowers.API.Middlewares
-import HappyFlowers.API.WS
+import HappyFlowers.API.Application
+import HappyFlowers.WS.Application
 import Network.WebSockets
 import Web.Scotty
 
@@ -40,26 +36,10 @@ wsPort :: Int
 wsPort = 9160
 
 -- todo: improve documentation
-apiApp :: IO ()
-apiApp = scotty apiPort $ do
-  middleware corsMiddleware
-  middleware staticMiddleware
-  middleware rewriteMiddleware
-  getSettings >> putSettings >> getHistory >> postAuth >> getRoot
-
--- todo: improve documentation
-wsApp :: IO ()
-wsApp = do
-  state <- newMVar newServerState
-  runServer "127.0.0.1" wsPort $ application state
-
--- | The 'startServer' function sets up a local Scotty server listening on port
--- 5000. It contains several middlewares and reacts to a set of routes.
--- todo: improve documentation
 startServer :: IO ()
 startServer = do
   putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
-  forkIO apiApp
+  forkIO apiApp apiPort
   putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
-  forkIO wsApp
+  forkIO wsApp wsPort
   forever $ threadDelay 100000

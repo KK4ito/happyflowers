@@ -1,7 +1,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 
 {-|
-Module      : HappyFlowers.API.Types
+Module      : HappyFlowers.Types
 Description : Required types for the happy flowers project
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016

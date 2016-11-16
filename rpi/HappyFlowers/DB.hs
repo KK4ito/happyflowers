@@ -2,7 +2,7 @@
 
 {-|
 Module      : HappyFlowers.DB
-Description : Database access for the happy flowers project.
+Description : Database access for the happy flowers project
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
 License     : GPL-3

@@ -107,14 +107,13 @@ postAuth = post "/api/auth/" $ do
   body <- jsonData :: ActionM PostAuthBody
   let pw = password body
   syspw <- liftIO getPassword
-  if pw == syspw
-    then do
-      let jwt = hmacEncode HS384 tokenSecret "hello"
-      case jwt of
-        Left _     -> status status500
-        Right jwt' -> json jwt'
-    else do
-      status status401
+  case () of
+    _ | pw == syspw -> do
+        let jwt = hmacEncode HS384 tokenSecret "hello"
+        case jwt of
+          Left _     -> status status500
+          Right jwt' -> json jwt'
+      | otherwise   -> status status401
 
 -- | The 'getRoot' handles GET requests for the root route. This is used to
 -- serve the web front end. All non-API requests are rewritten to this route.
