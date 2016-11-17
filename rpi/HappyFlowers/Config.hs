@@ -11,26 +11,46 @@ The functions included in this module are used to parse configuration data for
 the happy flowers project.
 -}
 module HappyFlowers.Config (
+  -- * Configuration
+  configFile,
   -- * Operations
-  getConfig
+  readConfig,
+  getConfig,
+  -- * Helpers
+  splitToTuple
   ) where
 
 import qualified Data.Text as T
 
--- | The function 'getConfig' reads the configuration file named 'rpi.cfg'
--- stored at the root directory of the project. The Text passed as the
--- argument determines the entry that is read from the config.
-getConfig :: T.Text -> IO String
+-- | The 'ConfigEntry' type is a shorthand for the (key, value) representation
+-- of a config entry.
+type ConfigEntry = (String, String)
+
+-- | 'configFile' determines the location of the configuration file that is read
+-- when parsing the application configuration.
+configFile :: String
+configFile = "rpi.cfg"
+
+-- | The 'readConfig' function converts the value of the config file to a list
+-- of [(key, value)] format.
+readConfig :: String -> IO [ConfigEntry]
+readConfig file = do
+  val <- readFile file
+  return $ map splitToTuple $ lines val
+
+-- | The 'getConfig' function reads the list of entries parsed from the config
+-- file and filters it in order to obtain the desired config. It matches entries
+-- based on the name of the entry, which is the first element of every entry
+-- tuple and returns the last element of the matching tuple.
+getConfig :: String -> IO String
 getConfig field = do
-  val <- readFile "rpi.cfg"
+  config <- readConfig configFile
+  let entry = filter ((== field) . fst) config
+  return $ (snd . head) entry
 
-  -- Convert the value of the file to a Text, split it into lines and then split
-  -- every line at the `=` character.
-  let config = map (T.split (== '=')) $ (T.lines . T.pack) val
-
-  -- Config entries are parsed as [[key, value]]. The list of entries is
-  -- filtered in order to retrieve the entry matching the parameter. Then the
-  -- first match's value field is unpacked to a string and returned.
-  let entry = head $ filter (\(x:xs) -> x == field) config
-  let value = last entry
-  return $ T.unpack value
+-- | The 'splitToTuple' takes a String, splits it at every '=' character and
+-- converts the result to a ConfigEntry tuple.
+splitToTuple :: String -> ConfigEntry
+splitToTuple t = do
+  let (key:val:_) = ((T.split (== '=')) . T.pack) t
+  (T.unpack key, T.unpack val)
