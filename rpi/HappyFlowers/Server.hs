@@ -20,8 +20,7 @@ module HappyFlowers.Server (
   startServer
   ) where
 
-import Control.Concurrent (forkIO, threadDelay)
-import Control.Monad (forever)
+import Control.Concurrent (forkIO)
 import HappyFlowers.API.Application
 import HappyFlowers.WS.Application
 
@@ -34,12 +33,10 @@ wsPort :: Int
 wsPort = 9160
 
 -- | The 'startServer' function sets up the API application on 'apiPort' and the
--- WebSockets application on port 'wsPort'. It then keeps the thread running
--- indefinitely.
+-- WebSockets application on port 'wsPort'.
 startServer :: IO ()
 startServer = do
   putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
   forkIO $ apiApp apiPort
   putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
-  forkIO $ wsApp wsPort
-  forever $ threadDelay 100000
+  wsApp wsPort
