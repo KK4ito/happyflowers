@@ -16,10 +16,12 @@ sqlite database.
 module HappyFlowers.DB (
   -- * Configuration
   dbName,
-  -- * Operations
+  -- * DB Operations
   querySettings,
   updateSettings,
-  queryHistory
+  queryHistory,
+  -- * Operations
+  getDate
   ) where
 
 import Control.Exception
@@ -36,12 +38,14 @@ dbName = "happyflowers.db"
 
 -- | The 'querySettings' function attempts to retrieve settings data from the
 -- database.
-querySettings :: IO (Either SQLError [Settings])
+querySettings :: IO (Maybe Settings)
 querySettings = do
   conn <- open dbName
   rows <- try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings])
   close conn
-  return rows
+  case rows of
+    Right rows' -> return $ Just $ head rows'
+    Left _      -> return Nothing
 
 -- | The 'updateSettings' function updates the settings entry in the database
 -- with the passed data.
@@ -61,7 +65,7 @@ getDate ago = do
 
 -- | The 'queryHistory' function attempts to retrieve historical data. This
 -- includes recent measurements and events.
-queryHistory :: IO (Either SQLError History)
+queryHistory :: IO (Maybe History)
 queryHistory = do
   frame <- getConfig "frame"
   timestamp <- getDate (read frame :: Integer)
@@ -72,9 +76,7 @@ queryHistory = do
   close conn
 
   case (events, measurements) of
-    (Right e, Right m) -> return $ Right History { events = e
-                                                 , measurements = m
-                                                 }
-    (Left e, Right _)  -> return $ Left e
-    (Right _, Left e)  -> return $ Left e
-    (Left e1, Left e2) -> return $ Left e1
+    (Right e, Right m) -> return $ Just History { events = e
+                                                , measurements = m
+                                                }
+    otherwise          -> return Nothing

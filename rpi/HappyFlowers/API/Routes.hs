@@ -46,10 +46,10 @@ tokenSecret = "hppyflwrs"
 -- produced if the settings could not be retrieved.
 getSettings :: ScottyM ()
 getSettings = get "/api/settings/" $ do
-  rows <- liftIO DB.querySettings
-  case rows of
-    Left _      -> status status500
-    Right rows' -> json $ head rows'
+  settings <- liftIO DB.querySettings
+  case settings of
+    Just settings' -> json settings'
+    Nothing        -> status status500
 
 -- | 'PutSettingsBody' defines the type that is used to parse the request body
 -- of the 'putSettings' function. It can be parsed from scotty's jsonData method
@@ -74,15 +74,17 @@ instance ToRow PutSettingsBody where
 putSettings :: ScottyM ()
 putSettings = put "/api/settings/" $ do
   body <- jsonData :: ActionM PutSettingsBody
+
   let jwt = hmacDecode tokenSecret $ C.pack $ token body
   case jwt of
     Left _  -> status status401
     Right _ -> do
       liftIO $ DB.updateSettings body
-      rows <- liftIO DB.querySettings
-      case rows of
-        Left _      -> status status500
-        Right rows' -> json $ head rows'
+
+      settings <- liftIO DB.querySettings
+      case settings of
+        Just settings' -> json settings'
+        Nothing        -> status status500
 
 -- | The 'getHistory' function handles GET request for historical application
 -- data. The data is retrieved from the sqlite database.
@@ -90,8 +92,8 @@ getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ do
   history <- liftIO DB.queryHistory
   case history of
-    Right history' -> json history'
-    otherwise      -> status status500
+    Just history' -> json history'
+    otherwise     -> status status500
 
 -- | 'PostAuthBody' defines the type that is used to parse the request body of
 -- the 'postAuth' function. It can be parsed from scotty's jsonData method.
