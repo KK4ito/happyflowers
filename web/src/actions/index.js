@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
+import enhanceSockets from '../sockets'
 
 let socket = null
 
@@ -164,44 +165,7 @@ export const eventReceived = createAction('EVENT_RECEIVED')
  */
 export const connectWS = () => dispatch => {
   socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:9160' : window.location.host}/`)
-
-  // Send all messages that were supposed to be sent before the WS connection
-  // could be established.
-
-  socket.onopen = () => {
-    socket.send('Connect!')
-
-    if (!window.storedWSMsg) {
-      return
-    }
-
-    window.storedWSMsg.forEach(m => socket.send(m))
-    window.storedWSMsg = null
-  }
-
-  // Handle messages based on their type property.
-
-  socket.onmessage = event => {
-    try {
-      const msg = JSON.parse(event.data)
-
-      switch (msg.type) {
-        case 'measurementReceived':
-          dispatch(measurementReceived(msg.payload))
-          break
-        case 'eventReceived':
-          dispatch(eventReceived(msg.payload))
-          break
-        case 'settingsChanged':
-          dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))
-          break
-        default:
-          break
-      }
-    } catch (e) {}
-  }
-
-  // TODO listen to PUMP_ACTIVATED event
+  enhanceSockets(socket, dispatch)
 }
 
 /**
