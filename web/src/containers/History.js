@@ -3,7 +3,7 @@ import IPropTypes from 'react-immutable-proptypes'
 import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
-import Widget from './Widget'
+import Widget from '../components/Widget'
 
 // Default settings to use for the charts. See http://www.highcharts.com/docs
 // for more information about possible configuration options.

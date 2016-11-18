@@ -1,5 +1,5 @@
 import React from 'react'
-import Widget from './Widget'
+import Widget from '../components/Widget'
 
 /**
  * Functional component representing the live stream widget, i.e. the widget

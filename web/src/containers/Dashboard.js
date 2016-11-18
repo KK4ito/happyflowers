@@ -1,10 +1,10 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Header from '../components/Header'
-import Snapshot from '../widgets/Snapshot'
-import Stats from '../widgets/Stats'
-import History from '../widgets/History'
-import Stream from '../widgets/Stream'
+import Header from './Header'
+import Snapshot from './Snapshot'
+import Stats from './Stats'
+import History from './History'
+import Stream from './Stream'
 import { fetchSettings, fetchHistory, connectWS, disconnectWS } from '../actions'
 
 /**

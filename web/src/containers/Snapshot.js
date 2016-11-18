@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import Widget from './Widget'
+import Widget from '../components/Widget'
 import Flower from '../components/Flower'
 import './Snapshot.css'
 

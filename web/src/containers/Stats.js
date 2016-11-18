@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import timeago from 'timeago.js'
-import Widget from './Widget'
+import Widget from '../components/Widget'
 import './Stats.css'
 
 // timego is used to display event dates relatively (e.g. 2 hours ago).
