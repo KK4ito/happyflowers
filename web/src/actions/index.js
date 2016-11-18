@@ -168,14 +168,14 @@ export const eventReceived = createAction('EVENT_RECEIVED')
  * @return {function} The function to execute once the action is dispatched.
  */
 export const connectWS = () => dispatch => {
-  socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:9160' : window.location.host}/`)
+  socket = new WebSocket(`ws://${window.location.hostname}:9160/`)
   enhanceSockets(socket, dispatch)
 }
 
 /**
  * Creates a thunk that disconnects the user from the WebSockets instance. This
  * removes all traces of the WebSockets connection.
- * 
+ *
  * @return {function} The function to execute once the action is dispatched.
  */
 export const disconnectWS = () => dispatch => {
