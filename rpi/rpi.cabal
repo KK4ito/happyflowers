@@ -19,4 +19,5 @@ executable rpi
                  scotty,
                  websockets,
                  wai,
-                 time
+                 time,
+                 HPi

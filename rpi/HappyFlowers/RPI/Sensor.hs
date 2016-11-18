@@ -18,6 +18,7 @@ module HappyFlowers.RPI.Sensor (
   ) where
 
 import System.RaspberryPi.GPIO
+import qualified Data.ByteString.Char8 as C
 
 -- | 'address' determines the address of the port that is used to read data.
 address :: Address
@@ -28,4 +29,4 @@ address = 0x20
 readData :: IO ()
 readData = withGPIO . withI2C $ do
   d <- readI2C address 0
-  putStrLn d
+  putStrLn $ C.unpack d
