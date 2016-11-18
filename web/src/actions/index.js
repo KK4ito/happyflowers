@@ -151,17 +151,21 @@ export const logout = () => dispatch => {
 }
 
 /**
- * @TODO document
+ * Creates a MEASUREMENT_RECEIVED action with no specified payload
+ * transformation.
  */
 export const measurementReceived = createAction('MEASUREMENT_RECEIVED')
 
 /**
- * @TODO document
+ * Creates a EVENT_RECEIVED action with no specified payload transformation.
  */
 export const eventReceived = createAction('EVENT_RECEIVED')
 
 /**
- * @TODO document
+ * Creates a thunk that sets up a new WebSockets connection that is enhanced
+ * with custom listeners.
+ *
+ * @return {function} The function to execute once the action is dispatched.
  */
 export const connectWS = () => dispatch => {
   socket = new WebSocket(`ws://${process.env.NODE_ENV === 'development' ? 'localhost:9160' : window.location.host}/`)
@@ -169,7 +173,10 @@ export const connectWS = () => dispatch => {
 }
 
 /**
- * @TODO document
+ * Creates a thunk that disconnects the user from the WebSockets instance. This
+ * removes all traces of the WebSockets connection.
+ * 
+ * @return {function} The function to execute once the action is dispatched.
  */
 export const disconnectWS = () => dispatch => {
   socket.onclose = () => socket = null

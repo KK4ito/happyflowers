@@ -31,7 +31,8 @@ class Dashboard extends React.Component {
   }
 
   /**
-   * @TODO document
+   * Lifecycle method that is executed whenever the component is unmounted.
+   * Attempts to disconnect the user from the WebSockets server.
    */
   componentWillUnmount() {
     this.props.dispatch(disconnectWS())

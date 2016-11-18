@@ -14,10 +14,6 @@ const ta = new timeago()
  * the pump manually. Event dates are shown relatively if they're available,
  * otherwise a default message is shown.
  *
- * @TODO default message needs to depend on the timeframe configuration, i.e. it
- * needs to change if the configuration diverges from the default 14 days
- * period.
- *
  * @param {object} props - Standard React props, destructured to only get the
  *                         isLoggedIn, name, timestamps, isFetching props.
  *
