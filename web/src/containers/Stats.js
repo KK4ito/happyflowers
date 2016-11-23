@@ -1,12 +1,8 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import timeago from 'timeago.js'
+import TimeAgo from 'timeago-react'
 import Widget from '../components/Widget'
 import './Stats.css'
-
-// timego is used to display event dates relatively (e.g. 2 hours ago).
-
-const ta = new timeago()
 
 /**
  * Functional component representing the stats widget, i.e. the widget
@@ -27,21 +23,21 @@ const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
         <h3 className="stats-heading">
           Last measurement
         </h3>
-        {(timestamps.measurement && ta.format(timestamps.measurement.get('measurementTimestamp'))) || 'a while ago'}
+        {(timestamps.measurement && <TimeAgo datetime={timestamps.measurement.get('measurementTimestamp')} />) || 'a while ago'}
       </li>
       <li>
         <span data-icon="drop" />
         <h3 className="stats-heading">
           Last automatic watering
         </h3>
-        {(timestamps.automatic && ta.format(timestamps.automatic.get('eventTimestamp'))) || 'a while ago'}
+        {(timestamps.automatic && <TimeAgo datetime={timestamps.automatic.get('eventTimestamp')} />) || 'a while ago'}
       </li>
       <li>
       <span data-icon="hand" />
         <h3 className="stats-heading">
           Last manual watering
         </h3>
-        {(timestamps.manual && ta.format(timestamps.manual.get('eventTimestamp'))) || 'a while ago'}
+        {(timestamps.manual && <TimeAgo datetime={timestamps.manual.get('eventTimestamp')} />) || 'a while ago'}
       </li>
     </ul>
     <button data-button="block secondary" disabled={!isLoggedIn}>
