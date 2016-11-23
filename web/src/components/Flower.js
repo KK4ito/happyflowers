@@ -28,7 +28,7 @@ const Flower = ({ value }) => (
                 r="127.5" />
         <path d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5"
               stroke="#4CADEB"
-              strokeDasharray={`${601 * value / 100},839`} />
+              strokeDasharray={`${839 * value / 100},839`} />
       </g>
       <g transform="translate(52 52)">
         <g fill="#32465D">
