@@ -28,13 +28,13 @@ module HappyFlowers.WS.Application (
   ) where
 
 import           Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
-import           Control.Exception (finally)
-import           Control.Monad (forM_, forever)
-import           Data.Char (isPunctuation, isSpace)
-import           Data.Monoid (mappend)
-import           Data.Text (Text)
-import qualified Data.Text as T
-import qualified Data.Text.IO as T
+import           Control.Exception  (finally)
+import           Control.Monad      (forM_, forever)
+import           Data.Char          (isPunctuation, isSpace)
+import           Data.Monoid        (mappend)
+import           Data.Text          (Text)
+import qualified Data.Text          as T
+import qualified Data.Text.IO       as T
 import qualified Network.WebSockets as WS
 
 -- | 'Client' is a type alias that connects a unique ID with a WebSockets

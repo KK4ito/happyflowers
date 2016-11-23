@@ -20,9 +20,9 @@ module HappyFlowers.API.Middlewares (
   pathConversion
   ) where
 
-import Data.Text (Text)
-import Network.HTTP.Types as H
-import Network.Wai (Middleware)
+import Data.Text                      (Text)
+import Network.HTTP.Types             as H
+import Network.Wai                    (Middleware)
 import Network.Wai.Middleware.Cors
 import Network.Wai.Middleware.Rewrite
 import Network.Wai.Middleware.Static

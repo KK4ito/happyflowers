@@ -19,4 +19,7 @@ executable rpi
                  scotty >= 0.11.0,
                  websockets >= 0.9.7.0,
                  wai >= 3.2.1.1,
-                 time >= 1.5
+                 time >= 1.5,
+                 wreq >= 0.4.1.0,
+                 HPi >= 0.5.1,
+                 network >= 2.6.3.1

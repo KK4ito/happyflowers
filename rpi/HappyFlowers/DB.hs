@@ -20,6 +20,10 @@ module HappyFlowers.DB (
   querySettings,
   updateSettings,
   queryHistory,
+  addEvent,
+  addMeasurement,
+  queryLatestEvent,
+  queryLatestMeasurement,
   -- * Operations
   getDate
   ) where
@@ -80,3 +84,37 @@ queryHistory = do
                                                 , measurements = m
                                                 }
     otherwise          -> return Nothing
+
+-- TODO: document
+addEvent :: String -> IO ()
+addEvent kind = do
+  conn <- open dbName
+  execute conn "INSERT INTO events (type) VALUES (?)" (Only (kind :: String))
+  close conn
+
+-- TODO: document
+queryLatestEvent :: IO (Maybe Event)
+queryLatestEvent = do
+  conn <- open dbName
+  rows <- try (query_ conn "SELECT * FROM events ORDER BY timestamp DESC LIMIT 1") :: IO (Either SQLError [Event])
+  close conn
+  case rows of
+    Right rows' -> return $ Just $ head rows'
+    Left _      -> return Nothing
+
+-- TODO: document
+addMeasurement :: Int -> IO ()
+addMeasurement value = do
+  conn <- open dbName
+  execute conn "INSERT INTO measurements (value) VALUES (?)" (Only (value :: Int))
+  close conn
+
+-- TODO: document
+queryLatestMeasurement :: IO (Maybe Measurement)
+queryLatestMeasurement = do
+  conn <- open dbName
+  rows <- try (query_ conn "SELECT * FROM measurements ORDER BY timestamp DESC LIMIT 1") :: IO (Either SQLError [Measurement])
+  close conn
+  case rows of
+    Right rows' -> return $ Just $ head rows'
+    Left _      -> return Nothing

@@ -23,14 +23,14 @@ module HappyFlowers.API.Routes (
   ) where
 
 import           Control.Exception
-import           Control.Monad.Trans (liftIO)
-import           Data.Aeson (FromJSON)
-import           Database.SQLite.Simple (ToRow, toRow)
-import qualified Data.ByteString.Char8 as C
+import           Control.Monad.Trans       (liftIO)
+import           Data.Aeson                (FromJSON)
+import           Database.SQLite.Simple    (ToRow, toRow)
+import qualified Data.ByteString.Char8     as C
 import           GHC.Generics
 import           HappyFlowers.Config
 import           HappyFlowers.Types
-import qualified HappyFlowers.DB as DB
+import qualified HappyFlowers.DB           as DB
 import           Jose.Jws
 import           Jose.Jwa
 import           Network.HTTP.Types.Status (status401, status500)

@@ -20,7 +20,7 @@ module HappyFlowers.Types (
   Settings(..)
   ) where
 
-import Data.Aeson (ToJSON)
+import Data.Aeson                     (ToJSON)
 import Database.SQLite.Simple.FromRow
 import GHC.Generics
 
