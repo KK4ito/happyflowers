@@ -10,6 +10,10 @@ import './Stream.css'
  * @return {string} - HTML markup for the component.
  */
 class Stream extends React.Component {
+  static propTypes = {
+    name: React.PropTypes.String
+  }
+
   constructor(props) {
     super(props)
 
@@ -24,9 +28,9 @@ class Stream extends React.Component {
     return (
       <Widget title="Livestream">
         <div onClick={() => this.setState({ fullscreen: false })} className={`full-screen ${this.state.fullscreen ? 'is-visible' : ''}`}>
-          <img className="live-stream" src={`http://${window.location.hostname}:8081`} alt={`Livestream of ${name}.`} />
+          <img className="live-stream" src={`http://${window.location.hostname}:8081`} alt={`Livestream of ${name || 'your flower'}.`} />
         </div>
-        <img onClick={() => this.setState({ fullscreen: true })} className="live-stream" src={`http://${window.location.hostname}:8081`} alt={`Livestream of ${name}.`} />
+        <img onClick={() => this.setState({ fullscreen: true })} className="live-stream" src={`http://${window.location.hostname}:8081`} alt={`Livestream of ${name || 'your flower'}.`} />
       </Widget>
     )
   }

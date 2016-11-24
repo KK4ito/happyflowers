@@ -16,7 +16,7 @@ import './Stats.css'
  * @return {string} - HTML markup for the component.
  */
 const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
-  <Widget title={name || 'happy flower'} isLoading={isFetching}>
+  <Widget title={name || 'Your Flower'} isLoading={isFetching}>
     <ul className="stats-list unstyled-list">
       <li>
         <span data-icon="loupe" />
