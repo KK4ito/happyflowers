@@ -20,4 +20,4 @@ client conn = do
 -- TODO: document
 hwApp :: Int -- ^ Port
       -> IO ()
-hwApp port = withSocketsDo $ WS.runClient "localhost" port "/" client
+hwApp port = withSocketsDo $ WS.runClient "127.0.0.1" port "/" client
