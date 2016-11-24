@@ -17,7 +17,6 @@ module HappyFlowers.API.Middleware
       -- * Operations
       staticMiddleware
     , rewriteMiddleware
-    , pathConversion
     ) where
 
 import Data.Text                      (Text)

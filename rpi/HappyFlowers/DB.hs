@@ -15,10 +15,8 @@ sqlite database.
 
 module HappyFlowers.DB
     (
-      -- * Configuration
-      dbName
       -- * Settings
-    , querySettings
+      querySettings
     , updateSettings
       -- * History
     , queryHistory
@@ -26,8 +24,6 @@ module HappyFlowers.DB
     , addMeasurement
     , queryLatestEvent
     , queryLatestMeasurement
-      -- * Operations
-    , getReferenceDate
     ) where
 
 import           Control.Exception      (try)
@@ -122,8 +118,8 @@ queryLatestMeasurement = do
 
 -- | retrieve a sqlite-compatible timestamp based on a given offset.
 getReferenceDate :: UTCTime -- ^ Current time
-        -> Integer -- ^ Offset in days
-        -> String
+                 -> Integer -- ^ Offset in days
+                 -> String
 getReferenceDate time ago = formatTime defaultTimeLocale "%F" date
     where
         date = addDays (ago * (-1)) $ utctDay time

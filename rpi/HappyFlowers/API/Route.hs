@@ -13,17 +13,12 @@ The functions included in this module are used to route requests on the server.
 -}
 module HappyFlowers.API.Route
     (
-      -- * Configuration
-      tokenSecret
       -- * Routes
-    , getSettings
+      getSettings
     , putSettings
     , getHistory
     , postAuth
     , getRoot
-      -- * Types
-    , PutSettingsBody(..)
-    , PostAuthBody(..)
     ) where
 
 import           Control.Exception         (try)

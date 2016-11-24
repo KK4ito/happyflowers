@@ -14,17 +14,8 @@ between clients.
 -}
 module HappyFlowers.WS.Application
     (
-      -- * Types
-      Client(..)
-    , Id(..)
-    , ServerState(..)
       -- * Operations
-    , newServerState
-    , addClient
-    , removeClient
-    , broadcast
-    , server
-    , talk
+      newServerState
     , wsApp
     ) where
 

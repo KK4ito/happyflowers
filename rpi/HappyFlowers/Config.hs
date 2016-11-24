@@ -12,12 +12,8 @@ the happy flowers project.
 -}
 module HappyFlowers.Config
     (
-      -- * Configuration
-      configFile
       -- * Operations
-    , getConfig
-      -- * Helpers
-    , splitToTuple
+      getConfig
     ) where
 
 import           Control.Applicative ((<$>))
@@ -43,8 +39,8 @@ getConfig field = do
 
 -- | finds a config entry's value based on its name.
 findEntry :: [ConfigEntry] -- ^ Full configuration
-          -> T.Text -- ^ Config entry name
-          -> T.Text -- ^ Config entry value
+          -> T.Text        -- ^ Config entry name
+          -> T.Text        -- ^ Config entry value
 findEntry config name = snd . head $ filter ((== name) . fst) config
 
 -- | splits a string into a 'ConfigEntry' tuple.

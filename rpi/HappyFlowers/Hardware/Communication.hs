@@ -14,11 +14,8 @@ hardware and connected sensors and devices.
 -}
 module HappyFlowers.Hardware.Communication
     (
-      -- * Configuration
-      address
       -- * Sensor
-    , readMoisture
-    , checkMoisture
+      checkMoisture
       -- * Pump
     , activatePump
     ) where
@@ -39,9 +36,9 @@ import           HappyFlowers.Type            (interval, lower, upper)
 address :: G.Address
 address = 0x20
 
--- | reads data from the chirp sensor through the 'address'.
-readMoisture :: IO ()
-readMoisture = G.withGPIO . G.withI2C $ do
+-- | reads data from the chirp sensor.
+readMoisture :: G.Address -> IO ()
+readMoisture address = G.withGPIO . G.withI2C $ do
     d <- G.readI2C address 0
     putStrLn $ C.unpack d
 

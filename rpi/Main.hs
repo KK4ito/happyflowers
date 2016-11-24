@@ -11,11 +11,8 @@ Starts a REST API server, a WebSockets server and relevant hardware processes.
 -}
 module Main
     (
-      -- * Configuration
-      apiPort
-    , wsPort
       -- * Operations
-    , main
+      main
     ) where
 
 import Control.Concurrent                (forkIO)

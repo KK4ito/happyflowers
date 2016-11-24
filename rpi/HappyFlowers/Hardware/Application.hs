@@ -12,8 +12,7 @@ A WebSockets client implementation that communicates with the RPi's hardware.
 module HappyFlowers.Hardware.Application
     (
       -- * Operations
-      client
-    , hwApp
+      hwApp
     ) where
 
 import           Control.Monad.Trans                 (liftIO)
