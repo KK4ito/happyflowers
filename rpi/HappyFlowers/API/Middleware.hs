@@ -22,7 +22,7 @@ module HappyFlowers.API.Middleware
   ) where
 
 import Data.Text                      (Text)
-import Network.HTTP.Type              as H
+import Network.HTTP.Types             as H
 import Network.Wai                    (Middleware)
 import Network.Wai.Middleware.Cors    (cors, corsOrigins, corsRequestHeaders, corsMethods, simpleCorsResourcePolicy)
 import Network.Wai.Middleware.Rewrite (PathsAndQueries, rewritePureWithQueries)

@@ -18,7 +18,7 @@ module HappyFlowers.Config
   , readConfig
   , getConfig
     -- * Helpers
-  , splitToTupl
+  , splitToTuple
   ) where
 
 import qualified Data.Text as T
@@ -52,7 +52,7 @@ getConfig field = do
 
 -- | The 'splitToTuple' takes a String, splits it at every '=' character and
 -- converts the result to a ConfigEntry tuple.
-splitToTuple :: String -- ^ `key=value` pair
+splitToTuple :: String -- ^ Key-value pair
              -> ConfigEntry
 splitToTuple t = do
   let (key:val:_) = ((T.split (== '=')) . T.pack) t
