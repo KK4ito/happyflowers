@@ -116,7 +116,7 @@ a:focus {
   margin-left: -1.5em;
 }
 
-[data-grid]:after {
+[data-grid]::after {
   content: "";
   display: table;
   clear: both;
@@ -142,7 +142,8 @@ a:focus {
   padding-left: 0;
 }
 
-[data-col~="1-2"], [data-col~="2-4"] {
+[data-col~="1-2"],
+[data-col~="2-4"] {
   width: 50%;
 }
 
@@ -163,7 +164,8 @@ a:focus {
 }
 
 @media (min-width: 50em) {
-  [data-col~="L1-2"], [data-col~="L2-4"] {
+  [data-col~="L1-2"],
+  [data-col~="L2-4"] {
     width: 50%;
   }
 

@@ -14,7 +14,7 @@
   pointer-events: none;
   color: rgba(250, 251, 255, 0.95);
   font-size: 100%;
-  transition: top .4s, bottom .4s;
+  transition: top 0.4s, bottom 0.4s;
 }
 
 .s-alert-box.s-alert-show {

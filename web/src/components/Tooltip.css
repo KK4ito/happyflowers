@@ -22,7 +22,7 @@
   pointer-events: none;
 }
 
-.tooltip-body:before {
+.tooltip-body::before {
   content: "";
   position: absolute;
   top: -0.75em;
