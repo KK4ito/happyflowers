@@ -17,33 +17,34 @@ module HappyFlowers.DB
     (
       -- * Configuration
       dbName
-      -- * DB Operations
+      -- * Settings
     , querySettings
     , updateSettings
+      -- * History
     , queryHistory
     , addEvent
     , addMeasurement
     , queryLatestEvent
     , queryLatestMeasurement
       -- * Operations
-    , getDate
+    , getReferenceDate
     ) where
 
-import           HappyFlowers.Config    (getConfig)
-import           HappyFlowers.Type
-
 import           Control.Exception      (try)
-import           Data.Time.Clock        (getCurrentTime, utctDay)
+import           Data.Text              (Text, unpack)
+import           Data.Time.Clock        (getCurrentTime, utctDay, UTCTime(..))
 import           Data.Time.Calendar     (addDays)
 import           Data.Time.Format       (defaultTimeLocale, formatTime)
 import qualified Database.SQLite.Simple as S
 
--- | 'dbName' determines which sqlite database is used for the application.
+import           HappyFlowers.Config    (getConfig)
+import           HappyFlowers.Type
+
+-- | determines which sqlite database is used for the application.
 dbName :: String
 dbName = "happyflowers.db"
 
--- | The 'querySettings' function attempts to retrieve settings data from the
--- database.
+-- | retrieves settings. Returns Nothing if the query fails.
 querySettings :: IO (Maybe Settings)
 querySettings = do
     conn <- S.open dbName
@@ -54,8 +55,7 @@ querySettings = do
         Right rows' -> return . Just $ head rows'
         Left _      -> return Nothing
 
--- | The 'updateSettings' function updates the settings entry in the database
--- with the passed data.
+-- | updates settings using a record containing new data.
 updateSettings :: S.ToRow a => a -- ^ New DB entry
                -> IO ()
 updateSettings body = do
@@ -63,25 +63,17 @@ updateSettings body = do
     S.execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
     S.close conn
 
--- | The 'getDate' function retrieves a sqlite-compatible timestamp based on the
--- offset that is passed as a parameter.
-getDate :: Integer -- ^ Time frame in days
-        -> IO String
-getDate ago = do
-    time <- getCurrentTime
-    let refDate = addDays (ago * (-1)) $ utctDay time
-    return $ formatTime defaultTimeLocale "%F" refDate
-
--- | The 'queryHistory' function attempts to retrieve historical data. This
--- includes recent measurements and events.
+-- | retrieves historical data including events and measurements. Returns
+-- Nothing if any of the queries fail.
 queryHistory :: IO (Maybe History)
 queryHistory = do
     frame <- getConfig "frame"
-    timestamp <- getDate (read frame :: Integer)
+    current <- getCurrentTime
+    let timestamp = getReferenceDate current (read (unpack frame) :: Integer)
 
     conn <- S.open dbName
-    events <- try (S.query conn "SELECT * FROM events WHERE timestamp >= ? ORDER BY timestamp ASC" (S.Only timestamp)) :: IO (Either S.SQLError [Event])
-    measurements <- try (S.query conn "SELECT * FROM measurements WHERE timestamp >= ? ORDER BY timestamp ASC" (S.Only timestamp)) :: IO (Either S.SQLError [Measurement])
+    events <- try (S.query conn "SELECT * FROM events WHERE timestamp >= ? ORDER BY timestamp ASC" (S.Only (timestamp :: String))) :: IO (Either S.SQLError [Event])
+    measurements <- try (S.query conn "SELECT * FROM measurements WHERE timestamp >= ? ORDER BY timestamp ASC" (S.Only (timestamp :: String))) :: IO (Either S.SQLError [Measurement])
     S.close conn
 
     case (events, measurements) of
@@ -91,11 +83,11 @@ queryHistory = do
         otherwise          -> return Nothing
 
 -- TODO: document
-addEvent :: String -- ^ Event kind
+addEvent :: Text -- ^ Event kind
          -> IO ()
 addEvent kind = do
     conn <- S.open dbName
-    S.execute conn "INSERT INTO events (type) VALUES (?)" (S.Only (kind :: String))
+    S.execute conn "INSERT INTO events (type) VALUES (?)" (S.Only (kind :: Text))
     S.close conn
 
 -- TODO: document
@@ -127,3 +119,11 @@ queryLatestMeasurement = do
     case rows of
         Right rows' -> return . Just $ head rows'
         Left _      -> return Nothing
+
+-- | retrieve a sqlite-compatible timestamp based on a given offset.
+getReferenceDate :: UTCTime -- ^ Current time
+        -> Integer -- ^ Offset in days
+        -> String
+getReferenceDate time ago = formatTime defaultTimeLocale "%F" date
+    where
+        date = addDays (ago * (-1)) $ utctDay time

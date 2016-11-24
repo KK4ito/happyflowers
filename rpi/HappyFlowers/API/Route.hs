@@ -21,30 +21,33 @@ module HappyFlowers.API.Route
     , getHistory
     , postAuth
     , getRoot
+      -- * Types
+    , PutSettingsBody(..)
+    , PostAuthBody(..)
     ) where
-
-import           HappyFlowers.Config       (getConfig)
-import qualified HappyFlowers.DB           as DB
 
 import           Control.Exception         (try)
 import           Control.Monad.Trans       (liftIO)
 import           Data.Aeson                (FromJSON)
+import           Data.ByteString.Char8     (ByteString, pack)
+import           Data.Text                 (Text)
 import           Database.SQLite.Simple    (ToRow, toRow)
-import qualified Data.ByteString.Char8     as C
 import           GHC.Generics
 import           Jose.Jws                  (hmacDecode, hmacEncode)
 import           Jose.Jwa                  (JwsAlg(..))
 import           Network.HTTP.Types.Status (status401, status500)
 import           Web.Scotty
 
--- | 'tokenSecret' defines the secret string that is used for the JSON Web
--- Token. It is used to encrypt and decrypt the token.
-tokenSecret :: C.ByteString
+import           HappyFlowers.Config       (getConfig)
+import qualified HappyFlowers.DB           as DB
+
+-- | defines the secret string that is used for encrypting and decrypting the
+-- JSON Web Token.
+tokenSecret :: ByteString
 tokenSecret = "hppyflwrs"
 
--- | The 'getSettings' function handles GET requests for application settings.
--- The settings are retrieved from the sqlite database. An HTTP error is
--- produced if the settings could not be retrieved.
+-- | handles GET requests for application settings. Produces a JSON response
+-- containing settings or an HTTP error if data is missing.
 getSettings :: ScottyM ()
 getSettings = get "/api/settings/" $ do
     settings <- liftIO DB.querySettings
@@ -53,32 +56,28 @@ getSettings = get "/api/settings/" $ do
         Just settings' -> json settings'
         Nothing        -> status status500
 
--- | 'PutSettingsBody' defines the type that is used to parse the request body
--- of the 'putSettings' function. It can be parsed from scotty's jsonData method
--- and converted to a sqlite row instance so it can be stored in the database.
+-- | 'PutSettingsBody' is used to parse the request body of the 'putSettings'
+-- function.
 data PutSettingsBody = PutSettingsBody
-    { token :: !String -- ^ The token used for authentication.
-    , name :: !String  -- ^ The new `name` entry.
-    , upper :: !Int    -- ^ The new `upper` entry.
-    , lower :: !Int    -- ^ The new `lower` entry.
-    , interval :: !Int -- ^ The new `interval` entry.
+    { token :: !String     -- ^ Token used for authentication
+    , name :: !Text        -- ^ New `name` entry
+    , upper :: !Int        -- ^ New `upper` entry
+    , lower :: !Int        -- ^ New `lower` entry
+    , interval :: !Int     -- ^ New `interval` entry
     } deriving Generic
 
 instance FromJSON PutSettingsBody
 instance ToRow PutSettingsBody where
     toRow (PutSettingsBody _ name upper lower interval) = toRow (name, upper, lower, interval)
 
--- | The 'putSettings' function handles PUT requests for application settings.
--- The new data is parsed from the form data passed to the request and is then
--- stored in the database. The request then returns the new entity.
--- This request requires authentication using the JWT. An HTTP error is
--- produced if the request failed to provide authentication. See 'postAuth' for
--- more information.
+-- | handles PUT requests for application settings. Requires authentication
+-- using JWT. Produces a JSON response containing the new entity or an HTTP
+-- error if authentication failed or data could not be stored.
 putSettings :: ScottyM ()
 putSettings = put "/api/settings/" $ do
     body <- jsonData :: ActionM PutSettingsBody
 
-    let jwt = hmacDecode tokenSecret . C.pack $ token body
+    let jwt = hmacDecode tokenSecret . pack $ token body
     case jwt of
         Left _  -> status status401
         Right _ -> do
@@ -89,8 +88,9 @@ putSettings = put "/api/settings/" $ do
                 Just settings' -> json settings'
                 Nothing        -> status status500
 
--- | The 'getHistory' function handles GET request for historical application
--- data. The data is retrieved from the sqlite database.
+-- | handles GET request for historical application data. Produces a JSON
+-- response containing the history data or an HTTP error if data could not be
+-- retrieved.
 getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ do
     history <- liftIO DB.queryHistory
@@ -99,18 +99,16 @@ getHistory = get "/api/history/" $ do
         Just history' -> json history'
         Nothing       -> status status500
 
--- | 'PostAuthBody' defines the type that is used to parse the request body of
--- the 'postAuth' function. It can be parsed from scotty's jsonData method.
+-- | 'PostAuthBody' is used to parse the request body of the 'postAuth'
+-- function.
 data PostAuthBody = PostAuthBody
-    { password :: !String -- ^ The user-submitted password.
+    { password :: !Text -- ^ User-submitted password
     } deriving Generic
 
 instance FromJSON PostAuthBody
 
--- | The 'postAuth' function handles POST requests for authentication. The
--- user-entered password is parsed from the form data. It is then checked
--- against the password stored in the configuration file. The request returns
--- either a JWT marking successful authentication or produces an HTTP error.
+-- | handles POST requests for authentication. Produces a JSON response
+-- containing the JWT or an HTTP error if authentication was not successful.
 postAuth :: ScottyM ()
 postAuth = post "/api/auth/" $ do
     body <- jsonData :: ActionM PostAuthBody
@@ -127,8 +125,7 @@ postAuth = post "/api/auth/" $ do
         else do
             status status401
 
--- | The 'getRoot' handles GET requests for the root route. This is used to
--- serve the web front end. All non-API requests are rewritten to this route.
+-- | handles GET requests for the root route. Used to serve the JS application.
 getRoot :: ScottyM ()
 getRoot = get "/" $ do
     file "../web/build/index.html"

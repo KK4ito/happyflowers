@@ -17,16 +17,16 @@ module HappyFlowers.API.Application
       apiApp
     ) where
 
-import qualified HappyFlowers.API.Middleware as M
-import qualified HappyFlowers.API.Route      as R
+import Web.Scotty                  (middleware, scotty)
 
-import           Web.Scotty                   (middleware, scotty)
+import HappyFlowers.API.Middleware
+import HappyFlowers.API.Route
 
--- | The 'apiApp' function sets up a Scotty server listening on a given port. It
--- contains several middlewares and reacts to a set of routes.
+-- | sets up a Scotty server listening on a given port. Contains several
+-- middlewares and reacts to a set of routes.
 apiApp :: Int -- ^ Port
        -> IO ()
 apiApp port = scotty port $ do
-    middleware M.staticMiddleware
-    middleware M.rewriteMiddleware
-    R.getSettings >> R.putSettings >> R.getHistory >> R.postAuth >> R.getRoot
+    middleware staticMiddleware
+    middleware rewriteMiddleware
+    getSettings >> putSettings >> getHistory >> postAuth >> getRoot

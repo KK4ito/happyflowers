@@ -22,27 +22,26 @@ module HappyFlowers.Type
     ) where
 
 import Data.Aeson             (ToJSON)
+import Data.Text              (Text)
 import Database.SQLite.Simple (field, FromRow(..))
 import GHC.Generics
 
--- | An event marks a watering, either `manual` or `automatic`. It can be parsed
--- from the database and serialised to JSON.
+-- | An event marks a watering, either `manual` or `automatic`.
 data Event = Event
-    { eventId :: !Int           -- ^ The numeric ID of the event.
-    , eventType :: !String      -- ^ The type of the event, either `automatic` or `manual`.
-    , eventTimestamp :: !String -- ^ The timestamp when the event occured.
+    { eventId :: !Int           -- ^ Numeric ID
+    , eventType :: !Text        -- ^ Event type, `automatic` or `manual`
+    , eventTimestamp :: !Text   -- ^ Event timestamp
     } deriving Generic
 
 instance ToJSON Event
 instance FromRow Event where
     fromRow = Event <$> field <*> field <*> field
 
--- | A measurement marks a measurement of the moisture level of the flower. It
--- can be parsed from the database and serialised to JSON.
+-- | A measurement marks the checking of the flower's moisture level.
 data Measurement = Measurement
-    { measurementId :: !Int           -- ^ The numeric ID of the measurement.
-    , measurementValue :: !Int        -- ^ The moisture level measured at this point.
-    , measurementTimestamp :: !String -- ^ The timestamp when the measurement occured.
+    { measurementId :: !Int           -- ^ Numeric ID
+    , measurementValue :: !Int        -- ^ Moisture level
+    , measurementTimestamp :: !Text   -- ^ Measurement timestamp
     } deriving Generic
 
 instance ToJSON Measurement
@@ -50,22 +49,20 @@ instance FromRow Measurement where
     fromRow = Measurement <$> field <*> field <*> field
 
 -- | History is a combination of events and measurement, forming the complete
--- historical data of the application over a given timeframe. It can be
--- serialised to JSON.
+-- historical data of the application.
 data History = History
-    { events :: ![Event]             -- ^ The list of events that are part of the history.
-    , measurements :: ![Measurement] -- ^ The list of measurements that are part of the history.
+    { events :: ![Event]             -- ^ Historical events data
+    , measurements :: ![Measurement] -- ^ Historical measurement data
     } deriving Generic
 
 instance ToJSON History
 
--- | Settings is the entity containing all application data. It can be retrieved
--- from the database and serialised to JSON.
+-- | Settings contains all application settings data.
 data Settings = Settings
-    { name :: !String  -- ^ The name of the flower.
-    , upper :: !Int    -- ^ The upper moisture level for the flower.
-    , lower :: !Int    -- ^ The lower moisture level for the flower.
-    , interval :: !Int -- ^ The interval at which moisture levels should be measured.
+    { name :: !Text    -- ^ Flower name
+    , upper :: !Int    -- ^ Upper moisture level
+    , lower :: !Int    -- ^ Lower moisture level
+    , interval :: !Int -- ^ Measurement interval
     } deriving Generic
 
 instance ToJSON Settings

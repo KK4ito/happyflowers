@@ -22,9 +22,6 @@ module HappyFlowers.Hardware.Communication
     , checkMoisture
     ) where
 
-import qualified HappyFlowers.DB              as DB
-import           HappyFlowers.Type            (interval, lower, upper)
-
 import           Control.Concurrent           (threadDelay)
 import           Data.Aeson                   (encode, object, (.=))
 import qualified Data.ByteString.Char8        as C
@@ -34,12 +31,14 @@ import           Database.SQLite.Simple.Types (Only(..))
 import qualified Network.WebSockets           as WS
 import qualified System.RaspberryPi.GPIO      as G
 
--- | 'address' determines the address of the port that is used to read data.
+import qualified HappyFlowers.DB              as DB
+import           HappyFlowers.Type            (interval, lower, upper)
+
+-- | determines the address of the port that is used to read data.
 address :: G.Address
 address = 0x20
 
--- | The 'readMoisture' function reads data from the chirp sensor through the
--- 'address'. It relies on GPIO and I2C.
+-- | reads data from the chirp sensor through the 'address'.
 readMoisture :: IO ()
 readMoisture = G.withGPIO . G.withI2C $ do
     d <- G.readI2C address 0

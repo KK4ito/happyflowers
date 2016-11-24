@@ -26,20 +26,17 @@ import Network.Wai                    (Middleware)
 import Network.Wai.Middleware.Rewrite (PathsAndQueries, rewritePureWithQueries)
 import Network.Wai.Middleware.Static  (addBase, staticPolicy)
 
--- | The 'staticMiddleware' function sets up a piece of middleware that allows
--- serving static files from the compiled web front end directory.
+-- | sets up a piece of middleware that allows serving static files.
 staticMiddleware :: Middleware
 staticMiddleware = staticPolicy (addBase "../web/build/")
 
--- | The 'rewriteMiddleware' function sets up a piece of middleware that allows
--- request rewriting. It is used to route all non-API requests to the root
--- route, where the web front end handles routing.
+-- | sets up a piece of middleware that allows request rewriting. Used to route
+-- all non-API requests to the root route, where the web front end handles
+-- routing.
 rewriteMiddleware :: Middleware
 rewriteMiddleware = rewritePureWithQueries pathConversion
 
--- | The 'pathConversion' function rewrites URLS based on certain criteria.
--- Requests to endpoints starting with api are simply passed through as-is,
--- while all other requests are redirected to the root route.
+-- | rewrites URLS based on path and query strings.
 pathConversion :: PathsAndQueries -> H.RequestHeaders -> PathsAndQueries
 pathConversion (pieces, queries) _ = piecesConvert pieces queries
     where

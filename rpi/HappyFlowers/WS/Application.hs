@@ -46,42 +46,38 @@ type Client = (Id, WS.Connection)
 -- server.
 type Id = Int
 
--- | 'ServerState' keeps track of the currently available Id and the list of
--- connected clients.
+-- | keeps track of the currently available Id and the list of connected
+-- clients.
 type ServerState = (Id, [Client])
 
--- | The 'newServerState' function creates a new 'ServerState' instance with the
--- default values.
+-- | creates a new 'ServerState' instance with the default values.
 newServerState :: ServerState
 newServerState = (0, [])
 
--- | The 'addClient' function adds a new 'Client' to the current 'ServerState'.
--- The currently available Id is incremented so that it can be claimed by the
--- next client.
+-- | adds a new 'Client' to the current 'ServerState' using the currently
+-- available 'Id'.
 addClient :: Client -> ServerState -> ServerState
 addClient client (id, clients) = (id + 1, client : clients)
 
--- | The 'removeClient' function removes a client from the current
--- 'ServerState'. The currently available Id is unaffected by this change.
+-- | removes a client from the current 'ServerState'.
 removeClient :: Client -> ServerState -> ServerState
 removeClient client (id, clients) = (id, filter ((/= fst client) . fst) clients)
 
--- | The 'broadcast' function is used to send a message to all connected
--- clients.
+-- | sends a message to all connected clients.
 broadcast :: Text -> ServerState -> IO ()
 broadcast message (_, clients) = do
     T.putStrLn message
     forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
--- | The 'talk' function is used to retrieve a message from a client and
--- 'broadcast' it to all clients.
+-- | retrieves a message from a connected client and 'broadcast' it to all other
+-- clients.
 talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
 talk conn state _ = forever $ do
     msg <- WS.receiveData conn
     readMVar state >>= broadcast msg
 
--- | The 'disconnect' function is used to remove a client from the current
--- 'ServerState' instance. This change is broadcast to all other clients.
+-- | removes a client from the current 'ServerState' and 'broadcast' it to all
+-- other clients.
 disconnect :: Client -> MVar ServerState -> IO [Client]
 disconnect client state = do
     modifyMVar state $ \s -> do
@@ -89,9 +85,8 @@ disconnect client state = do
         broadcast (T.pack (show . fst $ client) `mappend` " disconnected") s'
         return (s', snd s')
 
--- | The 'server' function starts a new WebSockets server instance that accepts
--- new connections. All new connections are added to the 'ServerState' and
--- receive all broadcasts.
+-- | starts a new WebSockets server instance. New connections recieve all
+-- broadcasts.
 server :: MVar ServerState -> WS.ServerApp
 server state pending = do
     conn <- WS.acceptRequest pending
@@ -108,7 +103,7 @@ server state pending = do
             return s'
         talk conn state client
 
--- | The 'wsApp' function sets up a WebSockets server listening on a given port.
+-- | sets up a WebSockets server listening on a given port.
 wsApp :: Int -- ^ Port
       -> IO ()
 wsApp port = do

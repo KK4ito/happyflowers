@@ -23,16 +23,17 @@ import HappyFlowers.API.Application
 import HappyFlowers.Hardware.Application
 import HappyFlowers.WS.Application
 
--- | 'apiPort' determines which port the API application is run on.
+-- | determines which port the API application is run on.
 apiPort :: Int
 apiPort = 5000
 
--- | 'wsPort' determines which port the WebSockets application is run on.
+-- | determines which port the WebSockets application is run on.
 wsPort :: Int
 wsPort = 9160
 
--- | The 'startServer' function sets up the API application on 'apiPort' and the
--- WebSockets application on port 'wsPort'.
+-- | sets up the API application on 'apiPort' and the WebSockets application on
+-- port 'wsPort'. The Hardware processes are started with communication to the
+-- WS server.
 main :: IO ()
 main = do
     putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."

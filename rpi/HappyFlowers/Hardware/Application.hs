@@ -6,11 +6,11 @@ module HappyFlowers.Hardware.Application
     , hwApp
     ) where
 
-import qualified HappyFlowers.Hardware.Communication as C
-
 import           Control.Monad.Trans                 (liftIO)
 import           Network.Socket                      (withSocketsDo)
 import qualified Network.WebSockets                  as WS
+
+import qualified HappyFlowers.Hardware.Communication as C
 
 -- TODO: document
 client :: WS.ClientApp ()

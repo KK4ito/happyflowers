@@ -150,9 +150,9 @@ class Settings extends React.Component {
 
     const data = {
       name: this.state.name.get('value'),
-      upper: `${this.state.upper.get('value')}`,
-      lower: `${this.state.lower.get('value')}`,
-      interval: `${this.state.interval.get('value')}`,
+      upper: this.state.upper.get('value'),
+      lower: this.state.lower.get('value'),
+      interval: this.state.interval.get('value'),
       token: this.props.jwt
     }
 
