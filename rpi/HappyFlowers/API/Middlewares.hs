@@ -23,15 +23,15 @@ module HappyFlowers.API.Middlewares (
 import Data.Text                      (Text)
 import Network.HTTP.Types             as H
 import Network.Wai                    (Middleware)
-import Network.Wai.Middleware.Cors
-import Network.Wai.Middleware.Rewrite
-import Network.Wai.Middleware.Static
+import Network.Wai.Middleware.Cors    (cors, corsOrigins, corsRequestHeaders, corsMethods, simpleCorsResourcePolicy)
+import Network.Wai.Middleware.Rewrite (PathsAndQueries, rewritePureWithQueries)
+import Network.Wai.Middleware.Static  (addBase, staticPolicy)
 
 -- | The 'corsMiddleware' function sets up a piece of middleware that is used
 -- during development. It allows cross-origin requests between the webpack
 -- development server and the API.
 corsMiddleware :: Middleware
-corsMiddleware = cors $ const $ Just simpleCorsResourcePolicy
+corsMiddleware = cors . const $ Just simpleCorsResourcePolicy
   { corsOrigins = Just (["http://localhost:3000", "http://localhost:5000"], False)
   , corsRequestHeaders = ["Content-Type"]
   , corsMethods = ["GET", "PUT", "POST", "OPTIONS"]

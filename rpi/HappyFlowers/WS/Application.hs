@@ -85,7 +85,7 @@ disconnect :: Client -> MVar ServerState -> IO [Client]
 disconnect client state = do
   modifyMVar state $ \s -> do
     let s' = removeClient client s
-    broadcast (T.pack ((show . fst) client) `mappend` " disconnected") s'
+    broadcast (T.pack (show . fst $ client) `mappend` " disconnected") s'
     return (s', snd s')
 
 -- | The 'server' function starts a new WebSockets server instance that accepts
@@ -103,7 +103,7 @@ server state pending = do
   flip finally (disconnect client state) $ do
     modifyMVar_ state $ \s -> do
       let s' = addClient client s
-      broadcast (T.pack ((show . fst) client) `mappend` " joined") s'
+      broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
       return s'
     talk conn state client
 

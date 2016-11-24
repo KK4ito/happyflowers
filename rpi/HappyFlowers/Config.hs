@@ -36,7 +36,7 @@ configFile = "rpi.cfg"
 readConfig :: String -> IO [ConfigEntry]
 readConfig file = do
   val <- readFile file
-  return $ map splitToTuple $ lines val
+  return . fmap splitToTuple $ lines val
 
 -- | The 'getConfig' function reads the list of entries parsed from the config
 -- file and filters it in order to obtain the desired config. It matches entries
@@ -46,7 +46,7 @@ getConfig :: String -> IO String
 getConfig field = do
   config <- readConfig configFile
   let entry = filter ((== field) . fst) config
-  return $ (snd . head) entry
+  return . snd . head $ entry
 
 -- | The 'splitToTuple' takes a String, splits it at every '=' character and
 -- converts the result to a ConfigEntry tuple.

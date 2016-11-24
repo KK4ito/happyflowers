@@ -28,13 +28,14 @@ module HappyFlowers.DB (
   getDate
   ) where
 
-import Control.Exception
-import Data.Time.Clock
-import Data.Time.Calendar
-import Data.Time.Format
-import Database.SQLite.Simple
-import HappyFlowers.Config
-import HappyFlowers.Types
+import           HappyFlowers.Config    (getConfig)
+import           HappyFlowers.Types
+
+import           Control.Exception      (try)
+import           Data.Time.Clock        (getCurrentTime, utctDay)
+import           Data.Time.Calendar     (addDays)
+import           Data.Time.Format       (defaultTimeLocale, formatTime)
+import qualified Database.SQLite.Simple as S
 
 -- | 'dbName' determines which sqlite database is used for the application.
 dbName :: String
@@ -44,20 +45,20 @@ dbName = "happyflowers.db"
 -- database.
 querySettings :: IO (Maybe Settings)
 querySettings = do
-  conn <- open dbName
-  rows <- try (query_ conn "SELECT * FROM settings") :: IO (Either SQLError [Settings])
-  close conn
+  conn <- S.open dbName
+  rows <- try (S.query_ conn "SELECT * FROM settings") :: IO (Either S.SQLError [Settings])
+  S.close conn
   case rows of
-    Right rows' -> return $ Just $ head rows'
+    Right rows' -> return . Just $ head rows'
     Left _      -> return Nothing
 
 -- | The 'updateSettings' function updates the settings entry in the database
 -- with the passed data.
-updateSettings :: ToRow a => a -> IO ()
+updateSettings :: S.ToRow a => a -> IO ()
 updateSettings body = do
-  conn <- open dbName
-  execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
-  close conn
+  conn <- S.open dbName
+  S.execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
+  S.close conn
 
 -- | The 'getDate' function retrieves a sqlite-compatible timestamp based on the
 -- offset that is passed as a parameter.
@@ -74,10 +75,10 @@ queryHistory = do
   frame <- getConfig "frame"
   timestamp <- getDate (read frame :: Integer)
 
-  conn <- open dbName
-  events <- try (query conn "SELECT * FROM events WHERE timestamp >= ? ORDER BY timestamp ASC" (Only timestamp)) :: IO (Either SQLError [Event])
-  measurements <- try (query conn "SELECT * FROM measurements WHERE timestamp >= ? ORDER BY timestamp ASC" (Only timestamp)) :: IO (Either SQLError [Measurement])
-  close conn
+  conn <- S.open dbName
+  events <- try (S.query conn "SELECT * FROM events WHERE timestamp >= ? ORDER BY timestamp ASC" (S.Only timestamp)) :: IO (Either S.SQLError [Event])
+  measurements <- try (S.query conn "SELECT * FROM measurements WHERE timestamp >= ? ORDER BY timestamp ASC" (S.Only timestamp)) :: IO (Either S.SQLError [Measurement])
+  S.close conn
 
   case (events, measurements) of
     (Right e, Right m) -> return $ Just History { events = e
@@ -88,33 +89,33 @@ queryHistory = do
 -- TODO: document
 addEvent :: String -> IO ()
 addEvent kind = do
-  conn <- open dbName
-  execute conn "INSERT INTO events (type) VALUES (?)" (Only (kind :: String))
-  close conn
+  conn <- S.open dbName
+  S.execute conn "INSERT INTO events (type) VALUES (?)" (S.Only (kind :: String))
+  S.close conn
 
 -- TODO: document
 queryLatestEvent :: IO (Maybe Event)
 queryLatestEvent = do
-  conn <- open dbName
-  rows <- try (query_ conn "SELECT * FROM events ORDER BY timestamp DESC LIMIT 1") :: IO (Either SQLError [Event])
-  close conn
+  conn <- S.open dbName
+  rows <- try (S.query_ conn "SELECT * FROM events ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Event])
+  S.close conn
   case rows of
-    Right rows' -> return $ Just $ head rows'
+    Right rows' -> return . Just $ head rows'
     Left _      -> return Nothing
 
 -- TODO: document
 addMeasurement :: Int -> IO ()
 addMeasurement value = do
-  conn <- open dbName
-  execute conn "INSERT INTO measurements (value) VALUES (?)" (Only (value :: Int))
-  close conn
+  conn <- S.open dbName
+  S.execute conn "INSERT INTO measurements (value) VALUES (?)" (S.Only (value :: Int))
+  S.close conn
 
 -- TODO: document
 queryLatestMeasurement :: IO (Maybe Measurement)
 queryLatestMeasurement = do
-  conn <- open dbName
-  rows <- try (query_ conn "SELECT * FROM measurements ORDER BY timestamp DESC LIMIT 1") :: IO (Either SQLError [Measurement])
-  close conn
+  conn <- S.open dbName
+  rows <- try (S.query_ conn "SELECT * FROM measurements ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Measurement])
+  S.close conn
   case rows of
-    Right rows' -> return $ Just $ head rows'
+    Right rows' -> return . Just $ head rows'
     Left _      -> return Nothing

@@ -22,17 +22,17 @@ module HappyFlowers.API.Routes (
   getRoot
   ) where
 
-import           Control.Exception
+import           HappyFlowers.Config       (getConfig)
+import qualified HappyFlowers.DB           as DB
+
+import           Control.Exception         (try)
 import           Control.Monad.Trans       (liftIO)
 import           Data.Aeson                (FromJSON)
 import           Database.SQLite.Simple    (ToRow, toRow)
 import qualified Data.ByteString.Char8     as C
 import           GHC.Generics
-import           HappyFlowers.Config
-import           HappyFlowers.Types
-import qualified HappyFlowers.DB           as DB
-import           Jose.Jws
-import           Jose.Jwa
+import           Jose.Jws                  (hmacDecode, hmacEncode)
+import           Jose.Jwa                  (JwsAlg(..))
 import           Network.HTTP.Types.Status (status401, status500)
 import           Web.Scotty
 
@@ -60,7 +60,8 @@ data PutSettingsBody =
                   , upper :: Int
                   , lower :: Int
                   , interval :: Int
-                  } deriving (Generic)
+                  } deriving Generic
+
 instance FromJSON PutSettingsBody
 instance ToRow PutSettingsBody where
   toRow (PutSettingsBody _ name upper lower interval) = toRow (name, upper, lower, interval)
@@ -75,7 +76,7 @@ putSettings :: ScottyM ()
 putSettings = put "/api/settings/" $ do
   body <- jsonData :: ActionM PutSettingsBody
 
-  let jwt = hmacDecode tokenSecret $ C.pack $ token body
+  let jwt = hmacDecode tokenSecret . C.pack $ token body
   case jwt of
     Left _  -> status status401
     Right _ -> do
@@ -99,7 +100,8 @@ getHistory = get "/api/history/" $ do
 -- the 'postAuth' function. It can be parsed from scotty's jsonData method.
 data PostAuthBody =
   PostAuthBody { password :: String
-               } deriving (Generic)
+               } deriving Generic
+               
 instance FromJSON PostAuthBody
 
 -- | The 'postAuth' function handles POST requests for authentication. The
