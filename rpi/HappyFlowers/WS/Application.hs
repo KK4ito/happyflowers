@@ -13,20 +13,20 @@ An implementation of a WebSockets server that simply broadcasts messages
 between clients.
 -}
 module HappyFlowers.WS.Application
-  (
-    -- * Types
-    Client(..)
-  , Id(..)
-  , ServerState(..)
-    -- * Operations
-  , newServerState
-  , addClient
-  , removeClient
-  , broadcast
-  , server
-  , talk
-  , wsApp
-  ) where
+    (
+      -- * Types
+      Client(..)
+    , Id(..)
+    , ServerState(..)
+      -- * Operations
+    , newServerState
+    , addClient
+    , removeClient
+    , broadcast
+    , server
+    , talk
+    , wsApp
+    ) where
 
 import           Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
 import           Control.Exception  (finally)
@@ -70,47 +70,47 @@ removeClient client (id, clients) = (id, filter ((/= fst client) . fst) clients)
 -- clients.
 broadcast :: Text -> ServerState -> IO ()
 broadcast message (_, clients) = do
-  T.putStrLn message
-  forM_ clients $ \(_, conn) -> WS.sendTextData conn message
+    T.putStrLn message
+    forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
 -- | The 'talk' function is used to retrieve a message from a client and
 -- 'broadcast' it to all clients.
 talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
 talk conn state _ = forever $ do
-  msg <- WS.receiveData conn
-  readMVar state >>= broadcast msg
+    msg <- WS.receiveData conn
+    readMVar state >>= broadcast msg
 
 -- | The 'disconnect' function is used to remove a client from the current
 -- 'ServerState' instance. This change is broadcast to all other clients.
 disconnect :: Client -> MVar ServerState -> IO [Client]
 disconnect client state = do
-  modifyMVar state $ \s -> do
-    let s' = removeClient client s
-    broadcast (T.pack (show . fst $ client) `mappend` " disconnected") s'
-    return (s', snd s')
+    modifyMVar state $ \s -> do
+        let s' = removeClient client s
+        broadcast (T.pack (show . fst $ client) `mappend` " disconnected") s'
+        return (s', snd s')
 
 -- | The 'server' function starts a new WebSockets server instance that accepts
 -- new connections. All new connections are added to the 'ServerState' and
 -- receive all broadcasts.
 server :: MVar ServerState -> WS.ServerApp
 server state pending = do
-  conn <- WS.acceptRequest pending
-  WS.forkPingThread conn 30
+    conn <- WS.acceptRequest pending
+    WS.forkPingThread conn 30
 
-  (id, _) <- readMVar state
+    (id, _) <- readMVar state
 
-  let client = (id, conn)
+    let client = (id, conn)
 
-  flip finally (disconnect client state) $ do
-    modifyMVar_ state $ \s -> do
-      let s' = addClient client s
-      broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
-      return s'
-    talk conn state client
+    flip finally (disconnect client state) $ do
+        modifyMVar_ state $ \s -> do
+            let s' = addClient client s
+            broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
+            return s'
+        talk conn state client
 
 -- | The 'wsApp' function sets up a WebSockets server listening on a given port.
 wsApp :: Int -- ^ Port
       -> IO ()
 wsApp port = do
-  state <- newMVar newServerState
-  WS.runServer "127.0.0.1" port $ server state
+    state <- newMVar newServerState
+    WS.runServer "127.0.0.1" port $ server state

@@ -13,14 +13,14 @@ The functions included in this module are used to communicate with the RPi's
 hardware and connected sensors and devices.
 -}
 module HappyFlowers.Hardware.Communication
-  (
-    -- * Configuration
-    address
-    -- * Operations
-  , readMoisture
-  , mockMoisture
-  , checkMoisture
-  ) where
+    (
+      -- * Configuration
+      address
+      -- * Operations
+    , readMoisture
+    , mockMoisture
+    , checkMoisture
+    ) where
 
 import qualified HappyFlowers.DB              as DB
 import           HappyFlowers.Type            (interval, lower, upper)
@@ -42,61 +42,64 @@ address = 0x20
 -- 'address'. It relies on GPIO and I2C.
 readMoisture :: IO ()
 readMoisture = G.withGPIO . G.withI2C $ do
-  d <- G.readI2C address 0
-  putStrLn $ C.unpack d
+    d <- G.readI2C address 0
+    putStrLn $ C.unpack d
 
 -- TODO: document
 mockMoisture :: IO Int
 mockMoisture = do
-  putStrLn "sensor on"
-  threadDelay 3000000
-  putStrLn "sensor off"
-  return 80
+    putStrLn "sensor on"
+    threadDelay 3000000
+    putStrLn "sensor off"
+    return 80
 
 -- TODO: document
 checkMoisture :: WS.Connection -> IO ()
 checkMoisture conn = do
-  settings <- DB.querySettings
-  case settings of
-    Just settings' -> do
-      d <- mockMoisture
-      DB.addMeasurement d
+    settings <- DB.querySettings
 
-      me <- DB.queryLatestMeasurement
-      case me of
-        Just me' -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"measurementReceived\", \"payload\":", (T.pack . CL.unpack $ encode me'), "}" ]
+    case settings of
+        Just settings' -> do
+            d <- mockMoisture
+            DB.addMeasurement d
+            me <- DB.queryLatestMeasurement
 
-      -- Either activate the pump or schedule another measurement after the
-      -- defined interval.
+            case me of
+                Just me' -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"measurementReceived\", \"payload\":", (T.pack . CL.unpack $ encode me'), "}" ]
 
-      if d < (lower settings')
-        then do
-          activatePump conn
-        else do
-          threadDelay $ (interval settings') * 60000000
-          checkMoisture conn
+            -- Either activate the pump or schedule another measurement after the
+            -- defined interval.
+
+            if d < (lower settings')
+                then do
+                    activatePump conn
+                else do
+                    threadDelay $ (interval settings') * 60000000
+                    checkMoisture conn
 
 -- TODO: document
 activatePump :: WS.Connection -> IO ()
 activatePump conn = do
-  mockTriggerPump
-  settings <- DB.querySettings
-  case settings of
-    Just settings' -> do
-      d <- mockMoisture
+    mockTriggerPump
+    settings <- DB.querySettings
 
-      if d >= (upper settings')
-        then do
-          DB.addEvent "automatic"
-          ev <- DB.queryLatestEvent
-          case ev of
-            Just ev' -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"eventReceived\", \"payload\":", (T.pack . CL.unpack $ encode ev'), "}" ]
-        else do
-          activatePump conn
+    case settings of
+        Just settings' -> do
+            d <- mockMoisture
+
+            if d >= (upper settings')
+                then do
+                    DB.addEvent "automatic"
+                    ev <- DB.queryLatestEvent
+
+                    case ev of
+                        Just ev' -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"eventReceived\", \"payload\":", (T.pack . CL.unpack $ encode ev'), "}" ]
+                else do
+                    activatePump conn
 
 -- TODO: document
 mockTriggerPump :: IO ()
 mockTriggerPump = do
-  putStrLn "pump on"
-  threadDelay 5000000
-  putStrLn "pump off"
+    putStrLn "pump on"
+    threadDelay 5000000
+    putStrLn "pump off"

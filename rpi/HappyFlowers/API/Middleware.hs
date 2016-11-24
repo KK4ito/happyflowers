@@ -13,13 +13,13 @@ The functions included in this module are used to modify incoming requests to
 the server to extend the response with data or facilitate React routing.
 -}
 module HappyFlowers.API.Middleware
-  (
-    -- * Operations
-    corsMiddleware
-  , staticMiddleware
-  , rewriteMiddleware
-  , pathConversion
-  ) where
+    (
+      -- * Operations
+      corsMiddleware
+    , staticMiddleware
+    , rewriteMiddleware
+    , pathConversion
+    ) where
 
 import Data.Text                      (Text)
 import Network.HTTP.Types             as H
@@ -33,10 +33,10 @@ import Network.Wai.Middleware.Static  (addBase, staticPolicy)
 -- development server and the API.
 corsMiddleware :: Middleware
 corsMiddleware = cors . const $ Just simpleCorsResourcePolicy
-  { corsOrigins = Just (["http://localhost:3000", "http://localhost:5000"], False)
-  , corsRequestHeaders = ["Content-Type"]
-  , corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
-  }
+    { corsOrigins = Just (["http://localhost:3000", "http://localhost:5000"], False)
+    , corsRequestHeaders = ["Content-Type"]
+    , corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
+    }
 
 -- | The 'staticMiddleware' function sets up a piece of middleware that allows
 -- serving static files from the compiled web front end directory.
@@ -54,7 +54,7 @@ rewriteMiddleware = rewritePureWithQueries pathConversion
 -- while all other requests are redirected to the root route.
 pathConversion :: PathsAndQueries -> H.RequestHeaders -> PathsAndQueries
 pathConversion (pieces, queries) _ = piecesConvert pieces queries
-  where
-    piecesConvert :: [Text] -> H.Query -> PathsAndQueries
-    piecesConvert ("api" : rest) qs = (("api" : rest), qs)
-    piecesConvert ps qs = (["/"], qs)
+    where
+        piecesConvert :: [Text] -> H.Query -> PathsAndQueries
+        piecesConvert ("api" : rest) qs = (("api" : rest), qs)
+        piecesConvert ps qs = (["/"], qs)

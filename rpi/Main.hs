@@ -9,13 +9,14 @@ Stability   : experimental
 
 Starts a REST API server, a WebSockets server and relevant hardware processes.
 -}
-module Main (
-  -- * Configuration
-  apiPort,
-  wsPort,
-  -- * Operations
-  main
-  ) where
+module Main
+    (
+      -- * Configuration
+      apiPort
+    , wsPort
+      -- * Operations
+    , main
+    ) where
 
 import Control.Concurrent                (forkIO)
 import HappyFlowers.API.Application
@@ -34,9 +35,9 @@ wsPort = 9160
 -- WebSockets application on port 'wsPort'.
 main :: IO ()
 main = do
-  putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
-  forkIO $ apiApp apiPort
-  putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
-  forkIO $ wsApp wsPort
-  putStr "[HW]  Starting process using port " >> (putStr . show) wsPort >> putStrLn "..."
-  hwApp wsPort
+    putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
+    forkIO $ apiApp apiPort
+    putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
+    forkIO $ wsApp wsPort
+    putStr "[HW]  Starting process using port " >> (putStr . show) wsPort >> putStrLn "..."
+    hwApp wsPort

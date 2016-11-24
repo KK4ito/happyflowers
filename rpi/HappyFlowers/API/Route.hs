@@ -12,16 +12,16 @@ Stability   : experimental
 The functions included in this module are used to route requests on the server.
 -}
 module HappyFlowers.API.Route
-  (
-    -- * Configuration
-    tokenSecret
-    -- * Routes
-  , getSettings
-  , putSettings
-  , getHistory
-  , postAuth
-  , getRoot
-  ) where
+    (
+      -- * Configuration
+      tokenSecret
+      -- * Routes
+    , getSettings
+    , putSettings
+    , getHistory
+    , postAuth
+    , getRoot
+    ) where
 
 import           HappyFlowers.Config       (getConfig)
 import qualified HappyFlowers.DB           as DB
@@ -47,25 +47,25 @@ tokenSecret = "hppyflwrs"
 -- produced if the settings could not be retrieved.
 getSettings :: ScottyM ()
 getSettings = get "/api/settings/" $ do
-  settings <- liftIO DB.querySettings
-  case settings of
-    Just settings' -> json settings'
-    Nothing        -> status status500
+    settings <- liftIO DB.querySettings
+    case settings of
+        Just settings' -> json settings'
+        Nothing        -> status status500
 
 -- | 'PutSettingsBody' defines the type that is used to parse the request body
 -- of the 'putSettings' function. It can be parsed from scotty's jsonData method
 -- and converted to a sqlite row instance so it can be stored in the database.
 data PutSettingsBody = PutSettingsBody
-  { token :: !String -- ^ The token used for authentication.
-  , name :: !String  -- ^ The new `name` entry.
-  , upper :: !Int    -- ^ The new `upper` entry.
-  , lower :: !Int    -- ^ The new `lower` entry.
-  , interval :: !Int -- ^ The new `interval` entry.
-  } deriving Generic
+    { token :: !String -- ^ The token used for authentication.
+    , name :: !String  -- ^ The new `name` entry.
+    , upper :: !Int    -- ^ The new `upper` entry.
+    , lower :: !Int    -- ^ The new `lower` entry.
+    , interval :: !Int -- ^ The new `interval` entry.
+    } deriving Generic
 
 instance FromJSON PutSettingsBody
 instance ToRow PutSettingsBody where
-  toRow (PutSettingsBody _ name upper lower interval) = toRow (name, upper, lower, interval)
+    toRow (PutSettingsBody _ name upper lower interval) = toRow (name, upper, lower, interval)
 
 -- | The 'putSettings' function handles PUT requests for application settings.
 -- The new data is parsed from the form data passed to the request and is then
@@ -75,33 +75,33 @@ instance ToRow PutSettingsBody where
 -- more information.
 putSettings :: ScottyM ()
 putSettings = put "/api/settings/" $ do
-  body <- jsonData :: ActionM PutSettingsBody
+    body <- jsonData :: ActionM PutSettingsBody
 
-  let jwt = hmacDecode tokenSecret . C.pack $ token body
-  case jwt of
-    Left _  -> status status401
-    Right _ -> do
-      liftIO $ DB.updateSettings body
+    let jwt = hmacDecode tokenSecret . C.pack $ token body
+    case jwt of
+        Left _  -> status status401
+        Right _ -> do
+            liftIO $ DB.updateSettings body
+            settings <- liftIO DB.querySettings
 
-      settings <- liftIO DB.querySettings
-      case settings of
-        Just settings' -> json settings'
-        Nothing        -> status status500
+            case settings of
+                Just settings' -> json settings'
+                Nothing        -> status status500
 
 -- | The 'getHistory' function handles GET request for historical application
 -- data. The data is retrieved from the sqlite database.
 getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ do
-  history <- liftIO DB.queryHistory
-  case history of
-    Just history' -> json history'
-    otherwise     -> status status500
+    history <- liftIO DB.queryHistory
+    case history of
+        Just history' -> json history'
+        otherwise     -> status status500
 
 -- | 'PostAuthBody' defines the type that is used to parse the request body of
 -- the 'postAuth' function. It can be parsed from scotty's jsonData method.
 data PostAuthBody = PostAuthBody
-  { password :: !String -- ^ The user-submitted password.
-  } deriving Generic
+    { password :: !String -- ^ The user-submitted password.
+    } deriving Generic
 
 instance FromJSON PostAuthBody
 
@@ -111,21 +111,22 @@ instance FromJSON PostAuthBody
 -- either a JWT marking successful authentication or produces an HTTP error.
 postAuth :: ScottyM ()
 postAuth = post "/api/auth/" $ do
-  body <- jsonData :: ActionM PostAuthBody
+    body <- jsonData :: ActionM PostAuthBody
 
-  let pw = password body
-  syspw <- liftIO $ getConfig "password"
+    let pw = password body
+    syspw <- liftIO $ getConfig "password"
 
-  case () of
-    _ | pw == syspw -> do
-        let jwt = hmacEncode HS384 tokenSecret "hello"
-        case jwt of
-          Left _     -> status status500
-          Right jwt' -> json jwt'
-      | otherwise   -> status status401
+    if pw == syspw
+        then do
+            let jwt = hmacEncode HS384 tokenSecret "hello"
+            case jwt of
+                Left _     -> status status500
+                Right jwt' -> json jwt'
+        else do
+            status status401
 
 -- | The 'getRoot' handles GET requests for the root route. This is used to
 -- serve the web front end. All non-API requests are rewritten to this route.
 getRoot :: ScottyM ()
 getRoot = get "/" $ do
-  file "../web/build/index.html"
+    file "../web/build/index.html"

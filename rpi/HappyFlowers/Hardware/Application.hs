@@ -1,10 +1,10 @@
 -- TODO: document
 module HappyFlowers.Hardware.Application
-  (
-    -- * Operations
-    client
-  , hwApp
-  ) where
+    (
+      -- * Operations
+      client
+    , hwApp
+    ) where
 
 import qualified HappyFlowers.Hardware.Communication as C
 
@@ -15,7 +15,7 @@ import qualified Network.WebSockets                  as WS
 -- TODO: document
 client :: WS.ClientApp ()
 client conn = do
-  liftIO $ C.checkMoisture conn
+    liftIO $ C.checkMoisture conn
 
 -- TODO: document
 hwApp :: Int -- ^ Port

@@ -11,15 +11,15 @@ The functions included in this module are used to parse configuration data for
 the happy flowers project.
 -}
 module HappyFlowers.Config
-  (
-    -- * Configuration
-    configFile
-    -- * Operations
-  , readConfig
-  , getConfig
-    -- * Helpers
-  , splitToTuple
-  ) where
+    (
+      -- * Configuration
+      configFile
+      -- * Operations
+    , readConfig
+    , getConfig
+      -- * Helpers
+    , splitToTuple
+    ) where
 
 import qualified Data.Text as T
 
@@ -36,8 +36,8 @@ configFile = "rpi.cfg"
 -- of [(key, value)] format.
 readConfig :: FilePath -> IO [ConfigEntry]
 readConfig file = do
-  val <- readFile file
-  return . fmap splitToTuple $ lines val
+    val <- readFile file
+    return . fmap splitToTuple $ lines val
 
 -- | The 'getConfig' function reads the list of entries parsed from the config
 -- file and filters it in order to obtain the desired config. It matches entries
@@ -46,14 +46,14 @@ readConfig file = do
 getConfig :: String -- ^ Config entry name
           -> IO String
 getConfig field = do
-  config <- readConfig configFile
-  let entry = filter ((== field) . fst) config
-  return . snd . head $ entry
+    config <- readConfig configFile
+    let entry = filter ((== field) . fst) config
+    return . snd . head $ entry
 
 -- | The 'splitToTuple' takes a String, splits it at every '=' character and
 -- converts the result to a ConfigEntry tuple.
 splitToTuple :: String -- ^ Key-value pair
              -> ConfigEntry
 splitToTuple t = do
-  let (key:val:_) = ((T.split (== '=')) . T.pack) t
-  (T.unpack key, T.unpack val)
+    let (key:val:_) = ((T.split (== '=')) . T.pack) t
+    (T.unpack key, T.unpack val)

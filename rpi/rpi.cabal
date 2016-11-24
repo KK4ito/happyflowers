@@ -4,21 +4,21 @@ build-type: Simple
 cabal-version: >=1.8
 
 executable rpi
-  main-is: Main.hs
-  build-depends: base >= 4.8.0.0,
-                 mtl >= 2.2.1,
-                 bytestring >= 0.10.8.1,
-                 text >= 1.2.2.1,
-                 sqlite-simple >= 0.4.10.0,
-                 jose-jwt >= 0.7.3,
-                 http-types >= 0.9.1,
-                 wai-cors >= 0.2.5,
-                 wai-extra >= 3.0.19,
-                 wai-middleware-static >= 0.8.1,
-                 aeson >= 1.0.2.1,
-                 scotty >= 0.11.0,
-                 websockets >= 0.9.7.0,
-                 wai >= 3.2.1.1,
-                 time >= 1.5,
-                 HPi >= 0.5.1,
-                 network >= 2.6.3.1
+    main-is: Main.hs
+    build-depends: base >= 4.8.0.0,
+                   mtl >= 2.2.1,
+                   bytestring >= 0.10.8.1,
+                   text >= 1.2.2.1,
+                   sqlite-simple >= 0.4.10.0,
+                   jose-jwt >= 0.7.3,
+                   http-types >= 0.9.1,
+                   wai-cors >= 0.2.5,
+                   wai-extra >= 3.0.19,
+                   wai-middleware-static >= 0.8.1,
+                   aeson >= 1.0.2.1,
+                   scotty >= 0.11.0,
+                   websockets >= 0.9.7.0,
+                   wai >= 3.2.1.1,
+                   time >= 1.5,
+                   HPi >= 0.5.1,
+                   network >= 2.6.3.1
