@@ -66,6 +66,7 @@ checkMoisture conn = do
 
             case me of
                 Just me' -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"measurementReceived\", \"payload\":", (T.pack . CL.unpack $ encode me'), "}" ]
+                Nothing  -> return ()
 
             -- Either activate the pump or schedule another measurement after the
             -- defined interval.
@@ -93,7 +94,8 @@ activatePump conn = do
                     ev <- DB.queryLatestEvent
 
                     case ev of
-                        Just ev' -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"eventReceived\", \"payload\":", (T.pack . CL.unpack $ encode ev'), "}" ]
+                        Just ev'  -> WS.sendTextData conn $ T.concat [ "{ \"type\": \"eventReceived\", \"payload\":", (T.pack . CL.unpack $ encode ev'), "}" ]
+                        Nothing   -> return ()
                 else do
                     activatePump conn
 

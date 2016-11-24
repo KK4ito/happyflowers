@@ -48,6 +48,7 @@ tokenSecret = "hppyflwrs"
 getSettings :: ScottyM ()
 getSettings = get "/api/settings/" $ do
     settings <- liftIO DB.querySettings
+
     case settings of
         Just settings' -> json settings'
         Nothing        -> status status500
@@ -93,9 +94,10 @@ putSettings = put "/api/settings/" $ do
 getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ do
     history <- liftIO DB.queryHistory
+
     case history of
         Just history' -> json history'
-        otherwise     -> status status500
+        Nothing       -> status status500
 
 -- | 'PostAuthBody' defines the type that is used to parse the request body of
 -- the 'postAuth' function. It can be parsed from scotty's jsonData method.
