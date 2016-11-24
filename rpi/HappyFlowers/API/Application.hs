@@ -11,19 +11,21 @@ An implementation of the Scotty web framework offering a RESTful API and serving
 static files.
 -}
 
-module HappyFlowers.API.Application (
-  -- * Operations
-  apiApp
+module HappyFlowers.API.Application
+  (
+    -- * Operations
+    apiApp
   ) where
 
-import qualified HappyFlowers.API.Middlewares as M
-import qualified HappyFlowers.API.Routes      as R
+import qualified HappyFlowers.API.Middleware as M
+import qualified HappyFlowers.API.Route      as R
 
 import           Web.Scotty                   (middleware, scotty)
 
 -- | The 'apiApp' function sets up a Scotty server listening on a given port. It
 -- contains several middlewares and reacts to a set of routes.
-apiApp :: Int -> IO ()
+apiApp :: Int -- ^ Port
+       -> IO ()
 apiApp port = scotty port $ do
   middleware M.corsMiddleware
   middleware M.staticMiddleware

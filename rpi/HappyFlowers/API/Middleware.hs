@@ -12,16 +12,17 @@ Stability   : experimental
 The functions included in this module are used to modify incoming requests to
 the server to extend the response with data or facilitate React routing.
 -}
-module HappyFlowers.API.Middlewares (
-  -- * Operations
-  corsMiddleware,
-  staticMiddleware,
-  rewriteMiddleware,
-  pathConversion
+module HappyFlowers.API.Middleware
+  (
+    -- * Operations
+    corsMiddleware
+  , staticMiddleware
+  , rewriteMiddleware
+  , pathConversion
   ) where
 
 import Data.Text                      (Text)
-import Network.HTTP.Types             as H
+import Network.HTTP.Type              as H
 import Network.Wai                    (Middleware)
 import Network.Wai.Middleware.Cors    (cors, corsOrigins, corsRequestHeaders, corsMethods, simpleCorsResourcePolicy)
 import Network.Wai.Middleware.Rewrite (PathsAndQueries, rewritePureWithQueries)

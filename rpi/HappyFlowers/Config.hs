@@ -10,14 +10,15 @@ Stability   : experimental
 The functions included in this module are used to parse configuration data for
 the happy flowers project.
 -}
-module HappyFlowers.Config (
-  -- * Configuration
-  configFile,
-  -- * Operations
-  readConfig,
-  getConfig,
-  -- * Helpers
-  splitToTuple
+module HappyFlowers.Config
+  (
+    -- * Configuration
+    configFile
+    -- * Operations
+  , readConfig
+  , getConfig
+    -- * Helpers
+  , splitToTupl
   ) where
 
 import qualified Data.Text as T
@@ -28,12 +29,12 @@ type ConfigEntry = (String, String)
 
 -- | 'configFile' determines the location of the configuration file that is read
 -- when parsing the application configuration.
-configFile :: String
+configFile :: FilePath
 configFile = "rpi.cfg"
 
 -- | The 'readConfig' function converts the value of the config file to a list
 -- of [(key, value)] format.
-readConfig :: String -> IO [ConfigEntry]
+readConfig :: FilePath -> IO [ConfigEntry]
 readConfig file = do
   val <- readFile file
   return . fmap splitToTuple $ lines val
@@ -42,7 +43,8 @@ readConfig file = do
 -- file and filters it in order to obtain the desired config. It matches entries
 -- based on the name of the entry, which is the first element of every entry
 -- tuple and returns the last element of the matching tuple.
-getConfig :: String -> IO String
+getConfig :: String -- ^ Config entry name
+          -> IO String
 getConfig field = do
   config <- readConfig configFile
   let entry = filter ((== field) . fst) config
@@ -50,7 +52,8 @@ getConfig field = do
 
 -- | The 'splitToTuple' takes a String, splits it at every '=' character and
 -- converts the result to a ConfigEntry tuple.
-splitToTuple :: String -> ConfigEntry
+splitToTuple :: String -- ^ `key=value` pair
+             -> ConfigEntry
 splitToTuple t = do
   let (key:val:_) = ((T.split (== '=')) . T.pack) t
   (T.unpack key, T.unpack val)

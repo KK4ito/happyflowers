@@ -1,8 +1,9 @@
 -- TODO: document
-module HappyFlowers.Hardware.Application (
-  -- * Operations
-  client,
-  hwApp
+module HappyFlowers.Hardware.Application
+  (
+    -- * Operations
+    client
+  , hwApp
   ) where
 
 import qualified HappyFlowers.Hardware.Communication as C
@@ -17,5 +18,6 @@ client conn = do
   liftIO $ C.checkMoisture conn
 
 -- TODO: document
-hwApp :: Int -> IO ()
+hwApp :: Int -- ^ Port
+      -> IO ()
 hwApp port = withSocketsDo $ WS.runClient "localhost" port "/" client

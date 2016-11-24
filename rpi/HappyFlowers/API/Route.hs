@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings, DeriveGeneric #-}
 
 {-|
-Module      : HappyFlowers.API.Routes
+Module      : HappyFlowers.API.Route
 Description : Routing functions for the web server implementation
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
@@ -11,15 +11,16 @@ Stability   : experimental
 
 The functions included in this module are used to route requests on the server.
 -}
-module HappyFlowers.API.Routes (
-  -- * Configuration
-  tokenSecret,
-  -- * Routes
-  getSettings,
-  putSettings,
-  getHistory,
-  postAuth,
-  getRoot
+module HappyFlowers.API.Route
+  (
+    -- * Configuration
+    tokenSecret
+    -- * Routes
+  , getSettings
+  , putSettings
+  , getHistory
+  , postAuth
+  , getRoot
   ) where
 
 import           HappyFlowers.Config       (getConfig)
@@ -54,13 +55,13 @@ getSettings = get "/api/settings/" $ do
 -- | 'PutSettingsBody' defines the type that is used to parse the request body
 -- of the 'putSettings' function. It can be parsed from scotty's jsonData method
 -- and converted to a sqlite row instance so it can be stored in the database.
-data PutSettingsBody =
-  PutSettingsBody { token :: String
-                  , name :: String
-                  , upper :: Int
-                  , lower :: Int
-                  , interval :: Int
-                  } deriving Generic
+data PutSettingsBody = PutSettingsBody
+  { token :: !String -- ^ The token used for authentication.
+  , name :: !String  -- ^ The new `name` entry.
+  , upper :: !Int    -- ^ The new `upper` entry.
+  , lower :: !Int    -- ^ The new `lower` entry.
+  , interval :: !Int -- ^ The new `interval` entry.
+  } deriving Generic
 
 instance FromJSON PutSettingsBody
 instance ToRow PutSettingsBody where
@@ -98,10 +99,10 @@ getHistory = get "/api/history/" $ do
 
 -- | 'PostAuthBody' defines the type that is used to parse the request body of
 -- the 'postAuth' function. It can be parsed from scotty's jsonData method.
-data PostAuthBody =
-  PostAuthBody { password :: String
-               } deriving Generic
-               
+data PostAuthBody = PostAuthBody
+  { password :: !String -- ^ The user-submitted password.
+  } deriving Generic
+
 instance FromJSON PostAuthBody
 
 -- | The 'postAuth' function handles POST requests for authentication. The

@@ -13,23 +13,24 @@ The functions included in this module are used to query and store data in an
 sqlite database.
 -}
 
-module HappyFlowers.DB (
-  -- * Configuration
-  dbName,
-  -- * DB Operations
-  querySettings,
-  updateSettings,
-  queryHistory,
-  addEvent,
-  addMeasurement,
-  queryLatestEvent,
-  queryLatestMeasurement,
+module HappyFlowers.DB
+  (
+    -- * Configuration
+    dbName
+    -- * DB Operations
+  , querySettings
+  , updateSettings
+  , queryHistory
+  , addEvent
+  , addMeasurement
+  , queryLatestEvent
+  , queryLatestMeasurement
   -- * Operations
-  getDate
+  , getDate
   ) where
 
 import           HappyFlowers.Config    (getConfig)
-import           HappyFlowers.Types
+import           HappyFlowers.Type
 
 import           Control.Exception      (try)
 import           Data.Time.Clock        (getCurrentTime, utctDay)
@@ -54,7 +55,8 @@ querySettings = do
 
 -- | The 'updateSettings' function updates the settings entry in the database
 -- with the passed data.
-updateSettings :: S.ToRow a => a -> IO ()
+updateSettings :: S.ToRow a => a -- ^ New DB entry
+               -> IO ()
 updateSettings body = do
   conn <- S.open dbName
   S.execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
@@ -62,7 +64,8 @@ updateSettings body = do
 
 -- | The 'getDate' function retrieves a sqlite-compatible timestamp based on the
 -- offset that is passed as a parameter.
-getDate :: Integer -> IO String
+getDate :: Integer -- ^ Time frame in days
+        -> IO String
 getDate ago = do
   time <- getCurrentTime
   let refDate = addDays (ago * (-1)) $ utctDay time
@@ -87,7 +90,8 @@ queryHistory = do
     otherwise          -> return Nothing
 
 -- TODO: document
-addEvent :: String -> IO ()
+addEvent :: String -- ^ Event kind
+         -> IO ()
 addEvent kind = do
   conn <- S.open dbName
   S.execute conn "INSERT INTO events (type) VALUES (?)" (S.Only (kind :: String))
@@ -104,7 +108,8 @@ queryLatestEvent = do
     Left _      -> return Nothing
 
 -- TODO: document
-addMeasurement :: Int -> IO ()
+addMeasurement :: Int -- ^ Measurement value
+               -> IO ()
 addMeasurement value = do
   conn <- S.open dbName
   S.execute conn "INSERT INTO measurements (value) VALUES (?)" (S.Only (value :: Int))

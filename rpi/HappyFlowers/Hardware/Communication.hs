@@ -12,17 +12,18 @@ Stability   : experimental
 The functions included in this module are used to communicate with the RPi's
 hardware and connected sensors and devices.
 -}
-module HappyFlowers.Hardware.Communication (
-  -- * Configuration
-  address,
-  -- * Operations
-  readMoisture,
-  mockMoisture,
-  checkMoisture
+module HappyFlowers.Hardware.Communication
+  (
+    -- * Configuration
+    address
+    -- * Operations
+  , readMoisture
+  , mockMoisture
+  , checkMoisture
   ) where
 
 import qualified HappyFlowers.DB              as DB
-import           HappyFlowers.Types           (interval, lower, upper)
+import           HappyFlowers.Type            (interval, lower, upper)
 
 import           Control.Concurrent           (threadDelay)
 import           Data.Aeson                   (encode, object, (.=))

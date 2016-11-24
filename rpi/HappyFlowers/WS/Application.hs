@@ -12,19 +12,20 @@ Stability   : experimental
 An implementation of a WebSockets server that simply broadcasts messages
 between clients.
 -}
-module HappyFlowers.WS.Application (
-  -- * Types
-  Client(..),
-  Id(..),
-  ServerState(..),
-  -- * Operations
-  newServerState,
-  addClient,
-  removeClient,
-  broadcast,
-  server,
-  talk,
-  wsApp
+module HappyFlowers.WS.Application
+  (
+    -- * Types
+    Client(..)
+  , Id(..)
+  , ServerState(..)
+    -- * Operations
+  , newServerState
+  , addClient
+  , removeClient
+  , broadcast
+  , server
+  , talk
+  , wsApp
   ) where
 
 import           Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
@@ -108,7 +109,8 @@ server state pending = do
     talk conn state client
 
 -- | The 'wsApp' function sets up a WebSockets server listening on a given port.
-wsApp :: Int -> IO ()
+wsApp :: Int -- ^ Port
+      -> IO ()
 wsApp port = do
   state <- newMVar newServerState
   WS.runServer "127.0.0.1" port $ server state
