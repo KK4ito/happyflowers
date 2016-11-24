@@ -27,7 +27,6 @@ import           Web.Scotty                   (middleware, scotty)
 apiApp :: Int -- ^ Port
        -> IO ()
 apiApp port = scotty port $ do
-    middleware M.corsMiddleware
     middleware M.staticMiddleware
     middleware M.rewriteMiddleware
     R.getSettings >> R.putSettings >> R.getHistory >> R.postAuth >> R.getRoot

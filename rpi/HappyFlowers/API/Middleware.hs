@@ -15,8 +15,7 @@ the server to extend the response with data or facilitate React routing.
 module HappyFlowers.API.Middleware
     (
       -- * Operations
-      corsMiddleware
-    , staticMiddleware
+      staticMiddleware
     , rewriteMiddleware
     , pathConversion
     ) where
@@ -24,19 +23,8 @@ module HappyFlowers.API.Middleware
 import Data.Text                      (Text)
 import Network.HTTP.Types             as H
 import Network.Wai                    (Middleware)
-import Network.Wai.Middleware.Cors    (cors, corsOrigins, corsRequestHeaders, corsMethods, simpleCorsResourcePolicy)
 import Network.Wai.Middleware.Rewrite (PathsAndQueries, rewritePureWithQueries)
 import Network.Wai.Middleware.Static  (addBase, staticPolicy)
-
--- | The 'corsMiddleware' function sets up a piece of middleware that is used
--- during development. It allows cross-origin requests between the webpack
--- development server and the API.
-corsMiddleware :: Middleware
-corsMiddleware = cors . const $ Just simpleCorsResourcePolicy
-    { corsOrigins = Just (["http://localhost:3000", "http://localhost:5000"], False)
-    , corsRequestHeaders = ["Content-Type"]
-    , corsMethods = ["GET", "PUT", "POST", "OPTIONS"]
-    }
 
 -- | The 'staticMiddleware' function sets up a piece of middleware that allows
 -- serving static files from the compiled web front end directory.

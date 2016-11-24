@@ -12,7 +12,6 @@ executable rpi
                    sqlite-simple >= 0.4.10.0,
                    jose-jwt >= 0.7.3,
                    http-types >= 0.9.1,
-                   wai-cors >= 0.2.5,
                    wai-extra >= 3.0.19,
                    wai-middleware-static >= 0.8.1,
                    aeson >= 1.0.2.1,
