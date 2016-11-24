@@ -28,9 +28,8 @@ apiPort = 5000
 wsPort :: Int
 wsPort = 9160
 
--- | sets up the API application on 'apiPort' and the WebSockets application on
--- port 'wsPort'. The Hardware processes are started with communication to the
--- WS server.
+-- | sets up the API application and the WebSockets application. The Hardware
+-- processes are started with communication to the WS server.
 main :: IO ()
 main = do
     putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."

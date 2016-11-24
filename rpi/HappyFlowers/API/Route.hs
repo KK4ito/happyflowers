@@ -51,14 +51,14 @@ getSettings = get "/api/settings/" $ do
         Just settings' -> json settings'
         Nothing        -> status status500
 
--- | 'PutSettingsBody' is used to parse the request body of the 'putSettings'
+-- | PutSettingsBody is used to parse the request body of the 'putSettings'
 -- function.
 data PutSettingsBody = PutSettingsBody
     { token :: !String     -- ^ Token used for authentication
-    , name :: !Text        -- ^ New `name` entry
-    , upper :: !Int        -- ^ New `upper` entry
-    , lower :: !Int        -- ^ New `lower` entry
-    , interval :: !Int     -- ^ New `interval` entry
+    , name :: !Text        -- ^ Flower name
+    , upper :: !Int        -- ^ Upper moisture limit
+    , lower :: !Int        -- ^ Lower moisture limit
+    , interval :: !Int     -- ^ Measurement interval
     } deriving Generic
 
 instance FromJSON PutSettingsBody
@@ -94,8 +94,7 @@ getHistory = get "/api/history/" $ do
         Just history' -> json history'
         Nothing       -> status status500
 
--- | 'PostAuthBody' is used to parse the request body of the 'postAuth'
--- function.
+-- | PostAuthBody is used to parse the request body of the 'postAuth' function.
 data PostAuthBody = PostAuthBody
     { password :: !Text -- ^ User-submitted password
     } deriving Generic

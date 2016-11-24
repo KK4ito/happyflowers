@@ -20,8 +20,8 @@ import           Control.Applicative ((<$>))
 import qualified Data.Text           as T
 import qualified Data.Text.IO        as TI
 
--- | The 'ConfigEntry' type is a shorthand for the (key, value) representation
--- of a config entry.
+-- | A config entry is the (key, value) representation of a configuration
+-- option.
 type ConfigEntry = (T.Text, T.Text)
 
 -- | determines the location of the configuration file.
@@ -43,7 +43,7 @@ findEntry :: [ConfigEntry] -- ^ Full configuration
           -> T.Text        -- ^ Config entry value
 findEntry config name = snd . head $ filter ((== name) . fst) config
 
--- | splits a string into a 'ConfigEntry' tuple.
+-- | splits a string into a ConfigEntry tuple.
 splitToTuple :: T.Text -- ^ Key-value pair
              -> ConfigEntry
 splitToTuple line = (key, val)

@@ -60,8 +60,8 @@ instance ToJSON History
 -- | Settings contains all application settings data.
 data Settings = Settings
     { name :: !Text    -- ^ Flower name
-    , upper :: !Int    -- ^ Upper moisture level
-    , lower :: !Int    -- ^ Lower moisture level
+    , upper :: !Int    -- ^ Upper moisture limit
+    , lower :: !Int    -- ^ Lower moisture limit
     , interval :: !Int -- ^ Measurement interval
     } deriving Generic
 

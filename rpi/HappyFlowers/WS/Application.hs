@@ -14,8 +14,12 @@ between clients.
 -}
 module HappyFlowers.WS.Application
     (
+      -- * Types
+      Id(..)
+    , Client(..)
+    , ServerState(..)
       -- * Operations
-      newServerState
+    , newServerState
     , wsApp
     ) where
 
@@ -29,13 +33,13 @@ import qualified Data.Text          as T
 import qualified Data.Text.IO       as T
 import qualified Network.WebSockets as WS
 
--- | 'Client' is a type alias that connects a unique ID with a WebSockets
--- connection.
-type Client = (Id, WS.Connection)
-
 -- | 'Id' is a type alias that represents the unique ID on the WebSockets
 -- server.
 type Id = Int
+
+-- | 'Client' is a type alias that connects a unique ID with a WebSockets
+-- connection.
+type Client = (Id, WS.Connection)
 
 -- | keeps track of the currently available Id and the list of connected
 -- clients.
@@ -50,7 +54,7 @@ newServerState = (0, [])
 addClient :: Client -> ServerState -> ServerState
 addClient client (id, clients) = (id + 1, client : clients)
 
--- | removes a client from the current 'ServerState'.
+-- | removes a 'Client' from the current 'ServerState'.
 removeClient :: Client -> ServerState -> ServerState
 removeClient client (id, clients) = (id, filter ((/= fst client) . fst) clients)
 
@@ -60,14 +64,14 @@ broadcast message (_, clients) = do
     T.putStrLn message
     forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
--- | retrieves a message from a connected client and 'broadcast' it to all other
--- clients.
+-- | retrieves a message from a connected 'Client' and broadcasts it to all
+-- other clients.
 talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
 talk conn state _ = forever $ do
     msg <- WS.receiveData conn
     readMVar state >>= broadcast msg
 
--- | removes a client from the current 'ServerState' and 'broadcast' it to all
+-- | removes a 'Client' from the current ServerState and broadcasts it to all
 -- other clients.
 disconnect :: Client -> MVar ServerState -> IO [Client]
 disconnect client state = do
