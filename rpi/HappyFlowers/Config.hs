@@ -41,7 +41,7 @@ getConfig field = do
     let config = splitToTuple <$> T.lines val
     return $ findEntry config field
 
--- TODO: document
+-- | finds a config entry's value based on its name.
 findEntry :: [ConfigEntry] -- ^ Full configuration
           -> T.Text -- ^ Config entry name
           -> T.Text -- ^ Config entry value

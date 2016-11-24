@@ -82,7 +82,7 @@ queryHistory = do
                                                     }
         otherwise          -> return Nothing
 
--- TODO: document
+-- | adds a new event entity of the given kind to the database.
 addEvent :: Text -- ^ Event kind
          -> IO ()
 addEvent kind = do
@@ -90,7 +90,7 @@ addEvent kind = do
     S.execute conn "INSERT INTO events (type) VALUES (?)" (S.Only (kind :: Text))
     S.close conn
 
--- TODO: document
+-- | retrieves the latest event entity from the database.
 queryLatestEvent :: IO (Maybe Event)
 queryLatestEvent = do
     conn <- S.open dbName
@@ -101,7 +101,7 @@ queryLatestEvent = do
         Right rows' -> return . Just $ head rows'
         Left _      -> return Nothing
 
--- TODO: document
+-- | adds a new measurement entity with the given value to the database.
 addMeasurement :: Int -- ^ Measurement value
                -> IO ()
 addMeasurement value = do
@@ -109,7 +109,7 @@ addMeasurement value = do
     S.execute conn "INSERT INTO measurements (value) VALUES (?)" (S.Only (value :: Int))
     S.close conn
 
--- TODO: document
+-- | retrieves the latest measurement entity from the database.
 queryLatestMeasurement :: IO (Maybe Measurement)
 queryLatestMeasurement = do
     conn <- S.open dbName

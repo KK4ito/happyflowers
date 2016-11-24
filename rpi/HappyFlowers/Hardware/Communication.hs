@@ -16,10 +16,11 @@ module HappyFlowers.Hardware.Communication
     (
       -- * Configuration
       address
-      -- * Operations
+      -- * Sensor
     , readMoisture
-    , mockMoisture
     , checkMoisture
+      -- * Pump
+    , activatePump
     ) where
 
 import           Control.Concurrent           (threadDelay)
@@ -44,7 +45,7 @@ readMoisture = G.withGPIO . G.withI2C $ do
     d <- G.readI2C address 0
     putStrLn $ C.unpack d
 
--- TODO: document
+-- Only used during development.
 mockMoisture :: IO Int
 mockMoisture = do
     putStrLn "sensor on"
@@ -52,7 +53,8 @@ mockMoisture = do
     putStrLn "sensor off"
     return 80
 
--- TODO: document
+-- | checks the plant's moisutre level and informs connected clients about the
+-- measurement. Triggers the pump if the lower moisture limit is reached.
 checkMoisture :: WS.Connection -> IO ()
 checkMoisture conn = do
     settings <- DB.querySettings
@@ -77,7 +79,8 @@ checkMoisture conn = do
                     threadDelay $ (interval settings') * 60000000
                     checkMoisture conn
 
--- TODO: document
+-- | activates the pump and keeps repeating until the upper moisture limit is
+-- reached. Informs all connected clients about the watering.
 activatePump :: WS.Connection -> IO ()
 activatePump conn = do
     mockTriggerPump
@@ -98,7 +101,7 @@ activatePump conn = do
                 else do
                     activatePump conn
 
--- TODO: document
+-- Only used during development.
 mockTriggerPump :: IO ()
 mockTriggerPump = do
     putStrLn "pump on"
