@@ -11,7 +11,7 @@ import './Stream.css'
  */
 class Stream extends React.Component {
   static propTypes = {
-    name: React.PropTypes.String
+    name: React.PropTypes.string
   }
 
   constructor(props) {
