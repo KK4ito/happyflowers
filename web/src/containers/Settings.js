@@ -270,11 +270,22 @@ class Settings extends React.Component {
                     </p>
                   </div>
                 </div>
-                <input type="submit"
-                       data-button="block"
-                       disabled={!name.get('valid') || !upper.get('valid') || !lower.get('valid') || !interval.get('valid') || this.state.pristine || this.props.isSubmitting}
-                       value={this.props.isSubmitting ? 'Saving…' : 'Save settings'}
-                       onClick={this.submitForm} />
+                <div data-grid>
+                  <div data-col="1-2">
+                    <a type="submit"
+                       href="/"
+                       data-button="secondary block" >
+                      {this.state.pristine ? 'Go back' : 'Cancel'}
+                    </a>
+                  </div>
+                  <div data-col="1-2">
+                    <input type="submit"
+                           data-button="block"
+                           disabled={!name.get('valid') || !upper.get('valid') || !lower.get('valid') || !interval.get('valid') || this.state.pristine || this.props.isSubmitting}
+                           value={this.props.isSubmitting ? 'Saving…' : 'Save'}
+                           onClick={this.submitForm} />
+                  </div>
+                </div>
               </form>
             </div>
           </section>
