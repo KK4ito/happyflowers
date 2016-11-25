@@ -240,6 +240,14 @@ a:focus {
   cursor: not-allowed;
 }
 
+[data-button][disabled]:hover {
+  background-color: #4cadeb;
+}
+
+[data-button~="secondary"][disabled]:hover {
+  background-color: #9c9c9c;
+}
+
 /**
  * ICON
  */
