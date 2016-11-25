@@ -211,6 +211,7 @@ a:focus {
   border-radius: 3px;
   cursor: pointer;
   transition: background-color 0.25s ease-in-out;
+  appearance: none;
 }
 
 [data-button]:hover,
@@ -296,6 +297,7 @@ label {
   border: 1px solid #dadada;
   border-radius: 3px;
   outline: none;
+  appearance: none;
 }
 
 .text-input:hover {
