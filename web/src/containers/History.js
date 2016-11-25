@@ -79,9 +79,7 @@ const History = ({ events, measurements, settings, isFetching }) => {
 
   return (
     <Widget title="History" tooltip="Click and drag the chart to view a section in more detail." isLoading={isFetching}>
-      <div className="widget-body">
         <Highcharts config={chartOptions.toJS()} />
-      </div>
     </Widget>
   )
 }
