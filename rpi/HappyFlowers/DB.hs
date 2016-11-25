@@ -46,10 +46,7 @@ querySettings = do
     conn <- S.open dbName
     rows <- try (S.query_ conn "SELECT * FROM settings") :: IO (Either S.SQLError [Settings])
     S.close conn
-
-    case rows of
-        Right rows' -> return . Just $ head rows'
-        Left _      -> return Nothing
+    either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
 
 -- | updates settings using a record containing new data.
 updateSettings :: S.ToRow a => a -- ^ New DB entry
@@ -92,10 +89,7 @@ queryLatestEvent = do
     conn <- S.open dbName
     rows <- try (S.query_ conn "SELECT * FROM events ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Event])
     S.close conn
-
-    case rows of
-        Right rows' -> return . Just $ head rows'
-        Left _      -> return Nothing
+    either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
 
 -- | adds a new measurement entity with the given value to the database.
 addMeasurement :: Int -- ^ Measurement value
@@ -111,10 +105,7 @@ queryLatestMeasurement = do
     conn <- S.open dbName
     rows <- try (S.query_ conn "SELECT * FROM measurements ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Measurement])
     S.close conn
-
-    case rows of
-        Right rows' -> return . Just $ head rows'
-        Left _      -> return Nothing
+    either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
 
 -- | retrieve a sqlite-compatible timestamp based on a given offset.
 getReferenceDate :: UTCTime -- ^ Current time

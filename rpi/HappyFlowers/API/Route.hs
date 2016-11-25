@@ -23,14 +23,14 @@ module HappyFlowers.API.Route
 
 import           Control.Exception         (try)
 import           Control.Monad.Trans       (liftIO)
-import           Data.Aeson                (FromJSON)
+import           Data.Aeson                (ToJSON, FromJSON)
 import           Data.ByteString.Char8     (ByteString, pack)
 import           Data.Text                 (Text)
 import           Database.SQLite.Simple    (ToRow, toRow)
 import           GHC.Generics
 import           Jose.Jws                  (hmacDecode, hmacEncode)
 import           Jose.Jwa                  (JwsAlg(..))
-import           Network.HTTP.Types.Status (status401, status500)
+import           Network.HTTP.Types.Status (Status, status401, status500)
 import           Web.Scotty
 
 import           HappyFlowers.Config       (getConfig)
@@ -41,15 +41,17 @@ import qualified HappyFlowers.DB           as DB
 tokenSecret :: ByteString
 tokenSecret = "hppyflwrs"
 
+-- | produces a JSON response or an HTTP error based on a given payload.
+jsonOrError :: ToJSON t
+            => Status  -- Status if not erroneous
+            -> Maybe t -- Payload to evaluate
+            -> ActionM ()
+jsonOrError s = maybe (status s) json
+
 -- | handles GET requests for application settings. Produces a JSON response
 -- containing settings or an HTTP error if data is missing.
 getSettings :: ScottyM ()
-getSettings = get "/api/settings/" $ do
-    settings <- liftIO DB.querySettings
-
-    case settings of
-        Just settings' -> json settings'
-        Nothing        -> status status500
+getSettings = get "/api/settings/" $ liftIO DB.querySettings >>= jsonOrError status500
 
 -- | PutSettingsBody is used to parse the request body of the 'putSettings'
 -- function.
@@ -77,22 +79,13 @@ putSettings = put "/api/settings/" $ do
         Left _  -> status status401
         Right _ -> do
             liftIO $ DB.updateSettings body
-            settings <- liftIO DB.querySettings
-
-            case settings of
-                Just settings' -> json settings'
-                Nothing        -> status status500
+            liftIO DB.querySettings >>= jsonOrError status500
 
 -- | handles GET request for historical application data. Produces a JSON
 -- response containing the history data or an HTTP error if data could not be
 -- retrieved.
 getHistory :: ScottyM ()
-getHistory = get "/api/history/" $ do
-    history <- liftIO DB.queryHistory
-
-    case history of
-        Just history' -> json history'
-        Nothing       -> status status500
+getHistory = get "/api/history/" $ liftIO DB.queryHistory >>= jsonOrError status500
 
 -- | PostAuthBody is used to parse the request body of the 'postAuth' function.
 data PostAuthBody = PostAuthBody
@@ -112,12 +105,9 @@ postAuth = post "/api/auth/" $ do
 
     if pw == syspw
         then do
-            let jwt = hmacEncode HS384 tokenSecret "hello"
-            case jwt of
-                Left _     -> status status500
-                Right jwt' -> json jwt'
-        else do
-            status status401
+            let token = hmacEncode HS384 tokenSecret "hello"
+            either (\_ -> status status500) json token
+        else status status401
 
 -- | handles GET requests for the root route. Used to serve the JS application.
 getRoot :: ScottyM ()
