@@ -26,7 +26,6 @@ module HappyFlowers.WS.Application
 import           Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
 import           Control.Exception  (finally)
 import           Control.Monad      (forM_, forever)
-import           Data.Char          (isPunctuation, isSpace)
 import           Data.Monoid        (mappend)
 import           Data.Text          (Text)
 import qualified Data.Text          as T
