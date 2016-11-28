@@ -40,13 +40,17 @@ import           HappyFlowers.Type
 dbName :: String
 dbName = "happyflowers.db"
 
+-- | gets a single entry from a list database rows.
+getSingleEntry :: S.FromRow a => Either S.SQLError [a] -> Maybe a
+getSingleEntry = either (\_ -> Nothing) (\r -> Just $ head r)
+
 -- | retrieves settings. Returns Nothing if the query fails.
 querySettings :: IO (Maybe Settings)
 querySettings = do
     conn <- S.open dbName
     rows <- try (S.query_ conn "SELECT * FROM settings") :: IO (Either S.SQLError [Settings])
     S.close conn
-    either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
+    return $ getSingleEntry rows
 
 -- | updates settings using a record containing new data.
 updateSettings :: S.ToRow a
@@ -90,7 +94,7 @@ queryLatestEvent = do
     conn <- S.open dbName
     rows <- try (S.query_ conn "SELECT * FROM events ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Event])
     S.close conn
-    either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
+    return $ getSingleEntry rows
 
 -- | adds a new measurement entity with the given value to the database.
 addMeasurement :: Int -- ^ Measurement value
@@ -106,7 +110,7 @@ queryLatestMeasurement = do
     conn <- S.open dbName
     rows <- try (S.query_ conn "SELECT * FROM measurements ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Measurement])
     S.close conn
-    either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
+    return $ getSingleEntry rows
 
 -- | retrieve a sqlite-compatible timestamp based on a given offset.
 getReferenceDate :: UTCTime -- ^ Current time
