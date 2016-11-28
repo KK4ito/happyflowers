@@ -18,6 +18,7 @@ module HappyFlowers.Hardware.Communication
       checkMoisture
       -- * Pump
     , activatePump
+    , triggerPump
     ) where
 
 import           Control.Concurrent           (threadDelay)
@@ -107,3 +108,10 @@ activatePump conn = do
 -- Only used during development.
 mockTriggerPump :: IO ()
 mockTriggerPump = putStrLn "pump on" >> threadDelay 5000000 >> putStrLn "pump off"
+
+triggerPump :: IO ()
+triggerPump = do
+    G.setPinFunction G.Pin05 G.Output
+    G.writePin G.Pin05 True
+    threadDelay 5000000
+    G.writePin G.Pin05 False
