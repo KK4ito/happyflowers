@@ -46,13 +46,18 @@ mockMoisture = putStrLn "sensor on" >> threadDelay 3000000 >> putStrLn "sensor o
 
 -- | sends WS notifications to all connected clients about measurements or
 -- events if a payload is available.
-notify :: ToJSON a => WS.Connection -> T.Text -> Maybe a -> IO ()
+notify :: ToJSON a
+       => WS.Connection -- Connection to send data to
+       -> T.Text        -- WS event type
+       -> Maybe a       -- Payload
+       -> IO ()
 notify conn kind = maybe (return ()) notify'
     where
         notify' p = WS.sendTextData conn $ T.concat [ "{ \"type\": \""
                                                     , kind
                                                     , "\", \"payload\":"
-                                                    , (T.pack . CL.unpack $ encode p), "}"
+                                                    , (T.pack . CL.unpack $ encode p)
+                                                    , "}"
                                                     ]
 
 -- | checks the plant's moisutre level and informs connected clients about the
@@ -93,6 +98,8 @@ activatePump conn = do
                 then do
                     DB.addEvent "automatic"
                     DB.queryLatestEvent >>= notify conn "eventReceived"
+                    DB.addMeasurement d
+                    DB.queryLatestMeasurement >>= notify conn "measurementReceived"
                 else do
                     activatePump conn
         Nothing        -> return ()

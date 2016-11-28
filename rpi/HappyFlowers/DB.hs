@@ -49,7 +49,8 @@ querySettings = do
     either (\_ -> return Nothing) (\r -> return . Just $ head r) rows
 
 -- | updates settings using a record containing new data.
-updateSettings :: S.ToRow a => a -- ^ New DB entry
+updateSettings :: S.ToRow a
+               => a -- ^ New DB entry
                -> IO ()
 updateSettings body = do
     conn <- S.open dbName
