@@ -8,7 +8,7 @@ import * as actions from '../actions'
  * string.
  */
 const jwt = handleActions({
-  [actions.loginSuccess]: (_, { payload }) => payload.res.data,
+  [actions.loginSuccess]: (_, { payload }) => payload.res.data.token,
   [actions.loginError]: () => '',
   [actions.logoutRequest]: () => ''
 }, window.sessionStorage.getItem('jwt') || '')

@@ -23,7 +23,7 @@ module HappyFlowers.API.Route
 
 import           Control.Exception         (try)
 import           Control.Monad.Trans       (liftIO)
-import           Data.Aeson                (ToJSON, FromJSON)
+import           Data.Aeson                (ToJSON, FromJSON, object, (.=))
 import           Data.ByteString.Char8     (ByteString, pack)
 import           Data.Text                 (Text)
 import           Database.SQLite.Simple    (ToRow, toRow)
@@ -106,7 +106,7 @@ postAuth = post "/api/auth/" $ do
     if pw == syspw
         then do
             let token = hmacEncode HS384 tokenSecret "hello"
-            either (\_ -> status status500) json token
+            either (\_ -> status status500) (\t -> json $ object [ "token" .= t ]) token
         else status status401
 
 -- | handles GET requests for the root route. Used to serve the JS application.
