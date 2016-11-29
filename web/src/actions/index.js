@@ -130,7 +130,7 @@ export const loginError = createAction('LOGIN_ERROR')
 export const login = data => ({
   actions: [ loginRequest, loginSuccess, loginError ],
   apiCall: () => axios.post('/api/auth', data),
-  successCallback: res => window.sessionStorage.setItem('jwt', res.data)
+  successCallback: res => window.sessionStorage.setItem('jwt', res.data.token)
 })
 
 /**

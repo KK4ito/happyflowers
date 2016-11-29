@@ -20,7 +20,7 @@ const snapshot = handleActions({
  * automatic waterings. Default value is an empty immutable list.
  */
 const events = handleActions({
-  [actions.fetchHistorySuccess]: (state, { payload }) => List(payload.res.data.events.map(e => Map(e)).merge(state)),
+  [actions.fetchHistorySuccess]: (state, { payload }) => List(payload.res.data.events.map(e => Map(e))).merge(state),
   [actions.eventReceived]: (state, { payload }) => state.push(Map(payload))
 }, List())
 
@@ -30,7 +30,7 @@ const events = handleActions({
  * Default value is an empty immutable list.
  */
 const measurements = handleActions({
-  [actions.fetchHistorySuccess]: (state, { payload }) => List(payload.res.data.measurements.map(m => Map(m)).merge(state)),
+  [actions.fetchHistorySuccess]: (state, { payload }) => List(payload.res.data.measurements.map(m => Map(m))).merge(state),
   [actions.measurementReceived]: (state, { payload }) => state.push(Map(payload))
 }, List())
 
