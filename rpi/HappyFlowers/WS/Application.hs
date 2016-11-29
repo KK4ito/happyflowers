@@ -23,14 +23,18 @@ module HappyFlowers.WS.Application
     , wsApp
     ) where
 
-import           Control.Concurrent (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
-import           Control.Exception  (finally)
-import           Control.Monad      (forM_, forever)
-import           Data.Monoid        (mappend)
-import           Data.Text          (Text)
-import qualified Data.Text          as T
-import qualified Data.Text.IO       as T
-import qualified Network.WebSockets as WS
+import           Control.Concurrent         (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
+import           Control.Exception          (finally)
+import           Control.Monad              (forM_, forever)
+import           Data.Aeson                 (ToJSON, encode)
+import qualified Data.ByteString.Lazy.Char8 as CL
+import           Data.Monoid                (mappend)
+import           Data.Text                  (Text)
+import qualified Data.Text                  as T
+import qualified Data.Text.IO               as T
+import qualified Network.WebSockets         as WS
+
+import qualified HappyFlowers.DB            as DB
 
 -- | 'Id' is a type alias that represents the unique ID on the WebSockets
 -- server.
@@ -79,6 +83,18 @@ disconnect client state = do
         broadcast (T.pack (show . fst $ client) `mappend` " disconnected") s'
         return (s', snd s')
 
+-- | sends WS notifications to all a client containing the historical data.
+notify :: ToJSON a
+       => WS.Connection -- Connection to send data to
+       -> Maybe a       -- Payload
+       -> IO ()
+notify conn = maybe (return ()) notify'
+    where
+        notify' p = WS.sendTextData conn $ T.concat [ "{ \"type\": \"historyReceived\", \"payload\":"
+                                                    , (T.pack . CL.unpack $ encode p)
+                                                    , "}"
+                                                    ]
+
 -- | starts a new WebSockets server instance. New connections recieve all
 -- broadcasts.
 server :: MVar ServerState -> WS.ServerApp
@@ -93,6 +109,7 @@ server state pending = do
     flip finally (disconnect client state) $ do
         modifyMVar_ state $ \s -> do
             let s' = addClient client s
+            DB.queryHistory >>= notify conn
             broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
             return s'
         talk conn state client

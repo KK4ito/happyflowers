@@ -5,7 +5,7 @@ import Snapshot from './Snapshot'
 import Stats from './Stats'
 import History from './History'
 import Stream from './Stream'
-import { fetchSettings, fetchHistory, connectWS, disconnectWS } from '../actions'
+import { fetchSettings, connectWS, disconnectWS } from '../actions'
 
 /**
  * Class representing the main dashboard of the application. It contains all
@@ -26,7 +26,6 @@ class Dashboard extends React.Component {
     const { dispatch } = this.props
 
     dispatch(fetchSettings())
-    dispatch(fetchHistory())
     dispatch(connectWS())
   }
 

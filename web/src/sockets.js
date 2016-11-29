@@ -1,4 +1,4 @@
-import { measurementReceived, eventReceived, fetchSettingsSuccess } from './actions'
+import { measurementReceived, eventReceived, fetchHistorySuccess, fetchSettingsSuccess } from './actions'
 
 const enhanceSockets = (socket, dispatch) => {
   // Send all messages that were supposed to be sent before the WS connection
@@ -27,6 +27,9 @@ const enhanceSockets = (socket, dispatch) => {
           break
         case 'eventReceived':
           dispatch(eventReceived(msg.payload))
+          break
+        case 'historyReceived':
+          dispatch(fetchHistorySuccess({ res: { data: msg.payload }}))
           break
         case 'settingsChanged':
           dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))

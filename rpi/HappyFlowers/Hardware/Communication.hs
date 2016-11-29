@@ -22,7 +22,7 @@ module HappyFlowers.Hardware.Communication
     ) where
 
 import           Control.Concurrent           (threadDelay)
-import           Data.Aeson                   (ToJSON, encode, object, (.=))
+import           Data.Aeson                   (ToJSON, encode)
 import qualified Data.ByteString.Char8        as C
 import qualified Data.ByteString.Lazy.Char8   as CL
 import qualified Data.Text                    as T
