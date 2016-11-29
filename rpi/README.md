@@ -11,6 +11,7 @@ The following guide documents the steps to setting up the Haskell environment an
 4. [SQLite](#sqlite)
 5. [Configuration](#configuration)
 6. [Cabal Tasks](#cabal-tasks)
+7. [Atom Integration](#atom-integration)
 
 ## Requirements
 
@@ -111,7 +112,7 @@ Depdendencies are locked using `cabal freeze`. The locked versions are noted in 
 
 - Create the database. Navigate to the `rpi` folder and run `sqlite3 happyflowers.db`.
 - Create the necessary tables using `.read happyflowers.sql`.
-- Insert data for application settings: `INSERT INTO settings (name, upper, lower, interval) VALUES ("...", 80, 40, 60);`.
+- Insert data for application settings: `INSERT INTO settings (name, upper, lower, interval) VALUES ("...", 80, 40, 60);`
 
 ## Configuration
 
@@ -133,4 +134,12 @@ The build is automatically configured based on whether it is built on a Debian A
 - `cabal run` builds and runs the project.
 - `cabal haddock --executables` generates documentation using Haddock.
 
-All tasks read the `rpi.cabal` config and are based off the `rpi` executable.
+All tasks read the [rpi.cabal](./rpi.cabal) config and are based off the `rpi` executable.
+
+## Atom Integration
+
+Atom offers easy integration of linting output directly in the editor.
+
+1. Install [linter](https://atom.io/packages/linter)
+2. Install [linter-hlint](https://atom.io/packages/linter-hlint)
+3. Install hlint using `cabal install --global hlint`
