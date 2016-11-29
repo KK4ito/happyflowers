@@ -16,6 +16,7 @@ module Main
     ) where
 
 import Control.Concurrent                (forkIO)
+
 import HappyFlowers.API.Application
 import HappyFlowers.Hardware.Application
 import HappyFlowers.WS.Application

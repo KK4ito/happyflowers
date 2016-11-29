@@ -1,4 +1,4 @@
-{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE OverloadedStrings, CPP #-}
 
 {-|
 Module      : HappyFlowers.RPI.Communication
@@ -18,7 +18,6 @@ module HappyFlowers.Hardware.Communication
       checkMoisture
       -- * Pump
     , activatePump
-    , triggerPump
     ) where
 
 import           Control.Concurrent           (threadDelay)
@@ -38,8 +37,8 @@ address :: Address
 address = 0x20
 
 -- | reads data from the chirp sensor.
-readMoisture :: Address -> IO ()
-readMoisture address = withGPIO . withI2C $ readI2C address 0 >>= putStrLn . C.unpack
+readMoisture :: IO Int
+readMoisture = withGPIO . withI2C $ readI2C address 0 >>= \val -> return $ read (C.unpack val) :: IO Int
 
 -- Only used during development.
 mockMoisture :: IO Int
@@ -69,7 +68,11 @@ checkMoisture conn = do
 
     case settings of
         Just settings' -> do
+#ifdef Development
             d <- mockMoisture
+#else
+            d <- readMoisture
+#endif
             DB.addMeasurement d
             DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
@@ -88,12 +91,20 @@ checkMoisture conn = do
 -- reached. Informs all connected clients about the watering.
 activatePump :: WS.Connection -> IO ()
 activatePump conn = do
+#ifdef Development
     mockTriggerPump
+#else
+    triggerPump
+#endif
     settings <- DB.querySettings
 
     case settings of
         Just settings' -> do
+#ifdef Development
             d <- mockMoisture
+#else
+            d <- readMoisture
+#endif
 
             if d >= (upper settings')
                 then do
