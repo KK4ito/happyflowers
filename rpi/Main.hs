@@ -19,7 +19,6 @@ import Control.Concurrent                (forkIO)
 import HappyFlowers.API.Application
 import HappyFlowers.Hardware.Application
 import HappyFlowers.WS.Application
-import HappyFlowers.Hardware.Communication
 
 -- | determines which port the API application is run on.
 apiPort :: Int
@@ -31,13 +30,11 @@ wsPort = 9160
 
 -- | sets up the API application and the WebSockets application. The Hardware
 -- processes are started with communication to the WS server.
--- main :: IO ()
--- main = do
---     putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
---     forkIO $ apiApp apiPort
---     putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
---     forkIO $ wsApp wsPort
---     putStr "[HW]  Starting process using port " >> (putStr . show) wsPort >> putStrLn "..."
---     hwApp wsPort
 main :: IO ()
-main = triggerPump
+main = do
+    putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
+    forkIO $ apiApp apiPort
+    putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
+    forkIO $ wsApp wsPort
+    putStr "[HW]  Starting process using port " >> (putStr . show) wsPort >> putStrLn "..."
+    hwApp wsPort

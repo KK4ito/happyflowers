@@ -28,18 +28,18 @@ import qualified Data.ByteString.Lazy.Char8   as CL
 import qualified Data.Text                    as T
 import           Database.SQLite.Simple.Types (Only(..))
 import qualified Network.WebSockets           as WS
-import qualified System.RaspberryPi.GPIO      as G
+import           System.RaspberryPi.GPIO      (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C)
 
 import qualified HappyFlowers.DB              as DB
 import           HappyFlowers.Type            (interval, lower, upper)
 
 -- | determines the address of the port that is used to read data.
-address :: G.Address
+address :: Address
 address = 0x20
 
 -- | reads data from the chirp sensor.
-readMoisture :: G.Address -> IO ()
-readMoisture address = G.withGPIO . G.withI2C $ G.readI2C address 0 >>= putStrLn . C.unpack
+readMoisture :: Address -> IO ()
+readMoisture address = withGPIO . withI2C $ readI2C address 0 >>= putStrLn . C.unpack
 
 -- Only used during development.
 mockMoisture :: IO Int
@@ -110,8 +110,8 @@ mockTriggerPump :: IO ()
 mockTriggerPump = putStrLn "pump on" >> threadDelay 5000000 >> putStrLn "pump off"
 
 triggerPump :: IO ()
-triggerPump = do
-    G.setPinFunction G.Pin05 G.Output
-    G.writePin G.Pin05 True
+triggerPump = withGPIO $ do
+    setPinFunction Pin07 Output
+    writePin Pin07 True
     threadDelay 5000000
-    G.writePin G.Pin05 False
+    writePin Pin07 False
