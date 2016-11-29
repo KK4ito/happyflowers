@@ -73,7 +73,7 @@ EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh
 
 By following all these steps you get a working Haskell environment you can use to run the happy flowers project.
 
-## Dependencies
+## RPi Dependencies
 
 Enable I2C on the RPi in order for the sensor to be able to read data from the moisture sensor.
 
