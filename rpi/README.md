@@ -103,7 +103,7 @@ sudo make install
 In order to provide a clean and isolated environment this project uses a cabal sandbox.
 
 - Run `cabal sandbox init`.
-- Run `cabal install --extra-lib-dirs=/usr/local/lib/ --extra-inclue-dirs=/usr/local/include/`. The two flags are required for installing `HPi`.
+- Run `cabal install --extra-lib-dirs=/usr/local/lib/ --extra-include-dirs=/usr/local/include/`. The two flags are required for installing `HPi`.
 
 ## Setting Up SQLite
 
