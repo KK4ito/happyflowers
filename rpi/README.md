@@ -25,7 +25,7 @@ To use this project you will need the following minimal requirements.
 
 - As a basis for the setup, a standard Raspbian (jessie) installation is used and needs to be stored on an SD card. This is either preinstalled or part of the default RPi NOOBS. The RPi should now allow connection over SSH.
 
-- Use `raspi-config` to enlarge the SD card partition and set the video / cpu memory split.
+- Use `sudo raspi-config` to enlarge the SD card partition and set the video / cpu memory split.
 
 ```ini
 enlarge partition
@@ -43,6 +43,34 @@ memory split 16
 - Just like with GHC, the latest available version of Cabal in Debian is outdated. This means that another custom installation is required. For this it is needed to clone the Cabal GitHub repository using `git clone https://github.com/haskell/cabal.git`. The cabal-install  directory contains an executable called bootstrap.sh which is only available on releases. Using `git checkout cabal-install-v1.22.9.0` and `EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh`, Cabal is installed and made ready.
 
 - In some cases the Cabal binary needs to be added to the path using `PATH="$HOME/.cabal/bin/:$PATH"`. All package sources can then be updated using `cabal update`.
+
+### Setting Up I2C
+
+In order for the sensor to be able to read data from the moisture sensor, we need to enable i2c on the RPi.
+
+- Open the RPi settings using `sudo raspi-config`
+- Select `9 Advanced Options`
+- Select `A7 I2C`
+- Confirm with `Yes` and `OK`
+- Save changes with `Finish`
+
+Then we have to change the baudrate as it too high by default.
+- Edit the config.txt file by using `sudo nano /boot/config.txt`
+- And add the following line `dtparam=i2c1_baudrate=3814`
+- Exit the editor with `ctrl + x` and confirm changes with `y` and press `return`
+
+### Setting Up bcm2835
+
+To use the HPi package we need to install the bcm2835 library. It enables the GPIO communication between the code and the RPi itself. In order to do that run the following commands.
+
+```
+wget http://www.open.com.au/mikem/bcm2835/bcm2835-1.50.tar.gz`
+tar xvfz bcm2835-1.50.tar.gz
+cd bcm2835-1.50
+./configure
+make
+sudo make install
+```
 
 ## Setting Up a Cabal Sandbox
 
