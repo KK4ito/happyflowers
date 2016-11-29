@@ -105,6 +105,8 @@ In order to provide a clean and isolated environment this project uses a cabal s
 - Run `cabal sandbox init`.
 - Run `cabal install --extra-lib-dirs=/usr/local/lib/ --extra-include-dirs=/usr/local/include/`. The two flags are required for installing `HPi`.
 
+Depdendencies are locked using `cabal freeze`. The locked versions are noted in the `cabal.config` file.
+
 ## Setting Up SQLite
 
 - Create the database. Navigate to the `rpi` folder and run `sqlite3 happyflowers.db`.
@@ -124,6 +126,10 @@ The password is used for user authentication and the frame determines the timefr
 
 ## Cabal Tasks
 
+The build can be configured to run in development mode, where sensors are simulated using mock functions, or production mode, where the real RPi sensors are accessed. The production environment only needs to be active when building on the RPi.
+
+- `cabal configure -f Development` enables development mode.
+- `cabal configure -f -Development` disables development mode.
 - `cabal install` installs all required dependencies.
 - `cabal build` builds the project.
 - `cabal run` builds and runs the project.
