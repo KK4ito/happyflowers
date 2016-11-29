@@ -80,7 +80,9 @@ class Login extends React.Component {
         <form className="login">
           <Loader loading={this.props.isLoggingIn} />
           <h1 className="form-title">
-            happy flowers
+            <a href="/">
+              happy flowers
+            </a>
           </h1>
           <input className="text-input full-width spaced"
                  ref={n => this.password = n}

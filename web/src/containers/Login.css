@@ -12,11 +12,16 @@
 
 .form-title {
   margin: -0.75em -0.75em 0.75em;
-  padding: 1em;
   color: #fff;
   text-align: center;
   background-image: linear-gradient(to bottom right, #485563, #29323c);
   border-radius: 3px 3px 0 0;
+}
+
+.form-title a {
+  display: block;
+  padding: 1em;
+  border: 0;
 }
 
 @media (min-width: 50em) {
