@@ -12,7 +12,6 @@ import './Stats.css'
  * message is shown.
  */
 class Stats extends React.Component {
-  /** TODO: document */
   static propTypes = {
     dispatch: React.PropTypes.function,
     isLoggedIn: React.PropTypes.bool,
@@ -26,7 +25,12 @@ class Stats extends React.Component {
     isFetching: React.PropTypes.bool
   }
 
-  /** TODO: document */
+  /**
+   * Create a Stats component. Sets initial state and binds class methods.
+   *
+   * @param {object} props - Standard react props to be passed to the parent
+   *                         constructor.
+   */
   constructor(props) {
     super(props)
 
@@ -37,7 +41,10 @@ class Stats extends React.Component {
     this.handleTrigger = this.handleTrigger.bind(this)
   }
 
-  /** TODO: document */
+  /**
+   * Handles clicks on the manual trigger button. Triggers the relevant action
+   * and updates the state of the button.
+   */
   handleTrigger() {
     this.props.dispatch(triggerPump())
     this.setState({ pump: 1 })
@@ -47,6 +54,11 @@ class Stats extends React.Component {
     setTimeout(() => this.setState({ pump: 0 }), 16000)
   }
 
+  /**
+   * Renders the component.
+   *
+   * @return {string} - HTML markup for the component.
+   */
   render() {
     const { isLoggedIn, name, timestamps, isFetching, busy } = this.props
     const { pump } = this.state

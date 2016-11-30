@@ -62,7 +62,8 @@ updateSettings body = do
     S.execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
     S.close conn
 
--- TODO: document
+-- | updates the busy status of the RPi to the given value. 0 means the RPi is
+-- not busy, 1 means the RPi is busy.
 updateBusy :: Int -> IO ()
 updateBusy status = do
     conn <- S.open dbName

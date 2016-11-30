@@ -12,7 +12,10 @@ const data = handleActions({
   [actions.submitSettingsSuccess]: (_, { payload }) => Map(payload.res.data)
 }, Map())
 
-/** TODO: document */
+/**
+ * Creates a reducer to keep track of the RPi's state. A truthy value means that
+ * the RPi is currently busy with its sensors or the pump.
+ */
 const busy = handleActions({
   [actions.busy]: (_, { payload }) => payload,
   [actions.fetchSettingsSuccess]: (_, { payload }) => payload.res.data.busy
