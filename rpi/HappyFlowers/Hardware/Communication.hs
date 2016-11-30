@@ -20,7 +20,7 @@ module HappyFlowers.Hardware.Communication
     , activatePump
     ) where
 
-import           Control.Concurrent           (threadDelay)
+import           Control.Concurrent.Delay     (delay)
 import           Data.Aeson                   (ToJSON, encode)
 import qualified Data.ByteString.Char8        as C
 import qualified Data.ByteString.Lazy.Char8   as CL
@@ -42,7 +42,7 @@ readMoisture = withGPIO . withI2C $ readI2C address 0 >>= \val -> return $ read 
 
 -- Only used during development.
 mockMoisture :: IO Int
-mockMoisture = putStrLn "sensor on" >> threadDelay 3000000 >> putStrLn "sensor off" >> return 80
+mockMoisture = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return 80
 
 -- | sends WS notifications to all connected clients about measurements or
 -- events if a payload is available.
@@ -83,7 +83,7 @@ checkMoisture conn = do
                 then do
                     activatePump conn
                 else do
-                    threadDelay $ (interval settings') * 60000000
+                    delay $ (interval settings') * 60000000
                     checkMoisture conn
         Nothing        -> return ()
 
@@ -118,11 +118,12 @@ activatePump conn = do
 
 -- Only used during development.
 mockTriggerPump :: IO ()
-mockTriggerPump = putStrLn "pump on" >> threadDelay 5000000 >> putStrLn "pump off"
+mockTriggerPump = putStrLn "pump on" >> delay 5000000 >> putStrLn "pump off"
 
 triggerPump :: IO ()
 triggerPump = withGPIO $ do
     setPinFunction Pin07 Output
     writePin Pin07 True
-    threadDelay 5000000
+    delay 5000000
     writePin Pin07 False
+    delay 5000000
