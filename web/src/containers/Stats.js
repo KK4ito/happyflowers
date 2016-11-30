@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import TimeAgo from 'timeago-react'
 import Widget from '../components/Widget'
+import { triggerPump } from '../actions'
 import './Stats.css'
 
 /**
@@ -15,7 +16,7 @@ import './Stats.css'
  *
  * @return {string} - HTML markup for the component.
  */
-const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
+const Stats = ({ dispatch, isLoggedIn, name, timestamps, isFetching, pumpState }) => (
   <Widget title={name || 'Your Flower'} isLoading={isFetching}>
     <ul className="stats-list unstyled-list">
       <li>
@@ -30,24 +31,26 @@ const Stats = ({ isLoggedIn, name, timestamps, isFetching }) => (
         <h3 className="stats-heading">
           Last automatic watering
         </h3>
-        {(timestamps.automatic && <TimeAgo datetime={timestamps.automatic.get('eventTimestamp')} />) || 'a while ago'}
+        <span className="circle circle-automatic"></span>{(timestamps.automatic && <TimeAgo datetime={timestamps.automatic.get('eventTimestamp')} />) || 'a while ago'}
       </li>
       <li>
       <span data-icon="hand" />
         <h3 className="stats-heading">
           Last manual watering
         </h3>
-        {(timestamps.manual && <TimeAgo datetime={timestamps.manual.get('eventTimestamp')} />) || 'a while ago'}
+        <span className="circle circle-manual"></span>{(timestamps.manual && <TimeAgo datetime={timestamps.manual.get('eventTimestamp')} />) || 'a while ago'}
       </li>
     </ul>
-    <button data-button="block secondary" disabled={!isLoggedIn}>
-      Start pump manually
+    <button data-button="block secondary" disabled={!isLoggedIn || pumpState !== 0} onClick={() => dispatch(triggerPump())}>
+      {pumpState === 0 ? 'Start pump manually' : pumpState === 1 ? `Checking ${name || 'your flower'}…` : pumpState === 2 ? 'Watering…' : 'Seeping in…'}
     </button>
   </Widget>
 )
 
 Stats.propTypes = {
+  dispatch: React.PropTypes.function,
   isLoggedIn: React.PropTypes.bool,
+  pumpState: React.PropTypes.number,
   name: React.PropTypes.string,
   timestamps: React.PropTypes.shape({
     measurement: React.PropTypes.object,
@@ -65,6 +68,7 @@ Stats.propTypes = {
  */
 const mapStateToProps = state => ({
   isLoggedIn: !!state.auth.jwt,
+  pumpState: state.pump.pumpState,
   name: state.settings.data.get('name'),
   timestamps: {
     measurement: state.history.measurements.last(),

@@ -162,6 +162,49 @@ export const measurementReceived = createAction('MEASUREMENT_RECEIVED')
 export const eventReceived = createAction('EVENT_RECEIVED')
 
 /**
+ * Creates a PUMP_REQUESTED action with no specified payload transformation.
+ */
+export const pumpRequested = createAction('PUMP_REQUESTED')
+
+/**
+ * Creates a PUMP_STARTED action with no specified payload transformation.
+ */
+export const pumpStarted = createAction('PUMP_STARTED')
+
+/**
+ * Creates a PUMP_PAUSED action with no specified payload transformation.
+ */
+export const pumpPaused = createAction('PUMP_PAUSED')
+
+/**
+ * Creates a PUMP_STOPPED action with no specified payload transformation.
+ */
+export const pumpStopped = createAction('PUMP_STOPPED')
+
+/**
+ * Creates a thunk to trigger the water pump manually.
+ *
+ * @return {function} The function to execute once the action is dispatched.
+ */
+export const triggerPump = () => dispatch => {
+  const msg = JSON.stringify({
+    type: 'triggerPump'
+  })
+
+  if (socket) {
+    socket.send(msg)
+  } else {
+    window.storedWSMsg = [ ...window.storedWSMsg, msg ]
+  }
+
+  dispatch(pumpRequested())
+
+  setTimeout(() => dispatch(pumpStarted()), 3000)
+  setTimeout(() => dispatch(pumpPaused()), 8000)
+  setTimeout(() => dispatch(pumpStopped()), 16000)
+}
+
+/**
  * Creates a thunk that sets up a new WebSockets connection that is enhanced
  * with custom listeners.
  *

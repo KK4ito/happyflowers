@@ -18,3 +18,21 @@
   line-height: 1.5;
   text-transform: uppercase;
 }
+
+.circle {
+  display: inline-block;
+  float: left;
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.5em;
+  border-radius: 100%;
+  transform: translateY(0.45em);
+}
+
+.circle-automatic {
+  background-color: #00f;
+}
+
+.circle-manual {
+  background-color: #f00;
+}

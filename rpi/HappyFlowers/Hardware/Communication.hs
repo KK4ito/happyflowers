@@ -17,32 +17,46 @@ module HappyFlowers.Hardware.Communication
       -- * Sensor
       checkMoisture
       -- * Pump
-    , activatePump
+    , manualPump
     ) where
 
 import           Control.Concurrent.Thread.Delay (delay)
+import           Control.Monad                   (when)
 import           Data.Aeson                      (ToJSON, encode)
 import qualified Data.ByteString.Char8           as C
 import qualified Data.ByteString.Lazy.Char8      as CL
 import qualified Data.Text                       as T
-import           Database.SQLite.Simple.Types    (Only(..))
 import qualified Network.WebSockets              as WS
 import           System.RaspberryPi.GPIO         (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C)
 
 import qualified HappyFlowers.DB                 as DB
-import           HappyFlowers.Type               (interval, lower, upper)
+import           HappyFlowers.Type               (Settings, interval, lower, upper)
 
 -- | determines the address of the port that is used to read data.
 address :: Address
 address = 0x20
 
 -- | reads data from the chirp sensor.
+#ifdef Development
+readMoisture :: Int -> IO Int
+readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
+#else
 readMoisture :: IO Int
 readMoisture = withGPIO . withI2C $ readI2C address 0 >>= \val -> return $ read (C.unpack val) :: IO Int
+#endif
 
--- Only used during development.
-mockMoisture :: Int -> IO Int
-mockMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
+-- | triggers the USB water pump.
+#ifdef Development
+triggerPump :: IO ()
+triggerPump = putStrLn "pump on" >> delay 5000000 >> putStrLn "pump off"
+#else
+triggerPump :: IO ()
+triggerPump = withGPIO $ do
+    setPinFunction Pin07 Output
+    writePin Pin07 True
+    delay 5000000
+    writePin Pin07 False
+#endif
 
 -- | sends WS notifications to all connected clients about measurements or
 -- events if a payload is available.
@@ -63,78 +77,81 @@ notify conn kind = maybe (return ()) notify'
 -- | checks the plant's moisutre level and informs connected clients about the
 -- measurement. Triggers the pump if the lower moisture limit is reached.
 checkMoisture :: WS.Connection -> IO ()
-checkMoisture conn = do
-    settings <- DB.querySettings
-
-    case settings of
-        Just settings' -> do
+checkMoisture conn = handle $ \settings' -> do
 
 #ifdef Development
-            d <- mockMoisture 30
+    d <- readMoisture 30
 #else
-            d <- readMoisture
+    d <- readMoisture
 #endif
 
-            DB.addMeasurement d
-            DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+    DB.addMeasurement d
+    DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
-            -- Either activate the pump or schedule another measurement after the
-            -- defined interval.
-
-            if d < (lower settings')
-                then do
-                    activatePump conn
-                else do
-                    delay . (60000000 *) . toInteger $ interval settings'
-                    checkMoisture conn
-        Nothing        -> return ()
+    if d < lower settings'
+        then do
+            activatePump conn
+        else do
+            delay . (60000000 *) . toInteger $ interval settings'
+            checkMoisture conn
 
 -- | activates the pump and keeps repeating until the upper moisture limit is
 -- reached. Informs all connected clients about the watering.
 activatePump :: WS.Connection -> IO ()
-activatePump conn = do
-
-#ifdef Development
-    mockTriggerPump
-#else
+activatePump conn = handle $ \settings' -> do
     triggerPump
-#endif
-
     delay 5000000
-    settings <- DB.querySettings
-
-    case settings of
-        Just settings' -> do
 
 #ifdef Development
-            d <- mockMoisture 80
+    d <- readMoisture 80
 #else
-            d <- readMoisture
+    d <- readMoisture
 #endif
 
-            if d >= (upper settings')
-                then do
-                    DB.addEvent "automatic"
-                    DB.queryLatestEvent >>= notify conn "eventReceived"
+    if d >= upper settings'
+        then do
+            DB.addEvent "automatic"
+            DB.queryLatestEvent >>= notify conn "eventReceived"
 
 #ifdef Development
-                    DB.addMeasurement d
-                    DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+            DB.addMeasurement d
+            DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
-                    delay . (60000000 *) . toInteger $ interval settings'
-                    checkMoisture conn
+            delay . (60000000 *) . toInteger $ interval settings'
+            checkMoisture conn
 #endif
-                else do
-                    activatePump conn
-        Nothing        -> return ()
 
--- Only used during development.
-mockTriggerPump :: IO ()
-mockTriggerPump = putStrLn "pump on" >> delay 5000000 >> putStrLn "pump off"
+        else do
+            activatePump conn
 
-triggerPump :: IO ()
-triggerPump = withGPIO $ do
-    setPinFunction Pin07 Output
-    writePin Pin07 True
-    delay 5000000
-    writePin Pin07 False
+-- | activates the pump based on a user interaction if the flower is not already
+-- fully moisturised. Informs all connected clients about the watering.
+manualPump :: WS.Connection -> IO ()
+manualPump conn = handle $ \settings' -> do
+
+#ifdef Development
+    d <- readMoisture 50
+#else
+    d <- readMoisture
+#endif
+
+    DB.addMeasurement d
+    DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+
+    when (d < upper settings') $ do
+        triggerPump
+        delay 5000000
+
+        DB.addEvent "manual"
+        DB.queryLatestEvent >>= notify conn "eventReceived"
+
+#ifdef Development
+        readMoisture 80 >>= DB.addMeasurement
+#else
+        readMoisture >>= DB.addMeasurement
+#endif
+
+        DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+
+handle :: (Settings -> IO ()) -> IO ()
+handle action = DB.querySettings >>= maybe (return ()) action
