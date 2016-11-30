@@ -100,6 +100,7 @@ activatePump conn = do
     triggerPump
 #endif
 
+    delay 5000000
     settings <- DB.querySettings
 
     case settings of
@@ -124,7 +125,6 @@ activatePump conn = do
                     checkMoisture conn
 #endif
                 else do
-                    delay 5000000
                     activatePump conn
         Nothing        -> return ()
 
