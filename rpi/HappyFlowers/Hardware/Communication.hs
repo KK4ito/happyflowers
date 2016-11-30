@@ -14,14 +14,14 @@ hardware and connected sensors and devices.
 -}
 module HappyFlowers.Hardware.Communication
     (
-      -- * Sensor
-      checkMoisture
-      -- * Pump
-    , manualPump
+      -- * Operations
+      client
     ) where
 
+import           Control.Concurrent              (forkIO)
 import           Control.Concurrent.Thread.Delay (delay)
-import           Control.Monad                   (when)
+import           Control.Monad                   (forever, when)
+import           Control.Monad.Trans             (liftIO)
 import           Data.Aeson                      (ToJSON, encode)
 import qualified Data.ByteString.Char8           as C
 import qualified Data.ByteString.Lazy.Char8      as CL
@@ -153,5 +153,21 @@ manualPump conn = handle $ \settings' -> do
 
         DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
+-- | retrieves settings from the database and handles them using a given action
+-- if a value could be retrieved.
 handle :: (Settings -> IO ()) -> IO ()
 handle action = DB.querySettings >>= maybe (return ()) action
+
+-- | creates a new WS client application that checks plant moisture on a regular
+-- basis.
+client :: WS.ClientApp ()
+client conn = do
+    forkIO . forever $ do
+        msg <- WS.receiveData conn
+        liftIO . when ("triggerPump" `T.isInfixOf` msg) $ manualPump conn
+
+#ifdef Development
+    liftIO $ checkMoisture conn
+#else
+    forever $ checkMoisture conn
+#endif
