@@ -1,4 +1,12 @@
-import { measurementReceived, eventReceived, fetchHistorySuccess, fetchSettingsSuccess } from './actions'
+import { measurementReceived,
+         eventReceived,
+         fetchHistorySuccess,
+         fetchSettingsSuccess,
+         pumpRequested,
+         pumpStarted,
+         pumpPaused,
+         pumpStopped
+       } from './actions'
 
 const enhanceSockets = (socket, dispatch) => {
   // Send all messages that were supposed to be sent before the WS connection
@@ -33,6 +41,13 @@ const enhanceSockets = (socket, dispatch) => {
           break
         case 'settingsChanged':
           dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))
+          break
+        case 'triggerPump':
+          dispatch(pumpRequested())
+
+          setTimeout(() => dispatch(pumpStarted()), 3000)
+          setTimeout(() => dispatch(pumpPaused()), 8000)
+          setTimeout(() => dispatch(pumpStopped()), 16000)
           break
         default:
           break
