@@ -20,17 +20,17 @@ module HappyFlowers.Hardware.Communication
     , activatePump
     ) where
 
-import           Control.Concurrent.Delay     (delay)
-import           Data.Aeson                   (ToJSON, encode)
-import qualified Data.ByteString.Char8        as C
-import qualified Data.ByteString.Lazy.Char8   as CL
-import qualified Data.Text                    as T
-import           Database.SQLite.Simple.Types (Only(..))
-import qualified Network.WebSockets           as WS
-import           System.RaspberryPi.GPIO      (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C)
+import           Control.Concurrent.Thread.Delay (delay)
+import           Data.Aeson                      (ToJSON, encode)
+import qualified Data.ByteString.Char8           as C
+import qualified Data.ByteString.Lazy.Char8      as CL
+import qualified Data.Text                       as T
+import           Database.SQLite.Simple.Types    (Only(..))
+import qualified Network.WebSockets              as WS
+import           System.RaspberryPi.GPIO         (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C)
 
-import qualified HappyFlowers.DB              as DB
-import           HappyFlowers.Type            (interval, lower, upper)
+import qualified HappyFlowers.DB                 as DB
+import           HappyFlowers.Type               (interval, lower, upper)
 
 -- | determines the address of the port that is used to read data.
 address :: Address
@@ -83,7 +83,7 @@ checkMoisture conn = do
                 then do
                     activatePump conn
                 else do
-                    delay $ (interval settings') * 60000000
+                    delay . (60000000 *) . toInteger $ interval settings'
                     checkMoisture conn
         Nothing        -> return ()
 
