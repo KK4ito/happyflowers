@@ -1,24 +1,24 @@
-# npm Setup Guide
+# Web Setup Guide
 
 The following guide documents the steps to setting up the React environment for happy flowers to work in.
 
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [npm Tasks](#npm-tasks)
+2. [yarn Tasks](#yarn-tasks)
 3. [Atom Integration](#atom-integration)
 
 ## Requirements
 
-| Technology | Version  |
-| ---------- | -------- |
-| Node       | 8.0      |
-| npm        | 7.10.3   |
+| Technology | Version |
+| ---------- | ------- |
+| Node       | 7.2.0   |
+| yarn       | 0.16.0  |
 
-## npm Tasks
+## yarn Tasks
 
-- `npm start` runs the app in development. A live-reloading `webpack-dev-server` is started on port 3000.
-- `npm run build` builds the optimised app for production.
+- `yarn start` runs the app in development. A live-reloading `webpack-dev-server` is started on port 3000.
+- `yarn run build` builds the optimised app for production.
 
 Tasks and additional configuration are defined in [package.json](./src/package.json).
 
