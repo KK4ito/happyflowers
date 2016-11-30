@@ -41,8 +41,8 @@ readMoisture :: IO Int
 readMoisture = withGPIO . withI2C $ readI2C address 0 >>= \val -> return $ read (C.unpack val) :: IO Int
 
 -- Only used during development.
-mockMoisture :: IO Int
-mockMoisture = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return 80
+mockMoisture :: Int -> IO Int
+mockMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
 
 -- | sends WS notifications to all connected clients about measurements or
 -- events if a payload is available.
@@ -68,11 +68,13 @@ checkMoisture conn = do
 
     case settings of
         Just settings' -> do
+
 #ifdef Development
-            d <- mockMoisture
+            d <- mockMoisture 30
 #else
             d <- readMoisture
 #endif
+
             DB.addMeasurement d
             DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
@@ -91,17 +93,20 @@ checkMoisture conn = do
 -- reached. Informs all connected clients about the watering.
 activatePump :: WS.Connection -> IO ()
 activatePump conn = do
+
 #ifdef Development
     mockTriggerPump
 #else
     triggerPump
 #endif
+
     settings <- DB.querySettings
 
     case settings of
         Just settings' -> do
+
 #ifdef Development
-            d <- mockMoisture
+            d <- mockMoisture 80
 #else
             d <- readMoisture
 #endif
@@ -110,9 +115,16 @@ activatePump conn = do
                 then do
                     DB.addEvent "automatic"
                     DB.queryLatestEvent >>= notify conn "eventReceived"
+
+#ifdef Development
                     DB.addMeasurement d
                     DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+
+                    delay . (60000000 *) . toInteger $ interval settings'
+                    checkMoisture conn
+#endif
                 else do
+                    delay 5000000
                     activatePump conn
         Nothing        -> return ()
 
@@ -126,4 +138,3 @@ triggerPump = withGPIO $ do
     writePin Pin07 True
     delay 5000000
     writePin Pin07 False
-    delay 5000000

@@ -1,3 +1,5 @@
+{-# LANGUAGE CPP #-}
+
 {-|
 Module      : HappyFlowers.RPI.Application
 Description : WebSockets client implementation that communicates with hardware
@@ -15,7 +17,12 @@ module HappyFlowers.Hardware.Application
       hwApp
     ) where
 
+#ifdef Development
 import           Control.Monad.Trans                 (liftIO)
+#else
+import           Control.Monad                       (forever)
+#endif
+
 import           Network.Socket                      (withSocketsDo)
 import qualified Network.WebSockets                  as WS
 
@@ -25,7 +32,12 @@ import qualified HappyFlowers.Hardware.Communication as C
 -- basis.
 client :: WS.ClientApp ()
 client conn = do
+
+#ifdef Development
     liftIO $ C.checkMoisture conn
+#else
+    forever $ C.checkMoisture conn
+#endif
 
 -- | sets up a WS connection to the WS server listening on the given port.
 hwApp :: Int -- ^ Port
