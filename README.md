@@ -6,9 +6,9 @@ The final product is an automatic watering system for household flowers using a 
 
 ## Development
 
-1. Read the [documentation](./tree/master/docs/) for details about the project and its architecture
-2. Set up the [Haskell environment](./tree/master/rpi/)
-3. Set up the [React environment](./tree/master/web/)
+1. Read the [documentation](tree/master/docs/) for details about the project and its architecture
+2. Set up the [Haskell environment](tree/master/rpi/)
+3. Set up the [React environment](tree/master/web/)
 
 ## Editorconfig
 
