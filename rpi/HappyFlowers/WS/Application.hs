@@ -119,4 +119,4 @@ wsApp :: Int -- ^ Port
       -> IO ()
 wsApp port = do
     state <- newMVar newServerState
-    WS.runServer "127.0.0.1" port $ server state
+    WS.runServer "0.0.0.0" port $ server state

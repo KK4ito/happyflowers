@@ -30,4 +30,4 @@ client conn = do
 -- | sets up a WS connection to the WS server listening on the given port.
 hwApp :: Int -- ^ Port
       -> IO ()
-hwApp port = withSocketsDo $ WS.runClient "127.0.0.1" port "/" client
+hwApp port = withSocketsDo $ WS.runClient "0.0.0.0" port "/" client
