@@ -127,8 +127,10 @@ The password is used for user authentication and the frame determines the timefr
 
 ## Cabal Tasks
 
-The build is automatically configured based on whether it is built on a Debian ARM architecture or on another architecture. A Debian ARM system is considered to be the RPi, thus access to sensors is considered possible. All other systems use mocking functions to simulate the hardware communication.
+The build can be configured to run in development mode, where sensors are simulated using mock functions, or production mode, where the real RPi sensors are accessed. The production environment only needs to be active when building on the RPi.
 
+- `cabal configure -f Development` enables development mode.
+- `cabal configure -f -Development` disables development mode.
 - `cabal install` installs all required dependencies.
 - `cabal build` builds the project.
 - `cabal run` builds and runs the project.
