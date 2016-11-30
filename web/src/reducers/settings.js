@@ -12,6 +12,12 @@ const data = handleActions({
   [actions.submitSettingsSuccess]: (_, { payload }) => Map(payload.res.data)
 }, Map())
 
+/** TODO: document */
+const busy = handleActions({
+  [actions.busy]: (_, { payload }) => payload,
+  [actions.fetchSettingsSuccess]: (_, { payload }) => payload.res.data.busy
+}, false)
+
 /**
  * Creates a reducer to keep track of the state of the fetching process. Default
  * value is false, i.e. application settings data is not currently being
@@ -44,6 +50,7 @@ const isErroneous = handleActions({
  */
 export default combineReducers({
   data,
+  busy,
   isFetching,
   isSubmitting,
   isErroneous

@@ -4,7 +4,8 @@ CREATE TABLE settings (
   name     TEXT    NOT NULL,
   upper    INTEGER NOT NULL,
   lower    INTEGER NOT NULL,
-  interval INTEGER NOT NULL
+  interval INTEGER NOT NULL,
+  busy     BOOLEAN NOT NULL DEFAULT 0
 );
 
 CREATE TABLE events (

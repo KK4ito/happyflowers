@@ -1,7 +1,6 @@
 import { combineReducers } from 'redux'
 import auth from './auth'
 import history from './history'
-import pump from './pump'
 import settings from './settings'
 
 /**
@@ -10,6 +9,5 @@ import settings from './settings'
 export default combineReducers({
   auth,
   history,
-  pump,
   settings
 })

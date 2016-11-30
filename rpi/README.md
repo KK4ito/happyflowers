@@ -112,7 +112,7 @@ Depdendencies are locked using `cabal freeze`. The locked versions are noted in 
 
 - Create the database. Navigate to the `rpi` folder and run `sqlite3 happyflowers.db`.
 - Create the necessary tables using `.read happyflowers.sql`.
-- Insert data for application settings: `INSERT INTO settings (name, upper, lower, interval) VALUES ("...", 80, 40, 60);`
+- Insert data for application settings: `INSERT INTO settings (name, upper, lower, interval, busy) VALUES ("...", 80, 40, 60, 0);`
 
 ## Configuration
 

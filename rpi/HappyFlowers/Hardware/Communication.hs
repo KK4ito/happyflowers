@@ -30,7 +30,7 @@ import qualified Network.WebSockets              as WS
 import           System.RaspberryPi.GPIO         (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C)
 
 import qualified HappyFlowers.DB                 as DB
-import           HappyFlowers.Type               (Settings, interval, lower, upper)
+import           HappyFlowers.Type               (Settings, busy, interval, lower, upper)
 
 -- | determines the address of the port that is used to read data.
 address :: Address
@@ -78,19 +78,28 @@ notify conn kind = maybe (return ()) notify'
 -- measurement. Triggers the pump if the lower moisture limit is reached.
 checkMoisture :: WS.Connection -> IO ()
 checkMoisture conn = handle $ \settings' -> do
+    if not (busy settings')
+        then do
+            DB.updateBusy 1
+            WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": true }" :: T.Text)
 
 #ifdef Development
-    d <- readMoisture 30
+            d <- readMoisture 30
 #else
-    d <- readMoisture
+            d <- readMoisture
 #endif
 
-    DB.addMeasurement d
-    DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+            DB.addMeasurement d
+            DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
-    if d < lower settings'
-        then do
-            activatePump conn
+            if d < lower settings'
+                then do
+                    activatePump conn
+                else do
+                    DB.updateBusy 0
+                    WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
+                    delay . (60000000 *) . toInteger $ interval settings'
+                    checkMoisture conn
         else do
             delay . (60000000 *) . toInteger $ interval settings'
             checkMoisture conn
@@ -114,6 +123,8 @@ activatePump conn = handle $ \settings' -> do
             DB.queryLatestEvent >>= notify conn "eventReceived"
 
 #ifdef Development
+            DB.updateBusy 0
+            WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
             DB.addMeasurement d
             DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
@@ -128,6 +139,8 @@ activatePump conn = handle $ \settings' -> do
 -- fully moisturised. Informs all connected clients about the watering.
 manualPump :: WS.Connection -> IO ()
 manualPump conn = handle $ \settings' -> do
+    DB.updateBusy 1
+    WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": true }" :: T.Text)
 
 #ifdef Development
     d <- readMoisture 50
@@ -151,6 +164,8 @@ manualPump conn = handle $ \settings' -> do
         readMoisture >>= DB.addMeasurement
 #endif
 
+        DB.updateBusy 0
+        WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
         DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
 -- | retrieves settings from the database and handles them using a given action

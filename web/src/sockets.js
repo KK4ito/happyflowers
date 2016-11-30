@@ -1,12 +1,4 @@
-import { measurementReceived,
-         eventReceived,
-         fetchHistorySuccess,
-         fetchSettingsSuccess,
-         pumpRequested,
-         pumpStarted,
-         pumpPaused,
-         pumpStopped
-       } from './actions'
+import * as actions from './actions'
 
 const enhanceSockets = (socket, dispatch) => {
   // Send all messages that were supposed to be sent before the WS connection
@@ -31,23 +23,20 @@ const enhanceSockets = (socket, dispatch) => {
 
       switch (msg.type) {
         case 'measurementReceived':
-          dispatch(measurementReceived(msg.payload))
+          dispatch(actions.measurementReceived(msg.payload))
           break
         case 'eventReceived':
-          dispatch(eventReceived(msg.payload))
+          dispatch(actions.eventReceived(msg.payload))
           break
         case 'historyReceived':
-          dispatch(fetchHistorySuccess({ res: { data: msg.payload }}))
+          dispatch(actions.fetchHistorySuccess({ res: { data: msg.payload }}))
           break
         case 'settingsChanged':
-          dispatch(fetchSettingsSuccess({ res: { data: msg.payload } }))
+          dispatch(actions.fetchSettingsSuccess({ res: { data: msg.payload } }))
           break
-        case 'triggerPump':
-          dispatch(pumpRequested())
-
-          setTimeout(() => dispatch(pumpStarted()), 3000)
-          setTimeout(() => dispatch(pumpPaused()), 8000)
-          setTimeout(() => dispatch(pumpStopped()), 16000)
+        case 'busy':
+          console.log(msg)
+          dispatch(actions.busy(msg.payload))
           break
         default:
           break

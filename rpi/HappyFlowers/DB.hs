@@ -18,6 +18,7 @@ module HappyFlowers.DB
       -- * Settings
       querySettings
     , updateSettings
+    , updateBusy
       -- * History
     , queryHistory
     , addEvent
@@ -59,6 +60,13 @@ updateSettings :: S.ToRow a
 updateSettings body = do
     conn <- S.open dbName
     S.execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
+    S.close conn
+
+-- TODO: document
+updateBusy :: Int -> IO ()
+updateBusy status = do
+    conn <- S.open dbName
+    S.execute conn "UPDATE settings SET busy = ?" (S.Only (status :: Int))
     S.close conn
 
 -- | retrieves historical data including events and measurements. Returns
