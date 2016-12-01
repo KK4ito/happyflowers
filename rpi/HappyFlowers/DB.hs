@@ -43,7 +43,7 @@ dbName = "happyflowers.db"
 
 -- | gets a single entry from a list database rows.
 getSingleEntry :: S.FromRow a => Either S.SQLError [a] -> Maybe a
-getSingleEntry = either (\_ -> Nothing) (\r -> Just $ head r)
+getSingleEntry = either (const Nothing) (\r -> Just $ head r)
 
 -- | retrieves settings. Returns Nothing if the query fails.
 querySettings :: IO (Maybe Settings)
