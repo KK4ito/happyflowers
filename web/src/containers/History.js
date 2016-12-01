@@ -24,7 +24,9 @@ const defaultOptions = fromJS({
   },
   title: false,
   xAxis: {
-    type: 'datetime'
+    type: 'datetime',
+    min: 0,
+    max: 0
   },
   yAxis: {
     min: 0,
