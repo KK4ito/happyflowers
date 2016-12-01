@@ -97,8 +97,6 @@ class Settings extends React.Component {
 
     // Don't change the state if there are no settings to display.
 
-    console.log(isErroneous)
-
     if (settings.isEmpty() || isSubmitting || isErroneous) {
       return
     }

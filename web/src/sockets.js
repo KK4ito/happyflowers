@@ -35,7 +35,6 @@ const enhanceSockets = (socket, dispatch) => {
           dispatch(actions.fetchSettingsSuccess({ res: { data: msg.payload } }))
           break
         case 'busy':
-          console.log(msg)
           dispatch(actions.busy(msg.payload))
           break
         default:

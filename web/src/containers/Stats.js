@@ -88,9 +88,19 @@ class Stats extends React.Component {
             <span className="circle circle-manual"></span>{(timestamps.manual && <TimeAgo datetime={timestamps.manual.get('eventTimestamp')} />) || 'a while ago'}
           </li>
         </ul>
-        <button data-button="block secondary" disabled={!isLoggedIn || busy} onClick={this.handleTrigger}>
-          {busy && pump === 0 ? `${name} is busy…` : pump === 0 ? 'Start pump manually' : pump === 1 ? `Checking ${name || 'your flower'}…` : pump === 2 ? 'Watering…' : 'Seeping in…'}
-        </button>
+        {!isLoggedIn &&
+          <a data-button="block secondary"
+             href="/login">
+            Start pump manually
+          </a>
+        }
+        {isLoggedIn &&
+          <button data-button="block secondary"
+                  disabled={busy}
+                  onClick={this.handleTrigger}>
+            {busy && pump === 0 ? `${name} is busy…` : pump === 0 ? 'Start pump manually' : pump === 1 ? `Checking ${name || 'your flower'}…` : pump === 2 ? 'Watering…' : 'Seeping in…'}
+          </button>
+        }
       </Widget>
     )
   }
