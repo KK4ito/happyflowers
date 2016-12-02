@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import TimeAgo from 'timeago-react'
 import Widget from '../components/Widget'
+import Stat from '../components/Stat'
 import { triggerPump } from '../actions'
 import './Stats.css'
 
@@ -66,27 +67,17 @@ class Stats extends React.Component {
     return (
       <Widget title={name || 'Your Flower'} isLoading={isFetching}>
         <ul className="stats-list unstyled-list">
-          <li>
-            <span data-icon="loupe" />
-            <h3 className="stats-heading">
-              Last measurement
-            </h3>
-            {(timestamps.measurement && <TimeAgo datetime={timestamps.measurement.get('measurementTimestamp')} />) || 'a while ago'}
-          </li>
-          <li>
-            <span data-icon="drop" />
-            <h3 className="stats-heading">
-              Last automatic watering
-            </h3>
-            <span className="circle circle-automatic"></span>{(timestamps.automatic && <TimeAgo datetime={timestamps.automatic.get('eventTimestamp')} />) || 'a while ago'}
-          </li>
-          <li>
-          <span data-icon="hand" />
-            <h3 className="stats-heading">
-              Last manual watering
-            </h3>
-            <span className="circle circle-manual"></span>{(timestamps.manual && <TimeAgo datetime={timestamps.manual.get('eventTimestamp')} />) || 'a while ago'}
-          </li>
+          <Stat icon="loupe"
+                title="Last Measurement"
+                timestamp={timestamps.measurement && timestamps.measurement.get('measurementTimestamp') || ''} />
+          <Stat icon="drop"
+                title="Last Automatic Watering"
+                timestamp={timestamps.automatic && timestamps.automatic.get('eventTimestamp') || ''}
+                color="#00f" />
+          <Stat icon="hand"
+                title="Last Manual Watering"
+                timestamp={timestamps.manual && timestamps.manual.get('eventTimestamp') || ''}
+                color="#f00" />
         </ul>
         {!isLoggedIn &&
           <a data-button="block secondary"
@@ -98,7 +89,15 @@ class Stats extends React.Component {
           <button data-button="block secondary"
                   disabled={busy}
                   onClick={this.handleTrigger}>
-            {busy && pump === 0 ? `${name} is busy…` : pump === 0 ? 'Start pump manually' : pump === 1 ? `Checking ${name || 'your flower'}…` : pump === 2 ? 'Watering…' : 'Seeping in…'}
+            {busy && pump === 0
+              ? `${name} is busy…`
+              : pump === 0
+                ? 'Start pump manually'
+                : pump === 1
+                  ? `Checking ${name || 'your flower'}…`
+                  : pump === 2
+                    ? 'Watering…'
+                    : 'Seeping in…'}
           </button>
         }
       </Widget>

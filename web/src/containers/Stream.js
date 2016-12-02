@@ -14,6 +14,12 @@ class Stream extends React.Component {
     name: React.PropTypes.string
   }
 
+  /**
+   * Create a Stream component. Sets initial state.
+   *
+   * @param {object} props - Standard react props to be passed to the parent
+   *                         constructor.
+   */
   constructor(props) {
     super(props)
 
@@ -22,6 +28,11 @@ class Stream extends React.Component {
     }
   }
 
+  /**
+   * Renders the component.
+   *
+   * @return {string} - HTML markup for the component.
+   */
   render() {
     const { name } = this.props
 
@@ -36,6 +47,12 @@ class Stream extends React.Component {
   }
 }
 
+/**
+ * Map Redux state to React props for the Login component.
+ *
+ * @param {object} state - The Redux state, injected by the <code>connect</code>
+ *                         function.
+ */
 const mapStateToProps = state => ({
   name: state.settings.data.get('name')
 })

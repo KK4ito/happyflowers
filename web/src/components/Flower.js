@@ -5,8 +5,7 @@ import './Flower.css'
  * Functional component representing the current moisture level of the plant.
  * The component renders SVG code.
  *
- * @param {object} props - Standard React props, destructured to only get the
- *                         value prop.
+ * @param {object} props - Standard React props.
  *
  * @return {string} - HTML markup for the component.
  */
