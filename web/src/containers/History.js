@@ -73,6 +73,8 @@ const History = ({ events, measurements, settings, isFetching }) => {
       width: 2,
       zIndex: 2
     })))
+    .deleteIn([ 'xAxis', 'min' ])
+    .deleteIn([ 'xAxis', 'max' ])
     .setIn([ 'yAxis', 'plotBands' ], [{
       from: settings.get('lower'),
       to: settings.get('upper'),

@@ -1,0 +1,16 @@
+.flower-petals {
+  fill: #32465d;
+  transform: scale(1);
+  transform-origin: center;
+}
+
+.flower-petals.is-updating {
+  animation: pulse 5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    fill: #51325d;
+    transform: scale(1.05);
+  }
+}

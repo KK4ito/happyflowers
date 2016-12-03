@@ -1,4 +1,5 @@
 import React from 'react'
+import TimeAgo from 'timeago-react'
 import './Stat.css'
 
 /**
@@ -14,8 +15,8 @@ const Stat = ({ icon, title, color, timestamp }) => (
     <h3 className="stats-heading">
       {title}
     </h3>
-    {color && <span className="circle" style={`background-color: ${color}`}></span>}
-    {timestamp && <TimeAgo datetime={timestamp} /> || 'a while ago'}
+    {color && <span className="circle" style={{ backgroundColor: color }}></span>}
+    {(timestamp && <TimeAgo datetime={timestamp} />) || 'a while ago'}
   </li>
 )
 

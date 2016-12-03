@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import TimeAgo from 'timeago-react'
 import Widget from '../components/Widget'
 import Stat from '../components/Stat'
 import { triggerPump } from '../actions'
@@ -14,7 +13,7 @@ import './Stats.css'
  */
 class Stats extends React.Component {
   static propTypes = {
-    dispatch: React.PropTypes.function,
+    dispatch: React.PropTypes.func.isRequired,
     isLoggedIn: React.PropTypes.bool,
     busy: React.PropTypes.bool,
     name: React.PropTypes.string,
@@ -69,14 +68,14 @@ class Stats extends React.Component {
         <ul className="stats-list unstyled-list">
           <Stat icon="loupe"
                 title="Last Measurement"
-                timestamp={timestamps.measurement && timestamps.measurement.get('measurementTimestamp') || ''} />
+                timestamp={(timestamps.measurement && timestamps.measurement.get('measurementTimestamp')) || ''} />
           <Stat icon="drop"
                 title="Last Automatic Watering"
-                timestamp={timestamps.automatic && timestamps.automatic.get('eventTimestamp') || ''}
+                timestamp={(timestamps.automatic && timestamps.automatic.get('eventTimestamp')) || ''}
                 color="#00f" />
           <Stat icon="hand"
                 title="Last Manual Watering"
-                timestamp={timestamps.manual && timestamps.manual.get('eventTimestamp') || ''}
+                timestamp={(timestamps.manual && timestamps.manual.get('eventTimestamp')) || ''}
                 color="#f00" />
         </ul>
         {!isLoggedIn &&

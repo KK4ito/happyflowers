@@ -8,19 +8,19 @@ import './Snapshot.css'
  * Functional component representing the snapshot widget, i.e. the widget
  * containing information about the current moisture level of the flower.
  *
- * @param {object} props - Standard React props, destructured to only get the
- *                         snapshot and isFetching props.
+ * @param {object} props - Standard React props.
  *
  * @return {string} - HTML markup for the component.
  */
-const Snapshot = ({ snapshot, isFetching }) => (
+const Snapshot = ({ snapshot, isFetching, busy }) => (
   <Widget title="Snapshot" isLoading={isFetching}>
-    <Flower value={snapshot} />
+    <Flower value={snapshot} updating={busy} />
   </Widget>
 )
 
 Snapshot.propTypes = {
   snapshot: React.PropTypes.number.isRequired,
+  busy: React.PropTypes.bool,
   isFetching: React.PropTypes.bool
 }
 
@@ -32,6 +32,7 @@ Snapshot.propTypes = {
  */
 const mapStateToProps = state => ({
   snapshot: state.history.snapshot,
+  busy: state.settings.busy,
   isFetching: state.history.isFetching
 })
 
