@@ -8,6 +8,8 @@ import Widget from '../components/Widget'
 // Default settings to use for the charts. See http://www.highcharts.com/docs
 // for more information about possible configuration options.
 
+let animating = true
+
 const defaultOptions = fromJS({
   chart: {
     type: 'area',
@@ -57,7 +59,9 @@ const History = ({ events, measurements, settings, isFetching }) => {
 
   const chartOptions = defaultOptions
     .set('series', [{
-      animation: false,
+      animation: animating && {
+        duration: 1000
+      },
       data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS(),
       enableMouseTracking: false,
       lineWidth: 1,
@@ -80,6 +84,13 @@ const History = ({ events, measurements, settings, isFetching }) => {
       to: settings.get('upper'),
       color: 'rgba(129, 235, 76, 0.2)'
     }])
+
+  // History should be animated whenever the data is retrieved for the first
+  // time.
+
+  if (!events.isEmpty() && !measurements.isEmpty()) {
+    animating = false
+  }
 
   return (
     <Widget title="History" tooltip="Click and drag the chart to view a section in more detail." isLoading={isFetching}>

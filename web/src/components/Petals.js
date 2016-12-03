@@ -30,8 +30,8 @@ class Petals extends React.Component {
    */
   render() {
     return (
-      <g transform="translate(52 52)">
-        <g className={`flower-petals ${this.props.updating ? 'is-updating' : ''}`}>
+      <g transform="translate(52 52)" className={`flower-body ${this.props.updating ? 'is-updating' : ''}`}>
+        <g fill="#32465d">
           <path d="M89.602 64.1s16.345-14.093 16.345-31.477c0-17.385-16.345-31.478-16.345-31.478S73.258 15.238 73.258 32.623c0 17.384 16.344 31.478 16.344 31.478z" />
           <path d="M99.305 65.138s20.493-6.765 27.146-22.827c6.654-16.06-3.053-35.335-3.053-35.335S102.903 13.74 96.25 29.802c-6.652 16.06 3.055 35.336 3.055 35.336z" />
           <path d="M108.55 70.906s21.524 1.592 33.817-10.7c12.293-12.294 10.7-33.816 10.7-33.816s-21.522-1.592-33.814 10.7C106.96 49.385 108.55 70.907 108.55 70.907z" />

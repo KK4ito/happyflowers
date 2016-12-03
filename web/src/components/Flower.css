@@ -6,3 +6,7 @@
   max-width: 100%;
   max-height: calc(16.5em + 2px);
 }
+
+.progress {
+  transition: stroke-dasharray 1s ease-in-out;
+}

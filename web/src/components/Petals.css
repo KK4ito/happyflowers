@@ -1,16 +1,18 @@
-.flower-petals {
-  fill: #32465d;
+.flower-body g,
+.flower-body ellipse {
   transform: scale(1);
   transform-origin: center;
 }
 
-.flower-petals.is-updating {
-  animation: pulse 5s ease-in-out infinite;
+.flower-body.is-updating g,
+.flower-body.is-updating ellipse {
+  animation: pulse 1.5s ease-in-out infinite;
 }
 
 @keyframes pulse {
-  50% {
-    fill: #51325d;
-    transform: scale(1.05);
-  }
+  0% { transform: scale(1); }
+  14% { transform: scale(1.05); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.05); }
+  70% { transform: scale(1); }
 }
