@@ -151,22 +151,26 @@ manualPump conn = handle $ \settings' -> do
     DB.addMeasurement d
     DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 
-    when (d < upper settings') $ do
-        triggerPump
-        delay 5000000
+    if (d < upper settings')
+        then do
+            triggerPump
+            delay 5000000
 
-        DB.addEvent "manual"
-        DB.queryLatestEvent >>= notify conn "eventReceived"
+            DB.addEvent "manual"
+            DB.queryLatestEvent >>= notify conn "eventReceived"
 
 #ifdef Development
-        readMoisture 80 >>= DB.addMeasurement
+            readMoisture 80 >>= DB.addMeasurement
 #else
-        readMoisture >>= DB.addMeasurement
+            readMoisture >>= DB.addMeasurement
 #endif
 
-        DB.updateBusy 0
-        WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
-        DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+            DB.updateBusy 0
+            WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
+            DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+        else do
+            DB.updateBusy 0
+            WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
 
 -- | retrieves settings from the database and handles them using a given action
 -- if a value could be retrieved.

@@ -57,7 +57,7 @@ const History = ({ events, measurements, settings, isFetching }) => {
   // Merge the default chart options with options based on the props passed to
   // the component.
 
-  const chartOptions = defaultOptions
+  let chartOptions = defaultOptions
     .set('series', [{
       animation: animating && {
         duration: 1000
@@ -77,8 +77,6 @@ const History = ({ events, measurements, settings, isFetching }) => {
       width: 2,
       zIndex: 2
     })))
-    .deleteIn([ 'xAxis', 'min' ])
-    .deleteIn([ 'xAxis', 'max' ])
     .setIn([ 'yAxis', 'plotBands' ], [{
       from: settings.get('lower'),
       to: settings.get('upper'),
@@ -90,6 +88,9 @@ const History = ({ events, measurements, settings, isFetching }) => {
 
   if (!events.isEmpty() && !measurements.isEmpty()) {
     animating = false
+    chartOptions = chartOptions
+      .deleteIn([ 'xAxis', 'min' ])
+      .deleteIn([ 'xAxis', 'max' ])
   }
 
   return (

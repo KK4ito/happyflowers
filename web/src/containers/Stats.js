@@ -42,6 +42,18 @@ class Stats extends React.Component {
   }
 
   /**
+   * Lifecycle method that is executed whenever the component is to receive new
+   * props unmounted. Clears open timeouts if they are available and the flower
+   * is no longer busy.
+   */
+  componentWillReceiveProps({ busy }) {
+    if (!busy && this.timeouts) {
+      this.timeouts.forEach(t => clearTimeout(t))
+      this.setState({ pump: 0 })
+    }
+  }
+
+  /**
    * Handles clicks on the manual trigger button. Triggers the relevant action
    * and updates the state of the button.
    */
@@ -49,9 +61,14 @@ class Stats extends React.Component {
     this.props.dispatch(triggerPump())
     this.setState({ pump: 1 })
 
-    setTimeout(() => this.setState({ pump: 2 }), 3000)
-    setTimeout(() => this.setState({ pump: 3 }), 8000)
-    setTimeout(() => this.setState({ pump: 0 }), 16000)
+    this.timeouts = [
+      setTimeout(() => this.setState({ pump: 2 }), 3000),
+      setTimeout(() => this.setState({ pump: 3 }), 8000),
+      setTimeout(() => {
+        this.setState({ pump: 0 })
+        this.timeouts = null
+      }, 16000)
+    ]
   }
 
   /**
