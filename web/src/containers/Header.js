@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
+import { Link } from 'react-router'
 import { logout } from '../actions'
 import './Header.css'
 
@@ -18,36 +18,33 @@ const Header = ({ isLoggedIn, dispatch }) => (
     <div data-grid>
       <div data-col="L3-4">
         <h1 className="site-title">
-          <a href="/">
+          <Link to="/">
             happy flowers
-          </a>
+          </Link>
         </h1>
       </div>
       <div data-col="L1-4">
         <div data-grid>
           {isLoggedIn &&
             <div data-col="1-2">
-              <a data-button="block"
-                 href="settings">
+              <Link data-button="block"
+                    to="/settings">
                 Settings
-              </a>
+              </Link>
             </div>
           }
           <div data-col={isLoggedIn ? '1-2' : ''}>
             {isLoggedIn &&
-              <a data-button="block"
-                 onClick={() => {
-                   dispatch(logout())
-                   browserHistory.push('/')
-                 }}>
+              <button data-button="block"
+                      onClick={() => dispatch(logout())}>
                 Logout
-              </a>
+              </button>
             }
             {!isLoggedIn &&
-              <a data-button="block"
-                 onClick={() => browserHistory.push('/login')}>
+              <Link data-button="block"
+                    to="/login">
                 Login
-              </a>
+              </Link>
             }
           </div>
         </div>

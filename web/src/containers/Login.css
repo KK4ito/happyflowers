@@ -14,7 +14,7 @@
   margin: -0.75em -0.75em 0.75em;
   color: #fff;
   text-align: center;
-  background-image: linear-gradient(to bottom right, #485563, #29323c);
+  background-color: #485563;
   border-radius: 3px 3px 0 0;
 }
 
@@ -26,8 +26,8 @@
 
 @media (min-width: 50em) {
   .login {
-      padding: 3em;
-      min-width: auto;
+    padding: 3em;
+    min-width: auto;
   }
 
   .form-title {

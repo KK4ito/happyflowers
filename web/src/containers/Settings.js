@@ -1,7 +1,6 @@
 import React from 'react'
 import IPropTypes from 'react-immutable-proptypes'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 import { Map } from 'immutable'
 import Alert from 'react-s-alert'
 import Header from '../containers/Header'
@@ -65,11 +64,7 @@ class Settings extends React.Component {
    * settings.
    */
   componentDidMount() {
-    const { dispatch, jwt } = this.props
-
-    if (!jwt) {
-      browserHistory.push('/login')
-    }
+    const { dispatch } = this.props
 
     // Show an error message if fetching the application settings was not
     // successful.

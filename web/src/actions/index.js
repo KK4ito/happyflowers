@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
+import { browserHistory } from 'react-router'
 import enhanceSockets from '../sockets'
 
 let socket = null
@@ -130,7 +131,10 @@ export const loginError = createAction('LOGIN_ERROR')
 export const login = data => ({
   actions: [ loginRequest, loginSuccess, loginError ],
   apiCall: () => axios.post('/api/auth', data),
-  successCallback: res => window.sessionStorage.setItem('jwt', res.data.token)
+  successCallback: res => {
+    window.sessionStorage.setItem('jwt', res.data.token)
+    browserHistory.push('/')
+  }
 })
 
 /**
@@ -147,6 +151,7 @@ export const logoutRequest = createAction('LOGOUT_REQUEST')
  */
 export const logout = () => dispatch => {
   window.sessionStorage.removeItem('jwt')
+  browserHistory.push('/')
   dispatch(logoutRequest())
 }
 
@@ -201,6 +206,8 @@ export const connectWS = () => dispatch => {
  * @return {function} The function to execute once the action is dispatched.
  */
 export const disconnectWS = () => dispatch => {
-  socket.onclose = () => socket = null
-  socket.close()
+  if (socket) {
+    socket.onclose = () => socket = null
+    socket.close()
+  }
 }

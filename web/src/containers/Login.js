@@ -1,6 +1,5 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router'
 import Alert from 'react-s-alert'
 import Loader from '../components/Loader'
 import { login } from '../actions'
@@ -36,14 +35,9 @@ class Login extends React.Component {
 
   /**
    * Lifecycle method that is executed whenever the component is mounted.
-   * Redirects the user if they're already logged in, otherwise focuses the
-   * password input.
+   * Focuses the password input.
    */
   componentDidMount() {
-    if (this.props.jwt) {
-      browserHistory.push('/')
-    }
-
     this.password.focus()
   }
 
@@ -65,7 +59,6 @@ class Login extends React.Component {
     }
 
     this.props.dispatch(login(data))
-      .then(() => browserHistory.push('/'))
       .catch(() => Alert.error('The server was unable to verify your password.'))
   }
 

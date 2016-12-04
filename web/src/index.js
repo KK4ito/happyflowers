@@ -34,9 +34,11 @@ render(
       <Route path="/"
              component={Dashboard} />
       <Route path="/settings"
-             component={Settings} />
+             component={Settings}
+             onEnter={(_, replace) => !store.getState().auth.jwt && replace('/login')} />
       <Route path="/login"
-             component={Login} />
+             component={Login}
+             onEnter={(_, replace) => store.getState().auth.jwt && replace('/')}/>
     </Router>
   </Provider>,
   document.getElementById('root')

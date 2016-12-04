@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { Link } from 'react-router'
 import Widget from '../components/Widget'
 import Stat from '../components/Stat'
 import { triggerPump } from '../actions'
@@ -90,17 +91,17 @@ class Stats extends React.Component {
           <Stat icon="drop"
                 title="Last Automatic Watering"
                 timestamp={(timestamps.automatic && timestamps.automatic.get('eventTimestamp')) || ''}
-                color="#00f" />
+                color="rgba(0, 0, 255, 0.5)" />
           <Stat icon="hand"
                 title="Last Manual Watering"
                 timestamp={(timestamps.manual && timestamps.manual.get('eventTimestamp')) || ''}
-                color="#f00" />
+                color="rgba(255, 0, 0, 0.5)" />
         </ul>
         {!isLoggedIn &&
-          <a data-button="block secondary"
-             href="/login">
-            Start pump manually
-          </a>
+          <Link data-button="block secondary"
+                to="/login">
+            Login to start pump
+          </Link>
         }
         {isLoggedIn &&
           <button data-button="block secondary"
