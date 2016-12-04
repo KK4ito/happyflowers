@@ -13,7 +13,8 @@ import './Snapshot.css'
  * @return {string} - HTML markup for the component.
  */
 const Snapshot = ({ snapshot, isFetching, busy }) => (
-  <Widget title="Snapshot" isLoading={isFetching}>
+  <Widget title="Snapshot"
+          isLoading={isFetching}>
     <Flower value={snapshot} updating={busy} />
   </Widget>
 )

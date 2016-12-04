@@ -5,7 +5,7 @@ import { browserHistory } from 'react-router'
 import { Map } from 'immutable'
 import Alert from 'react-s-alert'
 import Header from '../containers/Header'
-import Loader from '../components/Loader'
+import Widget from '../components/Widget'
 import { fetchSettings, submitSettings, connectWS, disconnectWS } from '../actions'
 import '../components/Alert.css'
 
@@ -191,102 +191,97 @@ class Settings extends React.Component {
       <main className="site">
         <Header />
         <div className="wrap">
-          <section className="widget spaced">
-            <Loader loading={this.props.isFetching} />
-            <h2 className="widget-title">
-              Settings
-            </h2>
-            <div className="widget-body">
-              <form className="settings">
-                <div data-grid>
-                  <div data-col="L1-4">
-                    <label htmlFor="name"
-                           className="spaced">
-                      Name
-                    </label>
-                  </div>
-                  <div data-col="L3-4">
-                    <input id="name"
-                           type="text"
-                           className={`text-input full-width spaced ${!name.get('valid') ? 'is-invalid' : ''}`}
-                           value={name.get('value')}
-                           onChange={ev => this.handleTextChange('name', ev.target.value, ev.target.value.length > 0)} />
-                  </div>
-                  <hr className="separator" />
-                  <div data-col="L1-4">
-                    <label htmlFor="upper"
-                           className="spaced">
-                      Upper limit
-                    </label>
-                  </div>
-                  <div data-col="L3-4">
-                    <input id="upper"
-                           type="number"
-                           className={`text-input full-width spaced ${!upper.get('valid') ? 'is-invalid' : ''}`}
-                           value={upper.get('value')}
-                           min="0"
-                           max="100"
-                           onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > lower.get('value'))} />
-                    <p>
-                      The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped. A number between 0 and 100 is expected. Make sure the number is greater than the lower level.
-                    </p>
-                  </div>
-                  <div data-col="L1-4">
-                    <label htmlFor="lower"
-                           className="spaced">
-                      Lower limit
-                    </label>
-                  </div>
-                  <div data-col="L3-4">
-                    <input id="lower"
-                           type="number"
-                           className={`text-input full-width spaced ${!lower.get('valid') ? 'is-invalid' : ''}`}
-                           value={lower.get('value')}
-                           min="0"
-                           max="100"
-                           onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < upper.get('value'))} />
-                    <p>
-                      The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
-                    </p>
-                  </div>
-                  <hr className="separator" />
-                  <div data-col="L1-4">
-                    <label htmlFor="interval"
-                           className="spaced">
-                      Measurement Interval
-                    </label>
-                  </div>
-                  <div data-col="L3-4">
-                    <input id="interval"
-                           type="number"
-                           className={`text-input full-width spaced ${!interval.get('valid') ? 'is-invalid' : ''}`}
-                           value={interval.get('value')}
-                           min="0"
-                           onChange={ev => this.handleTextChange('interval', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value > 0)} />
-                    <p>
-                      The measurement interval determines the regularity at which the soil moisture percentage is measured. An interval of 60 minutes or more is recommended to ensure optimal performance. A number greater than 0 is expected.
-                    </p>
-                  </div>
+          <Widget title="Settings"
+                  isLoading={this.props.isFetching}>
+            <form className="settings">
+              <div data-grid>
+                <div data-col="L1-4">
+                  <label htmlFor="name"
+                         className="spaced">
+                    Name
+                  </label>
                 </div>
-                <div data-grid>
-                  <div data-col="1-2">
-                    <a type="submit"
-                       href="/"
-                       data-button="secondary block" >
-                      {this.state.pristine ? 'Go back' : 'Cancel'}
-                    </a>
-                  </div>
-                  <div data-col="1-2">
-                    <input type="submit"
-                           data-button="block"
-                           disabled={!name.get('valid') || !upper.get('valid') || !lower.get('valid') || !interval.get('valid') || this.state.pristine || this.props.isSubmitting}
-                           value={this.props.isSubmitting ? 'Saving…' : 'Save'}
-                           onClick={this.submitForm} />
-                  </div>
+                <div data-col="L3-4">
+                  <input id="name"
+                         type="text"
+                         className={`text-input full-width spaced ${!name.get('valid') ? 'is-invalid' : ''}`}
+                         value={name.get('value')}
+                         onChange={ev => this.handleTextChange('name', ev.target.value, ev.target.value.length > 0)} />
                 </div>
-              </form>
-            </div>
-          </section>
+                <hr className="separator" />
+                <div data-col="L1-4">
+                  <label htmlFor="upper"
+                         className="spaced">
+                    Upper limit
+                  </label>
+                </div>
+                <div data-col="L3-4">
+                  <input id="upper"
+                         type="number"
+                         className={`text-input full-width spaced ${!upper.get('valid') ? 'is-invalid' : ''}`}
+                         value={upper.get('value')}
+                         min="0"
+                         max="100"
+                         onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > lower.get('value'))} />
+                  <p>
+                    The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped. A number between 0 and 100 is expected. Make sure the number is greater than the lower level.
+                  </p>
+                </div>
+                <div data-col="L1-4">
+                  <label htmlFor="lower"
+                         className="spaced">
+                    Lower limit
+                  </label>
+                </div>
+                <div data-col="L3-4">
+                  <input id="lower"
+                         type="number"
+                         className={`text-input full-width spaced ${!lower.get('valid') ? 'is-invalid' : ''}`}
+                         value={lower.get('value')}
+                         min="0"
+                         max="100"
+                         onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < upper.get('value'))} />
+                  <p>
+                    The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
+                  </p>
+                </div>
+                <hr className="separator" />
+                <div data-col="L1-4">
+                  <label htmlFor="interval"
+                         className="spaced">
+                    Measurement Interval
+                  </label>
+                </div>
+                <div data-col="L3-4">
+                  <input id="interval"
+                         type="number"
+                         className={`text-input full-width spaced ${!interval.get('valid') ? 'is-invalid' : ''}`}
+                         value={interval.get('value')}
+                         min="0"
+                         onChange={ev => this.handleTextChange('interval', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value > 0)} />
+                  <p>
+                    The measurement interval determines the regularity at which the soil moisture percentage is measured. An interval of 60 minutes or more is recommended to ensure optimal performance. A number greater than 0 is expected.
+                  </p>
+                </div>
+              </div>
+              <div data-grid>
+                <div data-col="1-2">
+                  <a type="submit"
+                     href="/"
+                     data-button="secondary block" >
+                    {this.state.pristine ? 'Go back' : 'Cancel'}
+                  </a>
+                </div>
+                <div data-col="1-2">
+                  <input type="submit"
+                         data-button="block"
+                         disabled={!name.get('valid') || !upper.get('valid') || !lower.get('valid') || !interval.get('valid') || this.state.pristine || this.props.isSubmitting}
+                         value={this.props.isSubmitting ? 'Saving…' : 'Save'}
+                         onClick={this.submitForm} />
+                </div>
+              </div>
+            </form>
+          </Widget>
         </div>
         <Alert stack={{limit: 3}}
                timeout={2000}

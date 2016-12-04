@@ -81,7 +81,8 @@ class Stats extends React.Component {
     const { pump } = this.state
 
     return (
-      <Widget title={name || 'Your Flower'} isLoading={isFetching}>
+      <Widget title={name || 'Your Flower'}
+              isLoading={isFetching}>
         <ul className="stats-list unstyled-list">
           <Stat icon="loupe"
                 title="Last Measurement"
