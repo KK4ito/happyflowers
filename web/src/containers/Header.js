@@ -27,7 +27,7 @@ const Header = ({ isLoggedIn, dispatch }) => (
         <div data-grid>
           {isLoggedIn &&
             <div data-col="1-2">
-              <a data-button="block secondary"
+              <a data-button="block"
                  href="settings">
                 Settings
               </a>
@@ -35,7 +35,7 @@ const Header = ({ isLoggedIn, dispatch }) => (
           }
           <div data-col={isLoggedIn ? '1-2' : ''}>
             {isLoggedIn &&
-              <a data-button="block secondary"
+              <a data-button="block"
                  onClick={() => {
                    dispatch(logout())
                    browserHistory.push('/')
@@ -44,7 +44,7 @@ const Header = ({ isLoggedIn, dispatch }) => (
               </a>
             }
             {!isLoggedIn &&
-              <a data-button="block secondary"
+              <a data-button="block"
                  onClick={() => browserHistory.push('/login')}>
                 Login
               </a>
