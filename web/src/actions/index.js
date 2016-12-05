@@ -206,8 +206,6 @@ export const connectWS = () => dispatch => {
  * @return {function} The function to execute once the action is dispatched.
  */
 export const disconnectWS = () => dispatch => {
-  if (socket) {
-    socket.onclose = () => socket = null
-    socket.close()
-  }
+  socket.onclose = () => socket = null
+  socket.close()
 }
