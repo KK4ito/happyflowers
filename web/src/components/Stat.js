@@ -15,7 +15,7 @@ const Stat = ({ icon, title, color, timestamp }) => (
     <h3 className="stats-heading">
       {title}
     </h3>
-    {color && <span className="circle" style={{ backgroundColor: color }}></span>}
+    {color && <span className="bar" style={{ backgroundColor: color }}></span>}
     {(timestamp && <TimeAgo datetime={timestamp} />) || 'a while ago'}
   </li>
 )

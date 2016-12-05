@@ -10,12 +10,11 @@
   text-transform: uppercase;
 }
 
-.circle {
+.bar {
   display: inline-block;
   float: left;
-  width: 0.75em;
+  width: 0.25em;
   height: 0.75em;
   margin-right: 0.5em;
-  border-radius: 100%;
-  transform: translateY(0.45em);
+  transform: translateY(0.4em);
 }
