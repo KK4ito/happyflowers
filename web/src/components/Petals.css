@@ -1,10 +1,10 @@
-.flower-body g,
+.flower-body path,
 .flower-body ellipse {
   transform: scale(1);
   transform-origin: center;
 }
 
-.flower-body.is-updating g,
+.flower-body.is-updating path,
 .flower-body.is-updating ellipse {
   animation: pulse 1.5s ease-in-out infinite;
 }

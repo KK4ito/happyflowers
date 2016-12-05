@@ -218,7 +218,7 @@ class Settings extends React.Component {
                          value={upper.get('value')}
                          min="0"
                          max="100"
-                         onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value > lower.get('value'))} />
+                         onChange={ev => this.handleTextChange('upper', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value > 0 && +ev.target.value <= 100 && +ev.target.value > lower.get('value'))} />
                   <p>
                     The upper limit determines at which percentage of soil moisture watering should be disabled. Manual watering automatically stops at this level if it is not manually stopped. A number between 0 and 100 is expected. Make sure the number is greater than the lower level.
                   </p>
@@ -236,7 +236,7 @@ class Settings extends React.Component {
                          value={lower.get('value')}
                          min="0"
                          max="100"
-                         onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value <= 100 && +ev.target.value < upper.get('value'))} />
+                         onChange={ev => this.handleTextChange('lower', +ev.target.value, +ev.target.value % 1 === 0 && +ev.target.value >= 0 && +ev.target.value < 100 && +ev.target.value < upper.get('value'))} />
                   <p>
                     The lower limit determines over which percentage of soil moisture the plant should always be kept. Automatic watering will always attempt to keep the moisture above this level. A number between 0 and 100 is expected. Make sure the number is smaller than the upper level.
                   </p>

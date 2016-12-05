@@ -4,6 +4,7 @@ import { browserHistory } from 'react-router'
 import enhanceSockets from '../sockets'
 
 let socket = null
+window.storedWSMsg = []
 
 /**
  * Creates a FETCH_SETTINGS_REQUEST action with no specified payload
