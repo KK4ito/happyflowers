@@ -4,7 +4,6 @@ import { browserHistory } from 'react-router'
 import enhanceSockets from '../sockets'
 
 let socket = null
-window.storedWSMsg = []
 
 /**
  * Creates a FETCH_SETTINGS_REQUEST action with no specified payload
@@ -72,7 +71,7 @@ export const submitSettings = data => ({
     if (socket) {
       socket.send(msg)
     } else {
-      window.storedWSMsg = [ ...window.storedWSMsg, msg ]
+      window.storedWSMsg = [ ...(window.storedWSMsg || []), msg ]
     }
   }
 })
@@ -180,7 +179,7 @@ export const triggerPump = () => dispatch => {
   if (socket) {
     socket.send(msg)
   } else {
-    window.storedWSMsg = [ ...window.storedWSMsg, msg ]
+    window.storedWSMsg = [ ...(window.storedWSMsg || []), msg ]
   }
 }
 
