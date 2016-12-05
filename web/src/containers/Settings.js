@@ -73,6 +73,7 @@ class Settings extends React.Component {
       .catch(() => Alert.error('Could not retrieve settings.'))
 
     dispatch(connectWS())
+      .onclose = e => e.code === 1006 && Alert.error('Could not connect to the WebSockets server.')
   }
 
   /**

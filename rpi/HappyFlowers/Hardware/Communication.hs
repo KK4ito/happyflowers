@@ -122,9 +122,10 @@ activatePump conn = handle $ \settings' -> do
             DB.addEvent "automatic"
             DB.queryLatestEvent >>= notify conn "eventReceived"
 
-#ifdef Development
             DB.updateBusy 0
             WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
+
+#ifdef Development
             DB.addMeasurement d
             DB.queryLatestMeasurement >>= notify conn "measurementReceived"
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Alert from 'react-s-alert'
 import Header from './Header'
 import Snapshot from './Snapshot'
 import Stats from './Stats'
@@ -26,7 +27,10 @@ class Dashboard extends React.Component {
     const { dispatch } = this.props
 
     dispatch(fetchSettings())
+      .catch(() => Alert.error('Could not retrieve settings.'))
+
     dispatch(connectWS())
+      .onclose = e => e.code === 1006 && Alert.error('Could not connect to the WebSockets server.')
   }
 
   /**
@@ -58,6 +62,10 @@ class Dashboard extends React.Component {
           <History />
           <Stream />
         </div>
+        <Alert stack={{limit: 3}}
+               timeout={2000}
+               effect="slide"
+               position="bottom" />
       </main>
     )
   }

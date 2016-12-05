@@ -42,6 +42,8 @@ const enhanceSockets = (socket, dispatch) => {
       }
     } catch (e) {}
   }
+
+  return socket
 }
 
 export default enhanceSockets

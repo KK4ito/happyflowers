@@ -195,8 +195,8 @@ export const busy = createAction('BUSY')
  * @return {function} The function to execute once the action is dispatched.
  */
 export const connectWS = () => dispatch => {
-  socket = new WebSocket(`ws://${window.location.hostname}:9160/`)
-  enhanceSockets(socket, dispatch)
+  socket = enhanceSockets(new WebSocket(`ws://${window.location.hostname}:9160/`), dispatch)
+  return socket
 }
 
 /**
