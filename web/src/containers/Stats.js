@@ -46,6 +46,8 @@ class Stats extends React.Component {
    * Lifecycle method that is executed whenever the component is to receive new
    * props unmounted. Clears open timeouts if they are available and the flower
    * is no longer busy.
+   *
+   * @param {object} props - Standard React props.
    */
   componentWillReceiveProps({ busy }) {
     if (!busy && this.timeouts) {

@@ -42,6 +42,19 @@ class Dashboard extends React.Component {
   }
 
   /**
+   * Lifecycle method that is executed whenever the component is to receive new
+   * props unmounted. Clears open timeouts if they are available and the flower
+   * is no longer busy.
+   *
+   * @param {object} props - Standard React props.
+   */
+  componentWillReceiveProps({ auth }) {
+    if (this.props.auth !== auth && auth === '') {
+      Alert.success('Successfully logged out.')
+    }
+  }
+
+  /**
    * Renders the component.
    *
    * @return {string} - HTML markup for the component.
@@ -71,4 +84,14 @@ class Dashboard extends React.Component {
   }
 }
 
-export default connect()(Dashboard)
+/**
+ * Map Redux state to React props for the Header component.
+ *
+ * @param {object} state - The Redux state, injected by the <code>connect</code>
+ *                         function.
+ */
+const mapStateToProps = state => ({
+  auth: state.auth.jwt
+})
+
+export default connect(mapStateToProps)(Dashboard)
