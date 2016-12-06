@@ -23,7 +23,6 @@ import           Control.Concurrent.Thread.Delay (delay)
 import           Control.Monad                   (forever, when, unless)
 import           Control.Monad.Trans             (liftIO)
 import           Data.Aeson                      (ToJSON, encode)
-import           Data.ByteString                 (singleton)
 import qualified Data.ByteString.Char8           as C
 import qualified Data.ByteString.Lazy.Char8      as CL
 import           Data.Char                       (ord)
@@ -45,9 +44,16 @@ readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor o
 #else
 readMoisture :: IO Int
 readMoisture = withGPIO . withI2C $ do
-    writeI2C address (singleton 0)
+    writeI2C address "0"
     m <- readI2C address 2
-    return . sum . fmap ord $ C.unpack m
+
+    let numeral = fromIntegral (sum . fmap ord $ C.unpack m) :: Rational
+    let res = round (numeral / 256.0 * 100.0) :: Int
+
+    case res of
+        _ | res < 0   -> return 0
+          | res > 100 -> return 100
+          | otherwise -> return res
 #endif
 
 -- | triggers the USB water pump.
