@@ -1,3 +1,10 @@
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(https://fonts.gstatic.com/s/opensans/v13/cJZKeOuBrn4kERxqtaUH3bO3LdcAZYWl9Si6vvxL-qU.woff) format('woff');
+}
+
 * {
   box-sizing: border-box;
 }
@@ -9,8 +16,14 @@ body {
 }
 
 body {
-  font: 100%/1.5 sans-serif;
+  font: 100%/1.5 Open Sans, sans-serif;
   margin: 0;
+}
+
+@media (min-width: 70.875em) {
+  body {
+    font-size: 112.5%;
+  }
 }
 
 h1,
@@ -18,6 +31,12 @@ h2,
 h3,
 p {
   margin-top: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: "Futura", "Trebuchet MS", "Arial", sans-serif;
 }
 
 h1 {
@@ -28,8 +47,10 @@ h1 {
 
 h2 {
   font-size: 1.7em;
+  font-weight: 400;
   line-height: 1.765;
   margin-bottom: 0.882em;
+  text-transform: uppercase;
 }
 
 h3 {
@@ -42,11 +63,23 @@ p {
   margin-bottom: 1.5em;
 }
 
+a {
+  color: #4cadeb;
+  border-bottom: 1px dotted;
+  text-decoration: none;
+}
+
+a:hover,
+a:focus {
+  border-bottom-style: solid;
+}
+
 [data-button] {
   display: inline-block;
-  padding: 0.75em;
+  padding: 0.75em 1.5em;
   color: #fff;
-  background-color: #000;
+  background-image: linear-gradient(to bottom, #333, #000);
+  border-bottom: 0;
   border-radius: 5px;
   text-decoration: none;
   cursor: pointer;
@@ -58,30 +91,164 @@ p {
 }
 
 .wrap {
-  max-width: 60em;
-  margin-left: auto;
-  margin-right: auto;
+  padding-left: 1.5em;
+  padding-right: 1.5em;
+}
+
+@media (min-width: 50em) {
+  .wrap {
+    max-width: 60em;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 3em;
+    padding-right: 3em;
+  }
+}
+
+.wrap > p:last-child {
+  margin-bottom: 0;
+}
+
+section {
+  padding: 3em 0;
 }
 
 section:nth-child(odd) {
+  color: #fff;
   background-color: #32465d;
 }
 
-.tech-description {
+section:nth-child(even) {
   position: relative;
+  color: #485563;
+  background-color: #f5f5f5;
+  box-shadow: 0 0 5px rgba(30, 30, 30, 0.35);
+  z-index: 100;
+}
+
+.feature {
+  display: flex;
+  flex-direction: column;
+  padding: 0 1.5em;
+}
+
+@media (min-width: 50em) {
+  .feature {
+    flex-direction: row;
+    justify-content: space-between;
+    max-width: 60em;
+    padding: 0 3em;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+  }
+}
+
+@media (min-width: 50em) {
+  .feature-rev {
+    flex-direction: row-reverse;
+  }
+}
+
+.feature-img {
+  display: block;
+  width: 100%;
+  margin-bottom: 3em;
+  border-radius: 5px;
+  box-shadow: 0 3px 5px rgba(30, 30, 30, 0.35);
+}
+
+@media (min-width: 50em) {
+  .feature-img {
+    width: calc(50% - 1.5em);
+    margin-bottom: 0;
+  }
+}
+
+.feature-description {
+  text-align: center;
+}
+
+.feature-description p {
+  margin-bottom: 0;
+}
+
+@media (min-width: 50em) {
+  .feature-description {
+    width: calc(50% - 1.5em);
+    text-align: left;
+  }
+}
+
+.tech {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+  padding: 0 1.5em;
+}
+
+@media (min-width: 50em) {
+  .tech {
+    flex-direction: row;
+    align-items: stretch;
+    align-content: stretch;
+    justify-content: space-between;
+    padding: 0 3em;
+  }
+}
+
+.tech-logo {
+  display: block;
+  width: 10em;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto 1.5em;
+}
+
+.tech-description {
   padding: 1.5em;
+  margin-bottom: 1.5em;
+  color: #000;
+  text-align: center;
   background-color: #fff;
   border-radius: 5px;
   box-shadow: 0 3px 5px rgba(30, 30, 30, 0.35);
-  transition: transform 0.3s ease-in-out;
+  transition: transform 0.15s ease-in-out;
   will-change: transform;
 }
 
 .tech-description:hover {
-  transform: scale(1.025);
-  z-index: 100;
+  transform: scale(1.0125);
+}
+
+.tech-description:last-child {
+  margin-bottom: 0;
+}
+
+@media (min-width: 50em) {
+  .tech-description {
+    width: calc(50% - 0.75em);
+  }
+
+  .tech-description:nth-last-child(-n+2) {
+    margin-bottom: 0;
+  }
+}
+
+@media (min-width: 70.875em) {
+  .tech-description {
+    width: calc(25% - 1.125em);
+    margin-bottom: 0;
+  }
+}
+
+.tech-description p {
+  margin-bottom: 0;
 }
 
 .site-footer {
-  background-color: #333;
+  padding: 3em;
+  text-align: center;
+  color: #fff;
+  background-color: #485563;
 }
