@@ -1,17 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="256px" height="256px" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: Sketch 39 (31667) - http://www.bohemiancoding.com/sketch -->
-    <title>Haskell</title>
-    <desc>Created with Sketch.</desc>
-    <defs></defs>
-    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="Haskell">
-            <g id="Group" transform="translate(0.000000, 38.000000)">
-                <polygon id="Shape" fill="#453B61" points="0 180.552144 60.2219918 90.2760722 0 0 45.1659748 0 105.387967 90.2760722 45.1659748 180.552144"></polygon>
-                <polygon id="Shape" fill="#5F5286" points="60.2219918 180.552144 120.443984 90.2760722 60.2219918 0 105.387967 0 225.829875 180.552144 180.6639 180.552144 143.026971 124.130636 105.387967 180.552144"></polygon>
-                <polygon id="Shape" fill="#8E508A" points="205.757262 127.891793 185.684647 97.8004604 255.941909 97.7983871 255.941909 127.891793"></polygon>
-                <polygon id="Shape" fill="#8E508A" points="175.647303 82.7537573 155.572614 52.6624245 255.941909 52.6603513 255.941909 82.7537573"></polygon>
-            </g>
-        </g>
-    </g>
-</svg>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg"><title>Haskell</title><g fill="none" fill-rule="evenodd"><path fill="#453B61" d="M0 218.552l60.222-90.276L0 38h45.166l60.222 90.276-60.222 90.276"/><path fill="#5F5286" d="M60.222 218.552l60.222-90.276L60.222 38h45.166L225.83 218.552h-45.166l-37.637-56.42-37.64 56.42"/><path fill="#8E508A" d="M205.757 165.892L185.685 135.8l70.257-.002v30.094M175.647 120.754l-20.074-30.092 100.37-.002v30.094"/></g></svg>
