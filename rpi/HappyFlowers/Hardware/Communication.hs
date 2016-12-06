@@ -23,11 +23,13 @@ import           Control.Concurrent.Thread.Delay (delay)
 import           Control.Monad                   (forever, when, unless)
 import           Control.Monad.Trans             (liftIO)
 import           Data.Aeson                      (ToJSON, encode)
+import           Data.ByteString                 (singleton)
 import qualified Data.ByteString.Char8           as C
 import qualified Data.ByteString.Lazy.Char8      as CL
+import           Data.Char                       (ord)
 import qualified Data.Text                       as T
 import qualified Network.WebSockets              as WS
-import           System.RaspberryPi.GPIO         (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C)
+import           System.RaspberryPi.GPIO         (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C, writeI2C)
 
 import qualified HappyFlowers.DB                 as DB
 import           HappyFlowers.Type               (Settings, busy, interval, lower, upper)
@@ -42,7 +44,10 @@ readMoisture :: Int -> IO Int
 readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
 #else
 readMoisture :: IO Int
-readMoisture = withGPIO . withI2C $ readI2C address 0 >>= \val -> return $ read (C.unpack val) :: IO Int
+readMoisture = withGPIO . withI2C $ do
+    writeI2C address (singleton 0)
+    m <- readI2C address 2
+    return . sum . fmap ord $ C.unpack m
 #endif
 
 -- | triggers the USB water pump.
