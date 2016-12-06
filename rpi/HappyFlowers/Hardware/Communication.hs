@@ -47,13 +47,9 @@ readMoisture = withGPIO . withI2C $ do
     writeI2C address "0"
     m <- readI2C address 2
 
-    let numeral = fromIntegral (sum . fmap ord $ C.unpack m) :: Rational
-    let res = round (numeral / 256.0 * 100.0) :: Int
-
-    case res of
-        _ | res < 0   -> return 0
-          | res > 100 -> return 100
-          | otherwise -> return res
+    let bytes = C.unpack m
+    let numeral = fromIntegral ((ord $ head bytes) + ((256 * ) . ord $ last bytes)) :: Rational
+    return (round (numeral / 65535.0 * 100.0) :: Int)
 #endif
 
 -- | triggers the USB water pump.
