@@ -122,6 +122,40 @@ section:nth-child(even) {
   z-index: 100;
 }
 
+.icon {
+  display: block;
+  width: 6em;
+  height: 6em;
+  margin: 0 auto 3em;
+  border-radius: 100%;
+  box-shadow: 0 3px 5px rgba(30, 30, 30, 0.2);
+}
+
+.icon:hover {
+  animation: pulse 1.25s ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.05); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.05); }
+  70% { transform: scale(1); }
+}
+
+.hero-text {
+  font-size: 2em;
+  text-align: center;
+}
+
+.hero-img {
+  display: block;
+  width: 100%;
+  margin-bottom: -3em;
+  border-radius: 5px 5px 0 0;
+  box-shadow: 0 0 5px rgba(30, 30, 30, 0.35);
+}
+
 .feature {
   display: flex;
   flex-direction: column;
