@@ -86,7 +86,7 @@ const History = ({ events, measurements, settings, isFetching }) => {
   // History should be animated whenever the data is retrieved for the first
   // time.
 
-  if (!events.isEmpty() && !measurements.isEmpty()) {
+  if (!events.isEmpty() || !measurements.isEmpty()) {
     animating = false
     chartOptions = chartOptions
       .deleteIn([ 'xAxis', 'min' ])
