@@ -18,7 +18,7 @@ const Header = ({ isLoggedIn, dispatch }) => (
     <div data-grid>
       <div data-col="L3-4">
         <h1 className="site-title">
-          <Link to="/">
+          <Link to="/dashboard">
             happy flowers
           </Link>
         </h1>

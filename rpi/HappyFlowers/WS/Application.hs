@@ -15,8 +15,7 @@ between clients.
 module HappyFlowers.WS.Application
     (
       -- * Types
-      Id(..)
-    , Client(..)
+      Client(..)
     , ServerState(..)
       -- * Operations
     , newServerState
@@ -36,34 +35,30 @@ import qualified Network.WebSockets         as WS
 
 import qualified HappyFlowers.DB            as DB
 
--- | 'Id' is a type alias that represents the unique ID on the WebSockets
--- server.
-type Id = Int
-
 -- | 'Client' is a type alias that connects a unique ID with a WebSockets
 -- connection.
-type Client = (Id, WS.Connection)
+type Client = (T.Text, WS.Connection)
 
 -- | keeps track of the currently available Id and the list of connected
 -- clients.
-type ServerState = (Id, [Client])
+type ServerState = [Client]
 
 -- | creates a new 'ServerState' instance with the default values.
 newServerState :: ServerState
-newServerState = (0, [])
+newServerState = []
 
 -- | adds a new 'Client' to the current 'ServerState' using the currently
 -- available 'Id'.
 addClient :: Client -> ServerState -> ServerState
-addClient client (id, clients) = (id + 1, client : clients)
+addClient client clients = (client : clients)
 
 -- | removes a 'Client' from the current 'ServerState'.
 removeClient :: Client -> ServerState -> ServerState
-removeClient client (id, clients) = (id, filter ((/= fst client) . fst) clients)
+removeClient client = filter ((/= fst client) . fst)
 
 -- | sends a message to all connected clients.
 broadcast :: Text -> ServerState -> IO ()
-broadcast message (_, clients) = do
+broadcast message clients = do
     T.putStrLn message
     forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
@@ -80,8 +75,8 @@ disconnect :: Client -> MVar ServerState -> IO [Client]
 disconnect client state = do
     modifyMVar state $ \s -> do
         let s' = removeClient client s
-        broadcast (T.pack (show . fst $ client) `mappend` " disconnected") s'
-        return (s', snd s')
+        broadcast (fst client `mappend` " disconnected") s'
+        return (s', s')
 
 -- | sends WS notifications to all a client containing the historical data.
 notify :: ToJSON a
@@ -102,9 +97,9 @@ server state pending = do
     conn <- WS.acceptRequest pending
     WS.forkPingThread conn 30
 
-    (id, _) <- readMVar state
+    msg <- WS.receiveData conn
 
-    let client = (id, conn)
+    let client = (msg, conn)
 
     flip finally (disconnect client state) $ do
         modifyMVar_ state $ \s -> do

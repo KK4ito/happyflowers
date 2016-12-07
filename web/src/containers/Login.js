@@ -14,7 +14,8 @@ class Login extends React.Component {
   static propTypes = {
     jwt: React.PropTypes.string.isRequired,
     isLoggingIn: React.PropTypes.bool,
-    dispatch: React.PropTypes.func.isRequired
+    dispatch: React.PropTypes.func.isRequired,
+    socket: React.PropTypes.object
   }
 
   /**
@@ -73,7 +74,7 @@ class Login extends React.Component {
         <form className="login">
           <Loader loading={this.props.isLoggingIn} />
           <h1 className="form-title">
-            <a href="/">
+            <a href="/dashboard">
               happy flowers
             </a>
           </h1>

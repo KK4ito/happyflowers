@@ -1,9 +1,6 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
 import { browserHistory } from 'react-router'
-import enhanceSockets from '../sockets'
-
-let socket = null
 
 /**
  * Creates a FETCH_SETTINGS_REQUEST action with no specified payload
@@ -58,7 +55,7 @@ export const submitSettingsError = createAction('SUBMIT_SETTINGS_ERROR')
  *
  * @return {object} The object to use for the API thunk.
  */
-export const submitSettings = data => ({
+export const submitSettings = (data, socket) => ({
   actions: [ submitSettingsRequest, submitSettingsSuccess, submitSettingsError ],
   apiCall: () => axios.put('/api/settings', data),
   payload: { data },
@@ -70,8 +67,6 @@ export const submitSettings = data => ({
 
     if (socket) {
       socket.send(msg)
-    } else {
-      window.storedWSMsg = [ ...(window.storedWSMsg || []), msg ]
     }
   }
 })
@@ -171,15 +166,13 @@ export const eventReceived = createAction('EVENT_RECEIVED')
  *
  * @return {function} The function to execute once the action is dispatched.
  */
-export const triggerPump = () => dispatch => {
+export const triggerPump = socket => dispatch => {
   const msg = JSON.stringify({
     type: 'triggerPump'
   })
 
   if (socket) {
     socket.send(msg)
-  } else {
-    window.storedWSMsg = [ ...(window.storedWSMsg || []), msg ]
   }
 }
 
@@ -187,25 +180,3 @@ export const triggerPump = () => dispatch => {
  * Creates a BUSY action with no specified payload transformation.
  */
 export const busy = createAction('BUSY')
-
-/**
- * Creates a thunk that sets up a new WebSockets connection that is enhanced
- * with custom listeners.
- *
- * @return {function} The function to execute once the action is dispatched.
- */
-export const connectWS = () => dispatch => {
-  socket = enhanceSockets(new WebSocket(`ws://${window.location.hostname}:9160/`), dispatch)
-  return socket
-}
-
-/**
- * Creates a thunk that disconnects the user from the WebSockets instance. This
- * removes all traces of the WebSockets connection.
- *
- * @return {function} The function to execute once the action is dispatched.
- */
-export const disconnectWS = () => dispatch => {
-  socket.onclose = () => socket = null
-  socket.close()
-}

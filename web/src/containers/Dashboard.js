@@ -6,7 +6,7 @@ import Snapshot from './Snapshot'
 import Stats from './Stats'
 import History from './History'
 import Stream from './Stream'
-import { fetchSettings, connectWS, disconnectWS } from '../actions'
+import { fetchSettings } from '../actions'
 
 /**
  * Class representing the main dashboard of the application. It contains all
@@ -28,17 +28,6 @@ class Dashboard extends React.Component {
 
     dispatch(fetchSettings())
       .catch(() => Alert.error('Could not retrieve settings.'))
-
-    dispatch(connectWS())
-      .onclose = e => e.code === 1006 && Alert.error('Could not connect to the WebSockets server.')
-  }
-
-  /**
-   * Lifecycle method that is executed whenever the component is unmounted.
-   * Attempts to disconnect the user from the WebSockets server.
-   */
-  componentWillUnmount() {
-    this.props.dispatch(disconnectWS())
   }
 
   /**
@@ -69,7 +58,7 @@ class Dashboard extends React.Component {
               <Snapshot />
             </div>
             <div data-col="L1-2">
-              <Stats />
+              <Stats socket={this.props.socket} />
             </div>
           </div>
           <History />

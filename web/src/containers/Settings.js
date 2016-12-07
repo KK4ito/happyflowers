@@ -3,9 +3,10 @@ import IPropTypes from 'react-immutable-proptypes'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
 import Alert from 'react-s-alert'
+import { Link } from 'react-router'
 import Header from '../containers/Header'
 import Widget from '../components/Widget'
-import { fetchSettings, submitSettings, connectWS, disconnectWS } from '../actions'
+import { fetchSettings, submitSettings } from '../actions'
 import '../components/Alert.css'
 
 /**
@@ -19,7 +20,8 @@ class Settings extends React.Component {
     jwt: React.PropTypes.string,
     settings: IPropTypes.map.isRequired,
     isFetching: React.PropTypes.bool,
-    isSubmitting: React.PropTypes.bool
+    isSubmitting: React.PropTypes.bool,
+    socket: React.PropTypes.object
   }
 
   /**
@@ -71,17 +73,6 @@ class Settings extends React.Component {
 
     dispatch(fetchSettings())
       .catch(() => Alert.error('Could not retrieve settings.'))
-
-    dispatch(connectWS())
-      .onclose = e => e.code === 1006 && Alert.error('Could not connect to the WebSockets server.')
-  }
-
-  /**
-   * Lifecycle method that is executed whenever the component is unmounted.
-   * Attempts to disconnect the user from the WebSockets server.
-   */
-  componentWillUnmount() {
-    this.props.dispatch(disconnectWS())
   }
 
   /**
@@ -155,7 +146,7 @@ class Settings extends React.Component {
     // Inform the user about the response, showing confirmation or error if the
     // request was successful or erroneous, respectively.
 
-    this.props.dispatch(submitSettings(data))
+    this.props.dispatch(submitSettings(data, this.props.socket))
       .then(() => Alert.success('Settings saved successfully.'))
       .catch(() => Alert.error('Could not save settings.'))
   }
@@ -264,11 +255,10 @@ class Settings extends React.Component {
               </div>
               <div data-grid>
                 <div data-col="1-2">
-                  <a type="submit"
-                     href="/"
-                     data-button="secondary block" >
+                  <Link to="/dashboard"
+                        data-button="secondary block" >
                     {this.state.pristine ? 'Go back' : 'Cancel'}
-                  </a>
+                  </Link>
                 </div>
                 <div data-col="1-2">
                   <input type="submit"

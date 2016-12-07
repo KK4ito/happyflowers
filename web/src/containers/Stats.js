@@ -23,7 +23,8 @@ class Stats extends React.Component {
       automatic: React.PropTypes.object,
       manual: React.PropTypes.object
     }),
-    isFetching: React.PropTypes.bool
+    isFetching: React.PropTypes.bool,
+    socket: React.PropTypes.object
   }
 
   /**
@@ -61,7 +62,7 @@ class Stats extends React.Component {
    * and updates the state of the button.
    */
   handleTrigger() {
-    this.props.dispatch(triggerPump())
+    this.props.dispatch(triggerPump(this.props.socket))
     this.setState({ pump: 1 })
 
     this.timeouts = [
@@ -80,7 +81,7 @@ class Stats extends React.Component {
    * @return {string} - HTML markup for the component.
    */
   render() {
-    const { isLoggedIn, name, timestamps, isFetching, busy } = this.props
+    const { isLoggedIn, name, timestamps, isFetching, busy, socket } = this.props
     const { pump } = this.state
 
     return (
@@ -107,7 +108,7 @@ class Stats extends React.Component {
         }
         {isLoggedIn &&
           <button data-button="block secondary"
-                  disabled={busy}
+                  disabled={busy || !socket || socket.readyState !== 1}
                   onClick={this.handleTrigger}>
             {busy && pump === 0
               ? `${name} is busy…`

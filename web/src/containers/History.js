@@ -52,7 +52,7 @@ const defaultOptions = fromJS({
  *
  * @return {string} - HTML markup for the component.
  */
-const History = ({ events, measurements, settings, isFetching }) => {
+const History = ({ events, measurements, settings, isFetching, socket }) => {
 
   // Merge the default chart options with options based on the props passed to
   // the component.
