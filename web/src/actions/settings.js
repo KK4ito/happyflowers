@@ -39,10 +39,12 @@ export const submitSettingsError = createAction('SUBMIT_SETTINGS_ERROR')
  * Create a thunk that marks settings submission as successful and creates a
  * notification.
  *
+ * @param {object} payload - The payload to pass to the internal action.
+ *
  * @return {function} The function to execute once the action is dispatched.
  */
-export const submitSettingsSuccessWithNotification = () => dispatch => {
-  dispatch(submitSettingsSuccess)
+export const submitSettingsSuccessWithNotification = payload => dispatch => {
+  dispatch(submitSettingsSuccess(payload))
   dispatch(addNotification({
     id: 'sss',
     text: 'Settings saved successfully.',
@@ -57,7 +59,7 @@ export const submitSettingsSuccessWithNotification = () => dispatch => {
  * @return {function} The function to execute once the action is dispatched.
  */
 export const submitSettingsErrorWithNotification = () => dispatch => {
-  dispatch(submitSettingsError)
+  dispatch(submitSettingsError())
   dispatch(addNotification({
     id: 'sse',
     text: 'Could not save settings.',
@@ -68,7 +70,8 @@ export const submitSettingsErrorWithNotification = () => dispatch => {
 /**
  * Create an API thunk to store application settings.
  *
- * @param {FormData} data - The FormData to submit along with the request.
+ * @param {object} data - The data to submit along with the request.
+ * @param {WebSocket} socket - The active WS connection.
  *
  * @return {object} The object to use for the API thunk.
  */

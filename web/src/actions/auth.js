@@ -25,7 +25,7 @@ export const loginErrorWithNotification = () => dispatch => {
 /**
  * Create an API thunk to attempt user login.
  *
- * @param {FormData} data - The FormData to submit along with the request.
+ * @param {object} data - The data to submit along with the request.
  *
  * @return {object} The object to use for the API thunk.
  */

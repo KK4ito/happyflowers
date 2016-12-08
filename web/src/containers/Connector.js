@@ -24,6 +24,8 @@ class Connector extends React.Component {
   componentDidMount() {
     const { dispatch } = this.props
 
+    dispatch(actions.fetchHistoryRequest())
+
     const socket = new WebSocket(`ws://${window.location.hostname}:9160/`)
 
     // Connect to the WebSockets server using a somewhat random ID. This ID is
