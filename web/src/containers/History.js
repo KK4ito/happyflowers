@@ -96,7 +96,7 @@ const History = ({ events, measurements, settings, isFetching, socket }) => {
     <Widget title="History"
             tooltip="Click and drag the chart to view a section in more detail."
             isLoading={isFetching}>
-        <Highcharts config={chartOptions.toJS()} />
+      <Highcharts config={chartOptions.toJS()} />
     </Widget>
   )
 }

@@ -43,6 +43,9 @@ const isSubmitting = handleActions({
   [actions.submitSettingsError]: () => false
 }, false)
 
+/**
+ * Creates a reducer to keep track of the validity of the settings entry.
+ */
 const isErroneous = handleActions({
   [actions.submitSettingsSuccess]: () => false,
   [actions.submitSettingsError]: () => true
