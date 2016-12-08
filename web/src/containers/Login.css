@@ -2,7 +2,9 @@
   position: absolute;
   top: 50%;
   left: 50%;
+  width: 100%;
   min-width: 15em;
+  max-width: 20em;
   padding: 1.5em;
   background-color: #f5f5f5;
   border-radius: 3px;

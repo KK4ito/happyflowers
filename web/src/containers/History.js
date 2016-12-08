@@ -47,8 +47,7 @@ const defaultOptions = fromJS({
  * containing historical data about the moisture levels of the flower and
  * relevant events.
  *
- * @param {object} props - Standard React props, destructured to only get the
- *                         events, measurements, settings and isFetching props.
+ * @param {object} props - Standard React props.
  *
  * @return {string} - HTML markup for the component.
  */
@@ -109,17 +108,11 @@ History.propTypes = {
   isFetching: React.PropTypes.bool
 }
 
-/**
- * Map Redux state to React props for the Login component.
- *
- * @param {object} state - The Redux state, injected by the <code>connect</code>
- *                         function.
- */
 const mapStateToProps = state => ({
   events: state.history.events,
   measurements: state.history.measurements,
   settings: state.settings.data,
-  isFetching: state.settings.isFetching || state.settings.isSubmitting
+  isFetching: state.settings.isFetching || state.history.isFetching
 })
 
 export default connect(mapStateToProps)(History)

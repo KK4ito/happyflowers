@@ -1,6 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import Alert from 'react-s-alert'
+import { List } from 'immutable'
 import * as actions from '../actions'
+import '../components/Alert.css'
 
 /**
  * Class used for handling app-wide connection to the WebSockets server.
@@ -8,26 +11,16 @@ import * as actions from '../actions'
  * @extends React.Component
  */
 class Connector extends React.Component {
-
-  /**
-   * Create a Connector component. Sets initial state.
-   *
-   * @param {object} props - Standard react props to be passed to the parent
-   *                         constructor.
-   */
   constructor(props) {
     super(props)
 
     this.state = {
       socket: null
     }
+
+    this.displayed = List()
   }
 
-  /**
-   * Lifecycle method that is executed whenever the component is mounted.
-   * Connects to the WebSockets server and enhances the socket to react to WS
-   * messages.
-   */
   componentDidMount() {
     const { dispatch } = this.props
 
@@ -37,6 +30,20 @@ class Connector extends React.Component {
     // sufficiently random for the purposes of this project.
 
     socket.onopen = () => socket.send(`${+(new Date())}${Math.round(Math.random() * 1000)}`)
+
+    // Notify users about missing WS connection.
+
+    socket.onclose = ({ code }) => {
+      if (code === 1006) {
+        dispatch(actions.addNotification({
+          id: 'se',
+          text: 'Could not connect to the WebSockets server.',
+          type: 'error'
+        }))
+
+        dispatch(actions.fetchHistoryError())
+      }
+    }
 
     // Handle messages based on their type property.
 
@@ -71,26 +78,38 @@ class Connector extends React.Component {
     })
   }
 
-  /**
-   * Lifecycle method that is executed whenever the component is unmounted.
-   * Attempts to disconnect the user from the WebSockets server.
-   */
   componentWillUnmount() {
     this.state.socket.close()
   }
 
-  /**
-   * Renders the component.
-   *
-   * @return {string} - HTML markup for the component.
-   */
+  componentWillReceiveProps({ notifications }) {
+    const newNotifications = notifications.filter(n => !this.displayed.includes(n.id))
+
+    newNotifications.forEach(n => Alert[n.type](n.text, {
+      onClose: () => {
+        this.props.dispatch(actions.removeNotification(n.id))
+        this.displayed = this.displayed.filter(d => d !== n.id)
+      }
+    }))
+
+    this.displayed = this.displayed.concat(newNotifications.map(n => n.id))
+  }
+
   render() {
     return (
       <div>
         {React.cloneElement(this.props.children, { socket: this.state.socket })}
+        <Alert stack={true}
+               timeout={2000}
+               effect="slide"
+               position="bottom" />
       </div>
     )
   }
 }
 
-export default connect()(Connector)
+const mapStateToProps = state => ({
+  notifications: state.notifications
+})
+
+export default connect(mapStateToProps)(Connector)

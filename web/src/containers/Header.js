@@ -8,8 +8,7 @@ import './Header.css'
  * Functional component representing the website header containing the document
  * title and navigation.
  *
- * @param {object} props - Standard React props, destructured to only get the
- *                         isLoggedIn and dispatch props.
+ * @param {object} props - Standard React props.
  *
  * @return {string} - HTML markup for the component.
  */
@@ -58,12 +57,6 @@ Header.propTypes = {
   dispatch: React.PropTypes.func.isRequired
 }
 
-/**
- * Map Redux state to React props for the Header component.
- *
- * @param {object} state - The Redux state, injected by the <code>connect</code>
- *                         function.
- */
 const mapStateToProps = state => ({
   isLoggedIn: !!state.auth.jwt
 })

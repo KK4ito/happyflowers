@@ -13,21 +13,10 @@ class Petals extends React.Component {
     updating: React.PropTypes.bool
   }
 
-  /**
-   * Lifecycle method that is executed whenever the component receives new
-   * props. The component only re-renders when the flower's busy state changes.
-   *
-   * @param {object} nextProps - Standard React props.
-   */
   shouldComponentUpdate({ updating }) {
     return this.props.updating !== updating
   }
 
-  /**
-   * Renders the component.
-   *
-   * @return {string} - HTML markup for the component.
-   */
   render() {
     return (
       <g transform="translate(52 52)" className={`flower-body ${this.props.updating ? 'is-updating' : ''}`}>

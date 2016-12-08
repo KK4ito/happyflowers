@@ -2,12 +2,10 @@ import React from 'react'
 import IPropTypes from 'react-immutable-proptypes'
 import { connect } from 'react-redux'
 import { Map } from 'immutable'
-import Alert from 'react-s-alert'
 import { Link } from 'react-router'
 import Header from '../containers/Header'
 import Widget from '../components/Widget'
 import { fetchSettings, submitSettings } from '../actions'
-import '../components/Alert.css'
 
 /**
  * Class representing the settings screen of the application.
@@ -24,12 +22,6 @@ class Settings extends React.Component {
     socket: React.PropTypes.object
   }
 
-  /**
-   * Create a Settings component. Sets initial state and binds class methods.
-   *
-   * @param {object} props - Standard react props to be passed to the parent
-   *                         constructor.
-   */
   constructor(props) {
     super(props)
 
@@ -60,28 +52,11 @@ class Settings extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this)
   }
 
-  /**
-   * Lifecycle method that is executed whenever the component is mounted.
-   * Redirects the user if they're not logged in, otherwise attempts to retrieve
-   * settings.
-   */
   componentDidMount() {
     const { dispatch } = this.props
-
-    // Show an error message if fetching the application settings was not
-    // successful.
-
     dispatch(fetchSettings())
-      .catch(() => Alert.error('Could not retrieve settings.'))
   }
 
-  /**
-   * Lifecycle method that is executed whenever the component is to receive new
-   * props unmounted. Clears open timeouts if they are available and the flower
-   * is no longer busy.
-   *
-   * @param {object} props - Standard React props.
-   */
   componentWillReceiveProps({ settings, isSubmitting, isErroneous }) {
 
     // Don't change the state if there are no settings to display.
@@ -147,8 +122,6 @@ class Settings extends React.Component {
     // request was successful or erroneous, respectively.
 
     this.props.dispatch(submitSettings(data, this.props.socket))
-      .then(() => Alert.success('Settings saved successfully.'))
-      .catch(() => Alert.error('Could not save settings.'))
   }
 
   /**
@@ -168,11 +141,6 @@ class Settings extends React.Component {
     })
   }
 
-  /**
-   * Renders the component.
-   *
-   * @return {string} - HTML markup for the component.
-   */
   render() {
     const { name, upper, lower, interval } = this.state
 
@@ -271,21 +239,11 @@ class Settings extends React.Component {
             </form>
           </Widget>
         </div>
-        <Alert stack={{limit: 3}}
-               timeout={2000}
-               effect="slide"
-               position="bottom" />
       </main>
     )
   }
 }
 
-/**
- * Map Redux state to React props for the Login component.
- *
- * @param {object} state - The Redux state, injected by the <code>connect</code>
- *                         function.
- */
 const mapStateToProps = state => ({
   jwt: state.auth.jwt,
   settings: state.settings.data,

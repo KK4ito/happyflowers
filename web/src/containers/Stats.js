@@ -27,12 +27,6 @@ class Stats extends React.Component {
     socket: React.PropTypes.object
   }
 
-  /**
-   * Create a Stats component. Sets initial state and binds class methods.
-   *
-   * @param {object} props - Standard react props to be passed to the parent
-   *                         constructor.
-   */
   constructor(props) {
     super(props)
 
@@ -43,13 +37,6 @@ class Stats extends React.Component {
     this.handleTrigger = this.handleTrigger.bind(this)
   }
 
-  /**
-   * Lifecycle method that is executed whenever the component is to receive new
-   * props unmounted. Clears open timeouts if they are available and the flower
-   * is no longer busy.
-   *
-   * @param {object} props - Standard React props.
-   */
   componentWillReceiveProps({ busy }) {
     if (!busy && this.timeouts) {
       this.timeouts.forEach(t => clearTimeout(t))
@@ -75,11 +62,6 @@ class Stats extends React.Component {
     ]
   }
 
-  /**
-   * Renders the component.
-   *
-   * @return {string} - HTML markup for the component.
-   */
   render() {
     const { isLoggedIn, name, timestamps, isFetching, busy, socket } = this.props
     const { pump } = this.state
@@ -126,12 +108,6 @@ class Stats extends React.Component {
   }
 }
 
-/**
- * Map Redux state to React props for the Login component.
- *
- * @param {object} state - The Redux state, injected by the <code>connect</code>
- *                         function.
- */
 const mapStateToProps = state => ({
   isLoggedIn: !!state.auth.jwt,
   busy: state.settings.busy,

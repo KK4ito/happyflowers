@@ -25,12 +25,6 @@ Snapshot.propTypes = {
   isFetching: React.PropTypes.bool
 }
 
-/**
- * Map Redux state to React props for the Login component.
- *
- * @param {object} state - The Redux state, injected by the <code>connect</code>
- *                         function.
- */
 const mapStateToProps = state => ({
   snapshot: state.history.snapshot,
   busy: state.settings.busy,
