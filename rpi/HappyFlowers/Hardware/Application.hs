@@ -6,8 +6,6 @@ Copyright   : (c) Sacha Schmid, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-A WebSockets client implementation that communicates with the RPi's hardware.
 -}
 module HappyFlowers.Hardware.Application
     (

@@ -8,9 +8,6 @@ Copyright   : (c) Sacha Schmid, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-The types included in this module are used to represent data used throughout the
-happy flowers project.
 -}
 module HappyFlowers.Type
     (

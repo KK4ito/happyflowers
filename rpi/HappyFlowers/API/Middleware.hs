@@ -8,9 +8,6 @@ Copyright   : (c) Sacha Schmid, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-The functions included in this module are used to modify incoming requests to
-the server to extend the response with data or facilitate React routing.
 -}
 module HappyFlowers.API.Middleware
     (

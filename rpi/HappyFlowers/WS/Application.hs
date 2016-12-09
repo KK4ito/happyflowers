@@ -8,9 +8,6 @@ Copyright   : (c) Sacha Schmid, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-An implementation of a WebSockets server that simply broadcasts messages
-between clients.
 -}
 module HappyFlowers.WS.Application
     (

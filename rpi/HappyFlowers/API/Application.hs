@@ -6,9 +6,6 @@ Copyright   : (c) Sacha Schmid, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-An implementation of the Scotty web framework offering a RESTful API and serving
-static files.
 -}
 
 module HappyFlowers.API.Application

@@ -31,3 +31,11 @@ executable rpi
 
     if flag(Development)
         cpp-options:    -DDevelopment
+
+executable i2ctest
+    main-is:            I2CTest.hs
+    build-depends:      base
+                      , bytestring
+                      , text
+                      , HPi
+    default-language:   Haskell2010

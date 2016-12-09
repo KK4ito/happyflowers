@@ -1,16 +1,13 @@
 {-# LANGUAGE OverloadedStrings, CPP #-}
 
 {-|
-Module      : HappyFlowers.RPI.Communication
+Module      : HappyFlowers.Hardware.Communication
 Description : Communicate with the RPi's hardware
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-The functions included in this module are used to communicate with the RPi's
-hardware and connected sensors and devices.
 -}
 module HappyFlowers.Hardware.Communication
     (
@@ -23,19 +20,14 @@ import           Control.Concurrent.Thread.Delay (delay)
 import           Control.Monad                   (forever, when, unless)
 import           Control.Monad.Trans             (liftIO)
 import           Data.Aeson                      (ToJSON, encode)
-import qualified Data.ByteString.Char8           as C
 import qualified Data.ByteString.Lazy.Char8      as CL
-import           Data.Char                       (ord)
 import qualified Data.Text                       as T
 import qualified Network.WebSockets              as WS
-import           System.RaspberryPi.GPIO         (Address, withGPIO, setPinFunction, writePin, Pin(..), PinMode(..), withI2C, readI2C, writeI2C)
 
 import qualified HappyFlowers.DB                 as DB
+import qualified Happyflowers.Hardware.I2C       as I2C
+import qualified HappyFlowers.Hardware.GPIO      as GPIO
 import           HappyFlowers.Type               (Settings, busy, interval, lower, upper)
-
--- | determines the address of the port that is used to read data.
-address :: Address
-address = 0x20
 
 -- | reads data from the chirp sensor.
 #ifdef Development
@@ -43,12 +35,9 @@ readMoisture :: Int -> IO Int
 readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
 #else
 readMoisture :: IO Int
-readMoisture = withGPIO . withI2C $ do
-    writeI2C address "0"
-    m <- readI2C address 2
-
-    let bytes = C.unpack m
-    let numeral = fromIntegral ((ord $ head bytes) + ((256 * ) . ord $ last bytes)) :: Rational
+readMoisture = do
+    val <- I2C.read 0
+    let numeral = fromIntegral val :: Rational
     return (round (numeral / 65535.0 * 100.0) :: Int)
 #endif
 
@@ -59,10 +48,9 @@ triggerPump = putStrLn "pump on" >> delay 5000000 >> putStrLn "pump off"
 #else
 triggerPump :: IO ()
 triggerPump = withGPIO $ do
-    setPinFunction Pin07 Output
-    writePin Pin07 True
+    GPIO.activatePin
     delay 5000000
-    writePin Pin07 False
+    GPIO.deactivatePin
 #endif
 
 -- | sends WS notifications to all connected clients about measurements or

@@ -6,9 +6,6 @@ Copyright   : (c) Sacha Schmid, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : experimental
-
-The functions included in this module are used to parse configuration data for
-the happy flowers project.
 -}
 module HappyFlowers.Config
     (
