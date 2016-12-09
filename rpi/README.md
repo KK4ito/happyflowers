@@ -138,6 +138,11 @@ The build can be configured to run in development mode, where sensors are simula
 
 All tasks read the [rpi.cabal](./rpi.cabal) config and are based off the `rpi` executable.
 
+Additionally, a separate executable used for testing only the I2C functionality is provided.
+
+- `cabal build I2CTest` builds the test project.
+- `cabal run I2CTest` builds and runs the test project.
+
 ## Atom Integration
 
 Atom offers easy integration of linting output directly in the editor.
