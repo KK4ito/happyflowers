@@ -132,8 +132,8 @@ The build can be configured to run in development mode, where sensors are simula
 - `cabal configure -f Development` enables development mode.
 - `cabal configure -f -Development` disables development mode.
 - `cabal install` installs all required dependencies.
-- `cabal build` builds the project.
-- `cabal run` builds and runs the project.
+- `cabal build rpi` builds the project.
+- `cabal run rpi` builds and runs the project.
 - `cabal haddock --executables` generates documentation using Haddock.
 
 All tasks read the [rpi.cabal](./rpi.cabal) config and are based off the `rpi` executable.
