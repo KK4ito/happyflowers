@@ -5,9 +5,7 @@ Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
 License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
-Stability   : experimental
-
-Starts a REST API server, a WebSockets server and relevant hardware processes.
+Stability   : stable
 -}
 module Main
     (
