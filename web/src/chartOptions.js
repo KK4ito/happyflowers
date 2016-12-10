@@ -5,7 +5,7 @@ export default fromJS({
     type: 'area',
     zoomType: 'x'
   },
-  series: [],
+  series: [[]],
   legend: false,
   plotOptions: {
     area: {

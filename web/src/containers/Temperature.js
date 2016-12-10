@@ -31,19 +31,6 @@ const Temperature = ({ measurements, isFetching, socket }) => {
   // the component.
 
   let chartOptions = options
-    .set('series', [{
-      animation: animating && {
-        duration: 1000
-      },
-      data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS(),
-      enableMouseTracking: false,
-      lineWidth: 1,
-      color: '#EBB97D',
-      fillColor: {
-        linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-        stops: [ [ 0, '#EBB97D' ], [ 1, '#fff' ] ]
-      }
-    }])
 
   // History should be animated whenever the data is retrieved for the first
   // time.
@@ -53,6 +40,19 @@ const Temperature = ({ measurements, isFetching, socket }) => {
     chartOptions = chartOptions
       .deleteIn([ 'xAxis', 'min' ])
       .deleteIn([ 'xAxis', 'max' ])
+      .set('series', [{
+        animation: animating && {
+          duration: 1000
+        },
+        data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS(),
+        enableMouseTracking: false,
+        lineWidth: 1,
+        color: '#EBB97D',
+        fillColor: {
+          linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+          stops: [ [ 0, '#EBB97D' ], [ 1, '#fff' ] ]
+        }
+      }])
   }
 
   return (

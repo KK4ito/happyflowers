@@ -33,7 +33,7 @@ import           HappyFlowers.Type               (Settings, busy, interval, lowe
 -- | reads data about moisture from the chirp sensor.
 #ifdef Development
 readMoisture :: Int -> IO Int
-readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
+readMoisture value = putStrLn "sensor on" >> putStrLn "sensor off" >> return value
 #else
 readMoisture :: IO Int
 readMoisture = do
@@ -51,7 +51,7 @@ readMoisture = do
 -- | reads data about temperature from the chirp sensor.
 #ifdef Development
 readTemperature :: IO Int
-readTemperature = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> getStdRandom (randomR (23, 27)) :: IO Int
+readTemperature = putStrLn "sensor on" >> putStrLn "sensor off" >> getStdRandom (randomR (23, 27)) :: IO Int
 #else
 readTemperature :: IO Int
 readTemperature = do

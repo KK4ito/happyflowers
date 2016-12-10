@@ -32,30 +32,6 @@ const Moisture = ({ events, measurements, settings, isFetching, socket }) => {
   // the component.
 
   let chartOptions = options
-    .set('series', [{
-      animation: animating && {
-        duration: 1000
-      },
-      data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS(),
-      enableMouseTracking: false,
-      lineWidth: 1,
-      color: '#4cadeb',
-      fillColor: {
-        linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
-        stops: [ [ 0, '#4cadeb' ], [ 1, '#fff' ] ]
-      }
-    }])
-    .setIn([ 'xAxis', 'plotLines' ], events.map(e => ({
-      color: e.get('eventKind') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
-      value: (new Date(e.get('eventTimestamp'))).getTime(),
-      width: 2,
-      zIndex: 2
-    })))
-    .setIn([ 'yAxis', 'plotBands' ], [{
-      from: settings.get('lower'),
-      to: settings.get('upper'),
-      color: 'rgba(129, 235, 76, 0.2)'
-    }])
 
   // History should be animated whenever the data is retrieved for the first
   // time.
@@ -65,6 +41,40 @@ const Moisture = ({ events, measurements, settings, isFetching, socket }) => {
     chartOptions = chartOptions
       .deleteIn([ 'xAxis', 'min' ])
       .deleteIn([ 'xAxis', 'max' ])
+      .set('series', [{
+        animation: animating && {
+          duration: 1000
+        },
+        data: measurements.map(m => [ (new Date(m.get('measurementTimestamp'))).getTime(), m.get('measurementValue') ]).toJS(),
+        enableMouseTracking: false,
+        lineWidth: 1,
+        color: '#4cadeb',
+        fillColor: {
+          linearGradient: { x1: 0, x2: 0, y1: 0, y2: 1 },
+          stops: [ [ 0, '#4cadeb' ], [ 1, '#fff' ] ]
+        }
+      }])
+  }
+
+  if (!events.isEmpty()) {
+    chartOptions = chartOptions
+      .setIn([ 'xAxis', 'plotLines' ], events.map(e => ({
+        color: e.get('eventKind') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
+        value: (new Date(e.get('eventTimestamp'))).getTime(),
+        width: 2,
+        zIndex: 2
+      })))
+  }
+
+  if (!settings.isEmpty()) {
+    chartOptions = chartOptions
+      .setIn([ 'yAxis', 'min' ], settings.get('lower') - 20)
+      .setIn([ 'yAxis', 'max' ], settings.get('upper') + 20)
+      .setIn([ 'yAxis', 'plotBands' ], [{
+        from: settings.get('lower'),
+        to: settings.get('upper'),
+        color: 'rgba(129, 235, 76, 0.2)'
+      }])
   }
 
   return (

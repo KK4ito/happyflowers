@@ -53,12 +53,12 @@ class Stats extends React.Component {
     this.setState({ pump: 1 })
 
     this.timeouts = [
-      setTimeout(() => this.setState({ pump: 2 }), 3000),
-      setTimeout(() => this.setState({ pump: 3 }), 8000),
+      setTimeout(() => this.setState({ pump: 2 }), 1000),
+      setTimeout(() => this.setState({ pump: 3 }), 6000),
       setTimeout(() => {
         this.setState({ pump: 0 })
         this.timeouts = null
-      }, 16000)
+      }, 11000)
     ]
   }
 
