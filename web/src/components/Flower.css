@@ -8,7 +8,7 @@
 }
 
 .progress {
-  transition: stroke-dasharray 1s ease-in-out;
+  transition: stroke-dasharray 1s ease-in-out, stroke 1s ease-in-out;
 }
 
 .flower-temp {

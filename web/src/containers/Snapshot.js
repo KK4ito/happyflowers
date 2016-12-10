@@ -13,10 +13,12 @@ import './Snapshot.css'
  *
  * @return {string} - HTML markup for the component.
  */
-const Snapshot = ({ snapshot, isFetching, busy }) => (
+const Snapshot = ({ snapshot, settings, isFetching, busy }) => (
   <Widget title="Snapshot"
           isLoading={isFetching}>
-    <Flower moisture={snapshot.get('moisture')}
+    <Flower moisture={snapshot.get('moisture') && settings.get('lower') && settings.get('upper')
+                      ? (snapshot.get('moisture') - Math.max((settings.get('lower') - 20), 0)) / Math.min((settings.get('upper') + 20), 100)
+                      : 0}
             temperature={snapshot.get('temperature')}
             updating={busy} />
   </Widget>
@@ -24,12 +26,14 @@ const Snapshot = ({ snapshot, isFetching, busy }) => (
 
 Snapshot.propTypes = {
   snapshot: IPropTypes.map.isRequired,
+  settings: IPropTypes.map.isRequired,
   busy: React.PropTypes.bool,
   isFetching: React.PropTypes.bool
 }
 
 const mapStateToProps = state => ({
   snapshot: state.history.snapshot,
+  settings: state.settings.data,
   busy: state.settings.busy,
   isFetching: state.history.isFetching
 })

@@ -68,8 +68,8 @@ const Moisture = ({ events, measurements, settings, isFetching, socket }) => {
 
   if (!settings.isEmpty()) {
     chartOptions = chartOptions
-      .setIn([ 'yAxis', 'min' ], settings.get('lower') - 20)
-      .setIn([ 'yAxis', 'max' ], settings.get('upper') + 20)
+      .setIn([ 'yAxis', 'min' ], Math.max(settings.get('lower') - 20, 0))
+      .setIn([ 'yAxis', 'max' ], Math.min(settings.get('upper') + 20, 100))
       .setIn([ 'yAxis', 'plotBands' ], [{
         from: settings.get('lower'),
         to: settings.get('upper'),

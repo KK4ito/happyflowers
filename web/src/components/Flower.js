@@ -28,8 +28,8 @@ const Flower = ({ moisture, temperature, updating }) => (
                 r="127.5" />
         <path className="progress"
               d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5"
-              stroke="#4CADEB"
-              strokeDasharray={`${839 * moisture / 100},839`} />
+              stroke={moisture >= 0.666 ? '#f0d24e' : moisture >= 0.333 ? '#4cadeb' : '#eb4c4c'}
+              strokeDasharray={`${Math.round(839 * moisture)},839`} />
       </g>
       <Petals updating={updating} />
     </g>

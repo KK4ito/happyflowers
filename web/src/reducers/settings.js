@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
-import { Map } from 'immutable'
+import { Map, fromJS } from 'immutable'
 import * as actions from '../actions'
 
 /**
@@ -10,7 +10,13 @@ import * as actions from '../actions'
 const data = handleActions({
   [actions.fetchSettingsSuccess]: (_, { payload }) => Map(payload.res.data),
   [actions.submitSettingsSuccess]: (_, { payload }) => Map(payload.res.data)
-}, Map())
+}, fromJS({
+  name: 'Your Flower',
+  upper: 0,
+  lower: 0,
+  interval: 0,
+  busy: 0
+}))
 
 /**
  * Creates a reducer to keep track of the RPi's state. A truthy value means that

@@ -40,7 +40,7 @@ readMoisture = do
     val <- I2C.read 0
 
     let numeral = fromIntegral (val - 100) :: Rational
-    let relative = round (numeral / 800.0 * 100.0) :: Int
+    let relative = round (numeral / 700.0 * 100.0) :: Int
 
     case relative of
         _ | relative < 0   -> return 0
