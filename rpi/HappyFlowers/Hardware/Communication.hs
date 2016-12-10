@@ -98,20 +98,20 @@ checkMoisture conn = handle $ \settings' -> do
             WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": true }" :: T.Text)
 
 #ifdef Development
-            d <- readMoisture 30
+            m <- readMoisture 30
 #else
-            d <- readMoisture
+            m <- readMoisture
 #endif
 
-            DB.addMeasurement "moisture" d
+            DB.addMeasurement "moisture" m
             DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
 
-            d <- readTemperature
+            t <- readTemperature
 
-            DB.addMeasurement "temperature" d
+            DB.addMeasurement "temperature" t
             DB.queryLatestMeasurement "temperature" >>= notify conn "measurementReceived"
 
-            if d < lower settings'
+            if m < lower settings'
                 then do
                     activatePump conn
                 else do
@@ -131,12 +131,12 @@ activatePump conn = handle $ \settings' -> do
     delay 5000000
 
 #ifdef Development
-    d <- readMoisture 80
+    m <- readMoisture 80
 #else
-    d <- readMoisture
+    m <- readMoisture
 #endif
 
-    if d >= upper settings'
+    if m >= upper settings'
         then do
             DB.addEvent "automatic"
             DB.queryLatestEvent >>= notify conn "eventReceived"
@@ -144,14 +144,16 @@ activatePump conn = handle $ \settings' -> do
             DB.updateBusy 0
             WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
 
-#ifdef Development
-            DB.addMeasurement "moisture" d
+            DB.addMeasurement "moisture" m
             DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
+
+            t <- readTemperature
+
+            DB.addMeasurement "temperature" t
+            DB.queryLatestMeasurement "temperature" >>= notify conn "measurementReceived"
 
             delay . (60000000 *) . toInteger $ interval settings'
             checkMoisture conn
-#endif
-
         else do
             activatePump conn
 
@@ -164,20 +166,20 @@ manualPump conn = handle $ \settings' -> do
         WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": true }" :: T.Text)
 
 #ifdef Development
-        d <- readMoisture 50
+        m <- readMoisture 50
 #else
-        d <- readMoisture
+        m <- readMoisture
 #endif
 
-        DB.addMeasurement "moisture" d
+        DB.addMeasurement "moisture" m
         DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
 
-        d <- readTemperature
+        t <- readTemperature
 
-        DB.addMeasurement "temperature" d
+        DB.addMeasurement "temperature" t
         DB.queryLatestMeasurement "temperature" >>= notify conn "measurementReceived"
 
-        if (d < upper settings')
+        if (m < upper settings')
             then do
                 triggerPump
                 delay 5000000
@@ -186,15 +188,15 @@ manualPump conn = handle $ \settings' -> do
                 DB.queryLatestEvent >>= notify conn "eventReceived"
 
 #ifdef Development
-                d <- readMoisture 80
+                m <- readMoisture 80
 #else
-                d <- readMoisture
+                m <- readMoisture
 #endif
 
                 DB.updateBusy 0
                 WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
 
-                DB.addMeasurement "moisture" d
+                DB.addMeasurement "moisture" m
                 DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
             else do
                 DB.updateBusy 0
@@ -213,8 +215,4 @@ client conn = do
         msg <- WS.receiveData conn
         liftIO . when ("triggerPump" `T.isInfixOf` msg) $ manualPump conn
 
-#ifdef Development
     liftIO $ checkMoisture conn
-#else
-    forever $ checkMoisture conn
-#endif
