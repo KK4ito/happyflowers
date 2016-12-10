@@ -38,8 +38,14 @@ readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor o
 readMoisture :: IO Int
 readMoisture = do
     val <- I2C.read 0
-    let numeral = fromIntegral val :: Rational
-    return (round (numeral / 65535.0 * 100.0) :: Int)
+
+    let numeral = fromIntegral (val - 100) :: Rational
+    let relative = round (numeral / 800.0 * 100.0) :: Int
+
+    case relative of
+        _ | relative < 0   -> return 0
+          | relative > 100 -> return 100
+          | otherwise      -> return relative
 #endif
 
 -- | reads data about temperature from the chirp sensor.
@@ -51,7 +57,7 @@ readTemperature :: IO Int
 readTemperature = do
     val <- I2C.read 5
     let numeral = fromIntegral val :: Rational
-    return (round (numeral / 65535.0 * 100.0) :: Int)
+    return $ round (numeral / 10.0) :: Int
 #endif
 
 -- | triggers the USB water pump.
