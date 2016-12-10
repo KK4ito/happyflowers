@@ -1,4 +1,4 @@
-# Web Setup Guide
+# happy flowers Setup Guide
 
 The following guide documents the steps to setting up the React environment for happy flowers to work in.
 
