@@ -57,7 +57,7 @@ readTemperature :: IO Int
 readTemperature = do
     val <- I2C.read 5
     let numeral = fromIntegral val :: Rational
-    return $ round (numeral / 10.0) :: Int
+    return (round (numeral / 10.0) :: Int)
 #endif
 
 -- | triggers the USB water pump.
