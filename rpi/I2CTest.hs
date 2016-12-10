@@ -26,6 +26,6 @@ main :: IO ()
 main = do
     putStrLn "Starting Chirp"
     forever $ do
-        I2C.read 0 >>= print
-        I2C.read 5 >>= print
+        putStr "Moisture:\t" >> I2C.read 0 >>= print
+        putStr "Temperature:\t" >> I2C.read 5 >>= print
         threadDelay 3000000
