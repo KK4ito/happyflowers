@@ -71,7 +71,7 @@ const History = ({ events, measurements, settings, isFetching, socket }) => {
     }])
     .setIn([ 'xAxis', 'minTickInterval' ], 1000 * 60 * settings.get('interval'))
     .setIn([ 'xAxis', 'plotLines' ], events.map(e => ({
-      color: e.get('eventType') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
+      color: e.get('eventKind') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
       value: (new Date(e.get('eventTimestamp'))).getTime(),
       width: 2,
       zIndex: 2
@@ -85,7 +85,7 @@ const History = ({ events, measurements, settings, isFetching, socket }) => {
   // History should be animated whenever the data is retrieved for the first
   // time.
 
-  if (!events.isEmpty() || !measurements.isEmpty()) {
+  if (!measurements.isEmpty()) {
     animating = false
     chartOptions = chartOptions
       .deleteIn([ 'xAxis', 'min' ])
@@ -93,7 +93,7 @@ const History = ({ events, measurements, settings, isFetching, socket }) => {
   }
 
   return (
-    <Widget title="History"
+    <Widget title="Moisture History"
             tooltip="Click and drag the chart to view a section in more detail."
             isLoading={isFetching}>
       <Highcharts config={chartOptions.toJS()} />
@@ -110,7 +110,7 @@ History.propTypes = {
 
 const mapStateToProps = state => ({
   events: state.history.events,
-  measurements: state.history.measurements,
+  measurements: state.history.measurements.filter(m => m.get('measurementKind') === 'moisture'),
   settings: state.settings.data,
   isFetching: state.settings.isFetching || state.history.isFetching
 })

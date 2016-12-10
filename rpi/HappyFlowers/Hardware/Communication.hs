@@ -23,13 +23,14 @@ import           Data.Aeson                      (ToJSON, encode)
 import qualified Data.ByteString.Lazy.Char8      as CL
 import qualified Data.Text                       as T
 import qualified Network.WebSockets              as WS
+import           System.Random                   (getStdRandom, randomR)
 
 import qualified HappyFlowers.DB                 as DB
 import qualified HappyFlowers.Hardware.I2C       as I2C
 import qualified HappyFlowers.Hardware.GPIO      as GPIO
 import           HappyFlowers.Type               (Settings, busy, interval, lower, upper)
 
--- | reads data from the chirp sensor.
+-- | reads data about moisture from the chirp sensor.
 #ifdef Development
 readMoisture :: Int -> IO Int
 readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> return value
@@ -37,6 +38,18 @@ readMoisture value = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor o
 readMoisture :: IO Int
 readMoisture = do
     val <- I2C.read 0
+    let numeral = fromIntegral val :: Rational
+    return (round (numeral / 65535.0 * 100.0) :: Int)
+#endif
+
+-- | reads data about temperature from the chirp sensor.
+#ifdef Development
+readTemperature :: IO Int
+readTemperature = putStrLn "sensor on" >> delay 3000000 >> putStrLn "sensor off" >> getStdRandom (randomR (23, 27)) :: IO Int
+#else
+readTemperature :: IO Int
+readTemperature = do
+    val <- I2C.read 5
     let numeral = fromIntegral val :: Rational
     return (round (numeral / 65535.0 * 100.0) :: Int)
 #endif
@@ -84,8 +97,13 @@ checkMoisture conn = handle $ \settings' -> do
             d <- readMoisture
 #endif
 
-            DB.addMeasurement d
-            DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+            DB.addMeasurement "moisture" d
+            DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
+
+            d <- readTemperature
+
+            DB.addMeasurement "temperature" d
+            DB.queryLatestMeasurement "temperature" >>= notify conn "measurementReceived"
 
             if d < lower settings'
                 then do
@@ -121,8 +139,8 @@ activatePump conn = handle $ \settings' -> do
             WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
 
 #ifdef Development
-            DB.addMeasurement d
-            DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+            DB.addMeasurement "moisture" d
+            DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
 
             delay . (60000000 *) . toInteger $ interval settings'
             checkMoisture conn
@@ -145,8 +163,13 @@ manualPump conn = handle $ \settings' -> do
         d <- readMoisture
 #endif
 
-        DB.addMeasurement d
-        DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+        DB.addMeasurement "moisture" d
+        DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
+
+        d <- readTemperature
+
+        DB.addMeasurement "temperature" d
+        DB.queryLatestMeasurement "temperature" >>= notify conn "measurementReceived"
 
         if (d < upper settings')
             then do
@@ -157,14 +180,16 @@ manualPump conn = handle $ \settings' -> do
                 DB.queryLatestEvent >>= notify conn "eventReceived"
 
 #ifdef Development
-                readMoisture 80 >>= DB.addMeasurement
+                d <- readMoisture 80
 #else
-                readMoisture >>= DB.addMeasurement
+                d <- readMoisture
 #endif
 
                 DB.updateBusy 0
                 WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)
-                DB.queryLatestMeasurement >>= notify conn "measurementReceived"
+
+                DB.addMeasurement "moisture" d
+                DB.queryLatestMeasurement "moisture" >>= notify conn "measurementReceived"
             else do
                 DB.updateBusy 0
                 WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": false }" :: T.Text)

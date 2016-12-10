@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import Header from './Header'
 import Snapshot from './Snapshot'
 import Stats from './Stats'
-import History from './History'
+import Moisture from './Moisture'
+import Temperature from './Temperature'
 import Stream from './Stream'
 import { fetchSettings } from '../actions'
 
@@ -36,7 +37,8 @@ class Dashboard extends React.Component {
               <Stats socket={this.props.socket} />
             </div>
           </div>
-          <History />
+          <Moisture />
+          <Temperature />
           <Stream />
         </div>
       </main>

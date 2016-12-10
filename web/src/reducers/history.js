@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
-import { List, Map } from 'immutable'
+import { List, Map, fromJS } from 'immutable'
 import * as actions from '../actions'
 
 /**
@@ -8,12 +8,21 @@ import * as actions from '../actions'
  * level of the flower. Default value is 0 if no data is available.
  */
 const snapshot = handleActions({
-  [actions.fetchHistorySuccess]: (_, { payload }) => {
-    const latest = List(payload.res.data.measurements).last()
-    return (latest && latest.measurementValue) || 0
+  [actions.fetchHistorySuccess]: (state, { payload }) => {
+    const mes = List(payload.res.data.measurements)
+
+    const latestMoisture = mes.filter(m => m.measurementKind === 'moisture').last()
+    const latestTemperature = mes.filter(m => m.measurementKind === 'temperature').last()
+
+    return state
+      .set('moisture', (latestMoisture && latestMoisture.measurementValue) || 0)
+      .set('temperature', (latestTemperature && latestTemperature.measurementValue) || 0)
   },
-  [actions.measurementReceived]: (_, { payload }) => payload.measurementValue
-}, 0)
+  [actions.measurementReceived]: (state, { payload }) => state.set(payload.measurementKind, payload.measurementValue)
+}, fromJS({
+  moisture: 0,
+  temperature: 0
+}))
 
 /**
  * Creates a reducer to keep track of historical events, i.e. manual and

@@ -26,7 +26,7 @@ import GHC.Generics
 -- | An event marks a watering, either `manual` or `automatic`.
 data Event = Event
     { eventId :: !Int           -- ^ Numeric ID
-    , eventType :: !Text        -- ^ Event type, `automatic` or `manual`
+    , eventKind :: !Text        -- ^ Event kind, `automatic` or `manual`
     , eventTimestamp :: !Text   -- ^ Event timestamp
     } deriving Generic
 
@@ -34,16 +34,18 @@ instance ToJSON Event
 instance FromRow Event where
     fromRow = Event <$> field <*> field <*> field
 
--- | A measurement marks the checking of the flower's moisture level.
+-- | A measurement marks the checking of the flower's moisture level or its
+-- temperature.
 data Measurement = Measurement
     { measurementId :: !Int           -- ^ Numeric ID
-    , measurementValue :: !Int        -- ^ Moisture level
+    , measurementKind :: !Text        -- ^ Measurement kind
+    , measurementValue :: !Int        -- ^ Moisture level / temperature
     , measurementTimestamp :: !Text   -- ^ Measurement timestamp
     } deriving Generic
 
 instance ToJSON Measurement
 instance FromRow Measurement where
-    fromRow = Measurement <$> field <*> field <*> field
+    fromRow = Measurement <$> field <*> field <*> field <*> field
 
 -- | History is a combination of events and measurement, forming the complete
 -- historical data of the application.

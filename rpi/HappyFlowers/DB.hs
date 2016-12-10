@@ -67,8 +67,8 @@ updateBusy status = do
     S.execute conn "UPDATE settings SET busy = ?" (S.Only (status :: Int))
     S.close conn
 
--- | retrieves historical data including events and measurements. Returns
--- Nothing if any of the queries fail.
+-- | retrieves historical data including events, measurements, and temperatures.
+-- Returns Nothing if any of the queries fail.
 queryHistory :: IO (Maybe History)
 queryHistory = do
     frame <- getConfig "frame"
@@ -91,7 +91,7 @@ addEvent :: Text -- ^ Event kind
          -> IO ()
 addEvent kind = do
     conn <- S.open dbName
-    S.execute conn "INSERT INTO events (type) VALUES (?)" (S.Only (kind :: Text))
+    S.execute conn "INSERT INTO events (kind) VALUES (?)" (S.Only (kind :: Text))
     S.close conn
 
 -- | retrieves the latest event entity from the database.
@@ -103,18 +103,20 @@ queryLatestEvent = do
     return $ getSingleEntry rows
 
 -- | adds a new measurement entity with the given value to the database.
-addMeasurement :: Int -- ^ Measurement value
+addMeasurement :: Text -- ^ Measurement kind
+               -> Int  -- ^ Measurement value
                -> IO ()
-addMeasurement value = do
+addMeasurement kind value = do
     conn <- S.open dbName
-    S.execute conn "INSERT INTO measurements (value) VALUES (?)" (S.Only (value :: Int))
+    S.execute conn "INSERT INTO measurements (kind, value) VALUES (?, ?)" (kind :: Text, value :: Int)
     S.close conn
 
 -- | retrieves the latest measurement entity from the database.
-queryLatestMeasurement :: IO (Maybe Measurement)
-queryLatestMeasurement = do
+queryLatestMeasurement :: Text -- ^ Measurement kind
+                       -> IO (Maybe Measurement)
+queryLatestMeasurement kind = do
     conn <- S.open dbName
-    rows <- try (S.query_ conn "SELECT * FROM measurements ORDER BY timestamp DESC LIMIT 1") :: IO (Either S.SQLError [Measurement])
+    rows <- try (S.query conn "SELECT * FROM measurements WHERE kind = ? ORDER BY timestamp DESC LIMIT 1" (S.Only (kind :: Text))) :: IO (Either S.SQLError [Measurement])
     S.close conn
     return $ getSingleEntry rows
 

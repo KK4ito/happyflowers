@@ -18,7 +18,7 @@ import qualified Data.ByteString.Char8   as C
 import           Data.Char               (ord)
 import           Data.Word               (Word8)
 import           Prelude                 hiding (read)
-import           System.RaspberryPi.GPIO (Address, withI2C, readI2C, writeI2C)
+import           System.RaspberryPi.GPIO (Address, withGPIO, withI2C, readI2C, writeI2C)
 
 -- | determines the address of the port that is used to read data.
 address :: Address
@@ -27,7 +27,7 @@ address = 0x20
 -- | reads the value from a given I2C register.
 read :: Word8    -- Number of the register
      -> IO Int -- Parsed value
-read reg = withI2C $ do
+read reg = withGPIO . withI2C $ do
     writeI2C address (BS.singleton reg)
     val <- readI2C address 2
     return $ parse val

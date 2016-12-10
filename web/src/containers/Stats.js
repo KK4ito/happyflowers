@@ -114,8 +114,8 @@ const mapStateToProps = state => ({
   name: state.settings.data.get('name'),
   timestamps: {
     measurement: state.history.measurements.last(),
-    automatic: state.history.events.filter(e => e.get('eventType') === 'automatic').last(),
-    manual: state.history.events.filter(e => e.get('eventType') === 'manual').last()
+    automatic: state.history.events.filter(e => e.get('eventKind') === 'automatic').last(),
+    manual: state.history.events.filter(e => e.get('eventKind') === 'manual').last()
   },
   isFetching: state.settings.isFetching || state.history.isFetching
 })

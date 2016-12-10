@@ -10,7 +10,7 @@ import './Flower.css'
  *
  * @return {string} - HTML markup for the component.
  */
-const Flower = ({ value, updating }) => (
+const Flower = ({ moisture, temperature, updating }) => (
   <svg className="flower"
        width="285"
        height="285"
@@ -29,15 +29,24 @@ const Flower = ({ value, updating }) => (
         <path className="progress"
               d="M0 127.5C0 57.084 57.084 0 127.5 0S255 57.084 255 127.5 197.916 255 127.5 255 0 197.916 0 127.5"
               stroke="#4CADEB"
-              strokeDasharray={`${839 * value / 100},839`} />
+              strokeDasharray={`${839 * moisture / 100},839`} />
       </g>
       <Petals updating={updating} />
+    </g>
+    <g className={`flower-temp ${updating ? 'is-updating' : ''}`}>
+      <text x="142.5"
+            y="142.5"
+            textAnchor="middle"
+            alignmentBaseline="central">
+        {`${temperature} °C`}
+      </text>
     </g>
   </svg>
 )
 
 Flower.propTypes = {
-  value: React.PropTypes.number.isRequired,
+  moisture: React.PropTypes.number.isRequired,
+  temperature: React.PropTypes.number.isRequired,
   updating: React.PropTypes.bool
 }
 

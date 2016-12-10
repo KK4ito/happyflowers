@@ -10,12 +10,13 @@ CREATE TABLE settings (
 
 CREATE TABLE events (
   id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-  type      TEXT    NOT NULL,
+  kind      TEXT    NOT NULL,
   timestamp NUMERIC          DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime'))
 );
 
 CREATE TABLE measurements (
   id        INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  kind      TEXT    NOT NULL,
   value     INTEGER NOT NULL,
   timestamp NUMERIC          DEFAULT (strftime('%Y-%m-%dT%H:%M:%S', 'now', 'localtime'))
 );

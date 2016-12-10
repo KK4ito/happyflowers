@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import IPropTypes from 'react-immutable-proptypes'
 import Widget from '../components/Widget'
 import Flower from '../components/Flower'
 import './Snapshot.css'
@@ -15,12 +16,14 @@ import './Snapshot.css'
 const Snapshot = ({ snapshot, isFetching, busy }) => (
   <Widget title="Snapshot"
           isLoading={isFetching}>
-    <Flower value={snapshot} updating={busy} />
+    <Flower moisture={snapshot.get('moisture')}
+            temperature={snapshot.get('temperature')}
+            updating={busy} />
   </Widget>
 )
 
 Snapshot.propTypes = {
-  snapshot: React.PropTypes.number.isRequired,
+  snapshot: IPropTypes.map.isRequired,
   busy: React.PropTypes.bool,
   isFetching: React.PropTypes.bool
 }
