@@ -1,5 +1,5 @@
 {-|
-Module      : I2CTest
+Module      : Main
 Description : Test I2C functionality
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
@@ -7,7 +7,7 @@ License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : stable
 -}
-module I2CTest
+module Main
     (
       -- * Operations
       main
@@ -23,9 +23,9 @@ import qualified HappyFlowers.Hardware.I2C as I2C
 
 -- | reads moisture and temperature data through I2C.
 main :: IO ()
-main = withGPIO . withI2C $ do
+main = do
     putStrLn "Starting Chirp"
     forever $ do
-        I2C.read 0 >>= putStrLn . show
-        I2C.read 5 >>= putStrLn . show
+        I2C.read 0 >>= print
+        I2C.read 5 >>= print
         threadDelay 3000000

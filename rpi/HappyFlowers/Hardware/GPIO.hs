@@ -22,12 +22,12 @@ pin = Pin07
 
 -- | activates the pin.
 activatePin :: IO ()
-activatePin num = withGPIO $ do
+activatePin = withGPIO $ do
     setPinFunction pin Output
     writePin pin True
 
 -- | deactivates the pin.
 deactivatePin :: IO ()
-deactivatePin num = withGPIO $ do
+deactivatePin = withGPIO $ do
     setPinFunction pin Output
     writePin pin False

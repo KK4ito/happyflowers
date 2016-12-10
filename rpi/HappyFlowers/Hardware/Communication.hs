@@ -25,7 +25,7 @@ import qualified Data.Text                       as T
 import qualified Network.WebSockets              as WS
 
 import qualified HappyFlowers.DB                 as DB
-import qualified Happyflowers.Hardware.I2C       as I2C
+import qualified HappyFlowers.Hardware.I2C       as I2C
 import qualified HappyFlowers.Hardware.GPIO      as GPIO
 import           HappyFlowers.Type               (Settings, busy, interval, lower, upper)
 
