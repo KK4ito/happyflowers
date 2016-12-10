@@ -85,16 +85,16 @@ class Connector extends React.Component {
   }
 
   componentWillReceiveProps({ notifications }) {
-    const newNotifications = notifications.filter(n => !this.displayed.includes(n.id))
+    const newNotifications = notifications.filter(n => !this.displayed.includes(n.get('id')))
 
-    newNotifications.forEach(n => Alert[n.type](n.text, {
+    newNotifications.forEach(n => Alert[n.get('type')](n.get('text'), {
       onClose: () => {
-        this.props.dispatch(actions.removeNotification(n.id))
-        this.displayed = this.displayed.filter(d => d !== n.id)
+        this.props.dispatch(actions.removeNotification(n.get('id')))
+        this.displayed = this.displayed.filter(d => d !== n.get('id'))
       }
     }))
 
-    this.displayed = this.displayed.concat(newNotifications.map(n => n.id))
+    this.displayed = this.displayed.concat(newNotifications.map(n => n.get('id')))
   }
 
   render() {
