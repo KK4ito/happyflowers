@@ -47,7 +47,7 @@ triggerPump :: IO ()
 triggerPump = putStrLn "pump on" >> delay 5000000 >> putStrLn "pump off"
 #else
 triggerPump :: IO ()
-triggerPump = withGPIO $ do
+triggerPump = do
     GPIO.activatePin
     delay 5000000
     GPIO.deactivatePin
