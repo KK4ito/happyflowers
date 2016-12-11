@@ -138,6 +138,8 @@ The build can be configured to run in development mode, where sensors are simula
 
 All tasks read the [rpi.cabal](./rpi.cabal) config and are based off the `rpi` executable.
 
+Running the project on the RPi requires administrator privileges. This does not work with cabal so the executable needs to be built using cabal and then started using `sudo ./dist/build/rpi/rpi`.
+
 Additionally, a separate executable used for testing only the I2C functionality is provided.
 
 - `cabal build I2CTest` builds the test project.
