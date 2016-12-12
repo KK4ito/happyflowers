@@ -84,8 +84,9 @@ class Stats extends React.Component {
         </ul>
         {!isLoggedIn &&
           <Link data-button="block secondary"
+                disabled={busy}
                 to="/login">
-            Login to start pump
+            {busy ? `${name} is busy…` : 'Login to start pump'}
           </Link>
         }
         {isLoggedIn &&
