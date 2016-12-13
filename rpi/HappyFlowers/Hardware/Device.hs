@@ -9,6 +9,10 @@ import           Control.Concurrent         (threadDelay)
 import qualified HappyFlowers.Hardware.I2C  as I2C
 import qualified HappyFlowers.Hardware.GPIO as GPIO
 
+-- | determines the length of the delay after the pump has been activated.
+pumpDelay :: Int
+pumpDelay = 5000000
+
 -- | reads data about moisture from the chirp sensor.
 readMoisture :: IO Int
 readMoisture = do
@@ -33,6 +37,6 @@ readTemperature = do
 triggerPump :: IO ()
 triggerPump = do
     GPIO.activatePin
-    threadDelay 5000000
+    threadDelay pumpDelay
     GPIO.deactivatePin
-    threadDelay 5000000
+    threadDelay pumpDelay

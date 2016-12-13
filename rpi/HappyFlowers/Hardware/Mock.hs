@@ -6,6 +6,10 @@ module HappyFlowers.Hardware.Mock
 
 import Control.Concurrent (threadDelay)
 
+-- | determines the length of the delay after the pump has been activated.
+pumpDelay :: Int
+pumpDelay = 5000000
+
 -- | reads data about moisture from the chirp sensor.
 readMoisture :: IO Int
 readMoisture = putStrLn "sensor on" >> putStrLn "sensor off" >> return 80
@@ -16,4 +20,4 @@ readTemperature = putStrLn "sensor on" >> putStrLn "sensor off" >> return 25
 
 -- | triggers the USB water pump.
 triggerPump :: IO ()
-triggerPump = putStrLn "pump on" >> threadDelay 5000000 >> putStrLn "pump off" >> threadDelay 5000000
+triggerPump = putStrLn "pump on" >> threadDelay pumpDelay >> putStrLn "pump off" >> threadDelay pumpDelay
