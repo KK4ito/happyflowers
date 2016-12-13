@@ -15,21 +15,21 @@ module HappyFlowers.Hardware.Process
       client
     ) where
 
-import           Control.Concurrent              (MVar, modifyMVar, readMVar, forkIO)
-import           Control.Concurrent.Thread.Delay (delay)
-import           Control.Monad                   (forever, when, unless)
-import           Control.Monad.Trans             (liftIO)
-import qualified Data.Text                       as T
-import qualified Network.WebSockets              as WS
+import           Control.Concurrent               (MVar, modifyMVar, readMVar, forkIO)
+import           Control.Concurrent.Thread.Delay  (delay)
+import           Control.Monad                    (forever, when, unless)
+import           Control.Monad.Trans              (liftIO)
+import qualified Data.Text                        as T
+import qualified Network.WebSockets               as WS
 
-import qualified HappyFlowers.DB                 as DB
-import           HappyFlowers.Type               (BusyState(..), Settings, interval, lower, upper)
-import           HappyFlowers.WS.Communication   (notify)
+import qualified HappyFlowers.DB                  as DB
+import           HappyFlowers.Type                (BusyState(..), Settings, interval, lower, upper)
+import           HappyFlowers.WS.Communication    (notify)
 
 #ifdef Development
-import qualified HappyFlowers.Hardware.Mock      as HW
+import qualified HappyFlowers.Hardware.DeviceMock as HW
 #else
-import qualified HappyFlowers.Hardware.Device    as HW
+import qualified HappyFlowers.Hardware.Device     as HW
 #endif
 
 delayByInterval :: Int -- Delay in minutes

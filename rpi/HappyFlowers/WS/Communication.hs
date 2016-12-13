@@ -1,7 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 
 module HappyFlowers.WS.Communication
-    ( notify
+    (
+      -- * Operations
+      notify
     ) where
 
 import Data.Aeson                 (ToJSON, encode, object, (.=))

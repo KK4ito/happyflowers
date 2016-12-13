@@ -1,5 +1,7 @@
 module HappyFlowers.Hardware.Device
-    ( readMoisture
+    (
+      -- * Operations
+      readMoisture
     , readTemperature
     , triggerPump
     ) where

@@ -1,5 +1,7 @@
-module HappyFlowers.Hardware.Mock
-    ( readMoisture
+module HappyFlowers.Hardware.DeviceMock
+    (
+      -- * Operations
+      readMoisture
     , readTemperature
     , triggerPump
     ) where
