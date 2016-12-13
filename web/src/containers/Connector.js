@@ -72,7 +72,11 @@ class Connector extends React.Component {
           default:
             break
         }
-      } catch (e) {}
+      } catch (e) {
+        if (event.data === "User already exists") {
+          socket.send(uuid.v4())
+        }
+      }
     }
 
     this.setState({
