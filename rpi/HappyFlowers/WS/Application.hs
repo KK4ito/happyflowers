@@ -19,19 +19,17 @@ module HappyFlowers.WS.Application
     , wsApp
     ) where
 
-import           Control.Concurrent         (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
-import           Control.Exception          (finally)
-import           Control.Monad              (forM_, forever)
-import           Data.Aeson                 (ToJSON, encode)
-import qualified Data.ByteString.Lazy.Char8 as CL
-import           Data.Monoid                (mappend)
-import           Data.Text                  (Text)
-import qualified Data.Text                  as T
-import qualified Data.Text.IO               as T
-import qualified Network.WebSockets         as WS
+import           Control.Concurrent            (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
+import           Control.Exception             (finally)
+import           Control.Monad                 (forM_, forever)
+import           Data.Monoid                   (mappend)
+import           Data.Text                     (Text)
+import qualified Data.Text                     as T
+import qualified Network.WebSockets            as WS
 
-import qualified HappyFlowers.DB            as DB
-import           HappyFlowers.Type          (BusyState(..))
+import qualified HappyFlowers.DB               as DB
+import           HappyFlowers.Type             (BusyState(..))
+import           HappyFlowers.WS.Communication (notify)
 
 -- | 'Client' is a type alias that connects a unique ID with a WebSockets
 -- connection.
@@ -60,9 +58,7 @@ removeClient client = filter ((/= fst client) . fst)
 
 -- | sends a message to all connected clients.
 broadcast :: Text -> ServerState -> IO ()
-broadcast message clients = do
-    T.putStrLn message
-    forM_ clients $ \(_, conn) -> WS.sendTextData conn message
+broadcast message clients = forM_ clients $ \(_, conn) -> WS.sendTextData conn message
 
 -- | retrieves a message from a connected 'Client' and broadcasts it to all
 -- other clients.
@@ -78,18 +74,6 @@ disconnect client state = do
     modifyMVar state $ \s -> do
         let s' = removeClient client s
         return (s', s')
-
--- | sends WS notifications to all a client containing the historical data.
-notify :: ToJSON a
-       => WS.Connection -- Connection to send data to
-       -> Maybe a       -- Payload
-       -> IO ()
-notify conn = maybe (return ()) notify'
-    where
-        notify' p = WS.sendTextData conn $ T.concat [ "{ \"type\": \"historyReceived\", \"payload\":"
-                                                    , (T.pack . CL.unpack $ encode p)
-                                                    , "}"
-                                                    ]
 
 -- | starts a new WebSockets server instance. New connections recieve all
 -- broadcasts.
@@ -109,16 +93,16 @@ server state busy pending = do
                 modifyMVar_ state $ \s -> do
                     let s' = addClient client s
                     h <- DB.queryHistory
-                    notify conn h
+                    notify conn "historyReceived" h
                     return s'
 
                 b <- readMVar busy
-                WS.sendTextData conn ("{ \"type\": \"busyChanged\", \"payload\":" `mappend` (if b == Busy then "true" else "false") `mappend` "}" :: Text)
+                notify conn "busyChanged" (b == Busy :: Bool)
 
                 talk conn state client
 
 -- | sets up a WebSockets server listening on a given port.
-wsApp :: Int -- ^ Port
+wsApp :: Int -- Port
       -> MVar BusyState
       -> IO ()
 wsApp port busy = do

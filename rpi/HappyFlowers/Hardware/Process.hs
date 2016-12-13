@@ -19,14 +19,12 @@ import           Control.Concurrent              (MVar, modifyMVar, readMVar, fo
 import           Control.Concurrent.Thread.Delay (delay)
 import           Control.Monad                   (forever, when, unless)
 import           Control.Monad.Trans             (liftIO)
-import           Data.Aeson                      (ToJSON, encode)
-import qualified Data.ByteString.Lazy.Char8      as CL
 import qualified Data.Text                       as T
 import qualified Network.WebSockets              as WS
-import           System.Random                   (getStdRandom, randomR)
 
 import qualified HappyFlowers.DB                 as DB
 import           HappyFlowers.Type               (BusyState(..), Settings, interval, lower, upper)
+import           HappyFlowers.WS.Communication   (notify)
 
 #ifdef Development
 import qualified HappyFlowers.Hardware.Mock      as HW
@@ -34,29 +32,14 @@ import qualified HappyFlowers.Hardware.Mock      as HW
 import qualified HappyFlowers.Hardware.Device    as HW
 #endif
 
--- | sends WS notifications to all connected clients about measurements or
--- events if a payload is available.
-notify :: ToJSON a
-       => WS.Connection -- Connection to send data to
-       -> T.Text        -- WS event type
-       -> Maybe a       -- Payload
-       -> IO ()
-notify conn kind = maybe (return ()) notify'
-    where
-        notify' p = WS.sendTextData conn $ T.concat [ "{ \"type\": \""
-                                                    , kind
-                                                    , "\", \"payload\":"
-                                                    , (T.pack . CL.unpack $ encode p)
-                                                    , "}"
-                                                    ]
-
-delayByInterval :: Int -> IO ()
+delayByInterval :: Int -- Delay in minutes
+                -> IO ()
 delayByInterval i = delay . (60000000 *) $ toInteger i
 
 updateBusy :: WS.Connection -> MVar BusyState -> BusyState -> IO ()
 updateBusy conn busy state = do
     b <- modifyMVar busy $ \s -> return (state, state)
-    WS.sendTextData conn ("{ \"type\": \"busy\", \"payload\": " `mappend` (if b == Busy then "true" else "false") `mappend` " }" :: T.Text)
+    notify conn "busyChanged" (b == Busy :: Bool)
 
 saveMeasurement :: WS.Connection -> T.Text -> Int -> IO ()
 saveMeasurement conn kind value = do
