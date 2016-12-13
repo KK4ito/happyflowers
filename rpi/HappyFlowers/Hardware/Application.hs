@@ -13,10 +13,10 @@ module HappyFlowers.Hardware.Application
       hwApp
     ) where
 
-import           Network.Socket                      (withSocketsDo)
-import           Network.WebSockets                  (runClient)
+import           Network.Socket                (withSocketsDo)
+import           Network.WebSockets            (runClient)
 
-import           HappyFlowers.Hardware.Communication (client)
+import           HappyFlowers.Hardware.Process (client)
 
 -- | sets up a WS connection to the WS server listening on the given port.
 hwApp :: Int -- ^ Port
