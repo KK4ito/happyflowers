@@ -29,9 +29,9 @@ import GHC.Generics
 
 -- | An event marks a watering, either `manual` or `automatic`.
 data Event = Event
-    { eventId :: !Int           -- ^ Numeric ID
-    , eventKind :: !Text        -- ^ Event kind, `automatic` or `manual`
-    , eventTimestamp :: !Text   -- ^ Event timestamp
+    { eventId :: !Int         -- ^ Numeric ID
+    , eventKind :: !Text      -- ^ Event kind, `automatic` or `manual`
+    , eventTimestamp :: !Text -- ^ Event timestamp
     } deriving Generic
 
 instance ToJSON Event
@@ -41,10 +41,10 @@ instance FromRow Event where
 -- | A measurement marks the checking of the flower's moisture level or its
 -- temperature.
 data Measurement = Measurement
-    { measurementId :: !Int           -- ^ Numeric ID
-    , measurementKind :: !Text        -- ^ Measurement kind
-    , measurementValue :: !Int        -- ^ Moisture level / temperature
-    , measurementTimestamp :: !Text   -- ^ Measurement timestamp
+    { measurementId :: !Int         -- ^ Numeric ID
+    , measurementKind :: !Text      -- ^ Measurement kind
+    , measurementValue :: !Int      -- ^ Moisture level / temperature
+    , measurementTimestamp :: !Text -- ^ Measurement timestamp
     } deriving Generic
 
 instance ToJSON Measurement
@@ -62,23 +62,25 @@ instance ToJSON History
 
 -- | Settings contains all application settings data.
 data Settings = Settings
-    { name :: !Text      -- ^ Flower name
-    , upper :: !Int      -- ^ Upper moisture limit
-    , lower :: !Int      -- ^ Lower moisture limit
-    , interval :: !Int   -- ^ Measurement interval
+    { name :: !Text    -- ^ Flower name
+    , upper :: !Int    -- ^ Upper moisture limit
+    , lower :: !Int    -- ^ Lower moisture limit
+    , interval :: !Int -- ^ Measurement interval
     } deriving Generic
 
 instance ToJSON Settings
 instance FromRow Settings where
     fromRow = Settings <$> field <*> field <*> field <*> field
 
--- | TODO document
+-- | A flower is busy if it is currently communicating with the sensor or the
+-- pump. No overlapping actions may happen.
 data BusyState
     = Busy
     | Idle
-      deriving Eq
+    deriving Eq
 
--- | TODO document
+-- | A WebSockets event has a kind property that determines the type of the
+-- event.
 data WSEventKind
     = MeasurementReceived
     | EventReceived
@@ -86,16 +88,17 @@ data WSEventKind
     | SettingsChanged
     | BusyChanged
     | TriggerPump
-      deriving Show
+    deriving Show
 
--- | TODO document
+-- | The sensor measures both the moisture of the flower and its temperature.
 data MeasurementKind
     = Moisture
     | Temperature
-      deriving Show
+    deriving Show
 
--- | TODO document
+-- | An event is either automatic (produced by the interval measurement) or
+-- manual (triggered by the user).
 data EventKind
     = Automatic
     | Manual
-      deriving Show
+    deriving Show

@@ -2,7 +2,7 @@
 
 {-|
 Module      : HappyFlowers.Hardware.Process
-Description : Communicate with the RPi's hardware
+Description : Handle processes like measurements and waterings
 Copyright   : (c) Sacha Schmid, 2016
                   Rinesch Murugathas, 2016
 License     : GPL-3
@@ -32,25 +32,25 @@ import qualified HappyFlowers.Hardware.DeviceMock as HW
 import qualified HappyFlowers.Hardware.Device     as HW
 #endif
 
--- | TODO
+-- | delays the current thread by a given duration.
 delayByInterval :: Int -- Delay in minutes
                 -> IO ()
 delayByInterval i = delay . (60000000 *) $ toInteger i
 
--- | TODO
+-- | updates the busy state of the flower and informs connected clients.
 updateBusy :: WS.Connection -> MVar BusyState -> BusyState -> IO ()
 updateBusy conn busy state = do
     b <- modifyMVar busy $ \s -> return (state, state)
     notify conn BusyChanged $ b == Busy
 
--- | TODO
+-- | saves a new measurement and informs connected clients.
 saveMeasurement :: WS.Connection -> MeasurementKind -> Int -> IO ()
 saveMeasurement conn kind value = do
     DB.addMeasurement kind value
     m <- DB.queryLatestMeasurement kind
     notify conn MeasurementReceived m
 
--- | TODO
+-- | saves a new event and informs connected clients.
 saveEvent :: WS.Connection -> EventKind -> IO ()
 saveEvent conn kind = do
     DB.addEvent kind

@@ -1,4 +1,12 @@
--- | TODO document
+{-|
+Module      : HappyFlowers.Hardware.Device
+Description : Communication with the sensor and pump
+Copyright   : (c) Sacha Schmid, 2016
+                  Rinesch Murugathas, 2016
+License     : GPL-3
+Maintainer  : schmid.sacha@gmail.com
+Stability   : stable
+-}
 module HappyFlowers.Hardware.Device
     (
       -- * Operations

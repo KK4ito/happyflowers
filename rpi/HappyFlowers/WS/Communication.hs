@@ -1,6 +1,14 @@
 {-# LANGUAGE OverloadedStrings #-}
 
--- | TODO document
+{-|
+Module      : HappyFlowers.WS.Communication
+Description : Communicate between WebSockets clients
+Copyright   : (c) Sacha Schmid, 2016
+                  Rinesch Murugathas, 2016
+License     : GPL-3
+Maintainer  : schmid.sacha@gmail.com
+Stability   : stable
+-}
 module HappyFlowers.WS.Communication
     (
       -- * Operations
@@ -19,7 +27,7 @@ import HappyFlowers.Type          (WSEventKind)
 notify :: ToJSON a => Connection -> WSEventKind -> a -> IO ()
 notify conn kind payload = sendTextData conn $ createMessage kind payload
 
--- | TODO document
+-- | creates a WS notification body containing a JSON-encoded kind and payload.
 createMessage :: ToJSON a => WSEventKind -> a -> Text
 createMessage kind payload = pack . unpack . encode $ object
     [ "kind" .= (show kind)
