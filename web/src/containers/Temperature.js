@@ -14,7 +14,7 @@ let options = defaultOptions
   .setIn([ 'yAxis', 'min' ], 15)
   .setIn([ 'yAxis', 'max' ], 30)
   .setIn([ 'yAxis', 'labels', 'formatter' ], function () {
-    return this.value + '%'
+    return this.value + ' °C'
   })
 
 /**
