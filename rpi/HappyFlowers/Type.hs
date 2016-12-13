@@ -16,6 +16,7 @@ module HappyFlowers.Type
     , Measurement(..)
     , History(..)
     , Settings(..)
+    , BusyState(..)
     ) where
 
 import Data.Aeson             (ToJSON)
@@ -62,9 +63,16 @@ data Settings = Settings
     , upper :: !Int    -- ^ Upper moisture limit
     , lower :: !Int    -- ^ Lower moisture limit
     , interval :: !Int -- ^ Measurement interval
-    , busy :: !Bool    -- ^ Is the RPi currently busy?
     } deriving Generic
 
 instance ToJSON Settings
 instance FromRow Settings where
-    fromRow = Settings <$> field <*> field <*> field <*> field <*> field
+    fromRow = Settings <$> field <*> field <*> field <*> field
+
+data BusyState = Busy | Idle
+
+instance Eq BusyState where
+    x == y = case (x, y) of
+        (Busy, Busy) -> True
+        (Idle, Idle) -> True
+        otherwise    -> False

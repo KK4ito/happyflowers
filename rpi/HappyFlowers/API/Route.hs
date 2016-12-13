@@ -77,7 +77,8 @@ putSettings = put "/api/settings/" $ do
         Left _  -> status status401
         Right _ -> do
             liftIO $ DB.updateSettings body
-            liftIO DB.querySettings >>= jsonOrError status500
+            s <- liftIO DB.querySettings
+            jsonOrError status500 s
 
 -- | handles GET request for historical application data. Produces a JSON
 -- response containing the history data or an HTTP error if data could not be

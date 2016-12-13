@@ -15,7 +15,6 @@ module HappyFlowers.DB
       -- * Settings
       querySettings
     , updateSettings
-    , updateBusy
       -- * History
     , queryHistory
     , addEvent
@@ -57,14 +56,6 @@ updateSettings :: S.ToRow a
 updateSettings body = do
     conn <- S.open dbName
     S.execute conn "UPDATE settings SET name = ?, upper = ?, lower = ?, interval = ?" body
-    S.close conn
-
--- | updates the busy status of the RPi to the given value. 0 means the RPi is
--- not busy, 1 means the RPi is busy.
-updateBusy :: Int -> IO ()
-updateBusy status = do
-    conn <- S.open dbName
-    S.execute conn "UPDATE settings SET busy = ?" (S.Only (status :: Int))
     S.close conn
 
 -- | retrieves historical data including events, measurements, and temperatures.
@@ -124,6 +115,6 @@ queryLatestMeasurement kind = do
 getReferenceDate :: UTCTime -- ^ Current time
                  -> Integer -- ^ Offset in days
                  -> String
-getReferenceDate time ago = formatTime defaultTimeLocale "%F" date
-    where
-        date = addDays (ago * (-1)) $ utctDay time
+getReferenceDate time ago = do
+    let date = addDays (ago * (-1)) $ utctDay time
+    formatTime defaultTimeLocale "%F" date

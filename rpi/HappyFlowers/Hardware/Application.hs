@@ -13,12 +13,15 @@ module HappyFlowers.Hardware.Application
       hwApp
     ) where
 
-import           Network.Socket                (withSocketsDo)
-import           Network.WebSockets            (runClient)
+import Control.Concurrent            (MVar)
+import Network.Socket                (withSocketsDo)
+import Network.WebSockets            (runClient)
 
-import           HappyFlowers.Hardware.Process (client)
+import HappyFlowers.Hardware.Process (client)
+import HappyFlowers.Type             (BusyState(..))
 
 -- | sets up a WS connection to the WS server listening on the given port.
 hwApp :: Int -- ^ Port
+      -> MVar BusyState
       -> IO ()
-hwApp port = withSocketsDo $ runClient "0.0.0.0" port "/" client
+hwApp port busy = withSocketsDo . runClient "0.0.0.0" port "/" $ client busy

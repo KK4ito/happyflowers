@@ -31,6 +31,7 @@ import qualified Data.Text.IO               as T
 import qualified Network.WebSockets         as WS
 
 import qualified HappyFlowers.DB            as DB
+import           HappyFlowers.Type          (BusyState(..))
 
 -- | 'Client' is a type alias that connects a unique ID with a WebSockets
 -- connection.
@@ -76,7 +77,6 @@ disconnect :: Client -> MVar ServerState -> IO [Client]
 disconnect client state = do
     modifyMVar state $ \s -> do
         let s' = removeClient client s
-        broadcast (fst client `mappend` " disconnected") s'
         return (s', s')
 
 -- | sends WS notifications to all a client containing the historical data.
@@ -93,8 +93,8 @@ notify conn = maybe (return ()) notify'
 
 -- | starts a new WebSockets server instance. New connections recieve all
 -- broadcasts.
-server :: MVar ServerState -> WS.ServerApp
-server state pending = do
+server :: MVar ServerState -> MVar BusyState -> WS.ServerApp
+server state busy pending = do
     conn <- WS.acceptRequest pending
     WS.forkPingThread conn 30
 
@@ -108,14 +108,19 @@ server state pending = do
           | otherwise                   -> flip finally (disconnect client state) $ do
                 modifyMVar_ state $ \s -> do
                     let s' = addClient client s
-                    DB.queryHistory >>= notify conn
-                    broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
+                    h <- DB.queryHistory
+                    notify conn h
                     return s'
+
+                b <- readMVar busy
+                WS.sendTextData conn ("{ \"type\": \"busyChanged\", \"payload\":" `mappend` (if b == Busy then "true" else "false") `mappend` "}" :: Text)
+
                 talk conn state client
 
 -- | sets up a WebSockets server listening on a given port.
 wsApp :: Int -- ^ Port
+      -> MVar BusyState
       -> IO ()
-wsApp port = do
+wsApp port busy = do
     state <- newMVar newServerState
-    WS.runServer "0.0.0.0" port $ server state
+    WS.runServer "0.0.0.0" port $ server state busy

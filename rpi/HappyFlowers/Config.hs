@@ -43,6 +43,6 @@ findEntry config name = snd . head $ filter ((== name) . fst) config
 -- | splits a string into a ConfigEntry tuple.
 splitToTuple :: T.Text -- ^ Key-value pair
              -> ConfigEntry
-splitToTuple line = (key, val)
-    where
-        (key:val:_) = T.split (== '=') line
+splitToTuple line = do
+    let [key, val] = take 2 $ T.split (== '=') line
+    (key, val)

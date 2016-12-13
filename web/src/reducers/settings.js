@@ -14,8 +14,7 @@ const data = handleActions({
   name: 'Your Flower',
   upper: 0,
   lower: 0,
-  interval: 0,
-  busy: 0
+  interval: 0
 }))
 
 /**
@@ -23,8 +22,7 @@ const data = handleActions({
  * the RPi is currently busy with its sensors or the pump.
  */
 const busy = handleActions({
-  [actions.busy]: (_, { payload }) => payload,
-  [actions.fetchSettingsSuccess]: (_, { payload }) => payload.res.data.busy
+  [actions.busy]: (_, { payload }) => payload
 }, false)
 
 /**
