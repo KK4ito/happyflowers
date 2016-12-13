@@ -44,6 +44,10 @@ type ServerState = [Client]
 newServerState :: ServerState
 newServerState = []
 
+-- | checks if a client with the given ID already exists.
+clientExists :: Client -> ServerState -> Bool
+clientExists client = any ((== fst client) . fst)
+
 -- | adds a new 'Client' to the current 'ServerState' using the currently
 -- available 'Id'.
 addClient :: Client -> ServerState -> ServerState
@@ -95,16 +99,19 @@ server state pending = do
     WS.forkPingThread conn 30
 
     msg <- WS.receiveData conn
+    clients <- readMVar state
 
     let client = (msg, conn)
 
-    flip finally (disconnect client state) $ do
-        modifyMVar_ state $ \s -> do
-            let s' = addClient client s
-            DB.queryHistory >>= notify conn
-            broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
-            return s'
-        talk conn state client
+    case msg of
+        _ | clientExists client clients -> WS.sendTextData conn ("User already exists" :: Text)
+          | otherwise                   -> flip finally (disconnect client state) $ do
+                modifyMVar_ state $ \s -> do
+                    let s' = addClient client s
+                    DB.queryHistory >>= notify conn
+                    broadcast (T.pack (show . fst $ client) `mappend` " joined") s'
+                    return s'
+                talk conn state client
 
 -- | sets up a WebSockets server listening on a given port.
 wsApp :: Int -- ^ Port

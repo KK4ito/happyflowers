@@ -9,6 +9,7 @@
   "dependencies": {
     "axios": "^0.15.0",
     "immutable": "^3.8.1",
+    "node-uuid": "^1.4.7",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-highcharts": "^10.0.0",

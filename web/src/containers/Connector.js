@@ -2,6 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Alert from 'react-s-alert'
 import { List } from 'immutable'
+import uuid from 'node-uuid'
 import * as actions from '../actions'
 import '../components/Alert.css'
 
@@ -28,10 +29,9 @@ class Connector extends React.Component {
 
     const socket = new WebSocket(`ws://${window.location.hostname}:9160/`)
 
-    // Connect to the WebSockets server using a somewhat random ID. This ID is
-    // sufficiently random for the purposes of this project.
+    // Connect to the WebSockets server using a UUID.
 
-    socket.onopen = () => socket.send(`${+(new Date())}${Math.round(Math.random() * 1000)}`)
+    socket.onopen = () => socket.send(uuid.v4())
 
     // Notify users about missing WS connection.
 
