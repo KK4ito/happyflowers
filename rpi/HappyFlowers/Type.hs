@@ -62,21 +62,23 @@ instance ToJSON History
 
 -- | Settings contains all application settings data.
 data Settings = Settings
-    { name :: !Text    -- ^ Flower name
-    , upper :: !Int    -- ^ Upper moisture limit
-    , lower :: !Int    -- ^ Lower moisture limit
-    , interval :: !Int -- ^ Measurement interval
+    { name :: !Text      -- ^ Flower name
+    , upper :: !Int      -- ^ Upper moisture limit
+    , lower :: !Int      -- ^ Lower moisture limit
+    , interval :: !Int   -- ^ Measurement interval
     } deriving Generic
 
 instance ToJSON Settings
 instance FromRow Settings where
     fromRow = Settings <$> field <*> field <*> field <*> field
 
+-- | TODO document
 data BusyState
     = Busy
     | Idle
       deriving Eq
 
+-- | TODO document
 data WSEventKind
     = MeasurementReceived
     | EventReceived
@@ -86,11 +88,13 @@ data WSEventKind
     | TriggerPump
       deriving Show
 
+-- | TODO document
 data MeasurementKind
     = Moisture
     | Temperature
       deriving Show
 
+-- | TODO document
 data EventKind
     = Automatic
     | Manual

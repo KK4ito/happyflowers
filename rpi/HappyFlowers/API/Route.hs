@@ -53,12 +53,12 @@ getSettings = get "/api/settings/" $ liftIO DB.querySettings >>= jsonOrError sta
 
 -- | PutSettingsBody is used to parse the request body of the 'putSettings'
 -- function.
-data PutSettingsBody = PutSettingsBody
-    { token :: !String     -- ^ Token used for authentication
-    , name :: !Text        -- ^ Flower name
-    , upper :: !Int        -- ^ Upper moisture limit
-    , lower :: !Int        -- ^ Lower moisture limit
-    , interval :: !Int     -- ^ Measurement interval
+data PutSettingsBody = PutSettingsBody -- ^ TODO
+    { token :: !String                 -- ^ Token used for authentication
+    , name :: !Text                    -- ^ Flower name
+    , upper :: !Int                    -- ^ Upper moisture limit
+    , lower :: !Int                    -- ^ Lower moisture limit
+    , interval :: !Int                 -- ^ Measurement interval
     } deriving Generic
 
 instance FromJSON PutSettingsBody
@@ -87,8 +87,8 @@ getHistory :: ScottyM ()
 getHistory = get "/api/history/" $ liftIO DB.queryHistory >>= jsonOrError status500
 
 -- | PostAuthBody is used to parse the request body of the 'postAuth' function.
-data PostAuthBody = PostAuthBody
-    { password :: !Text -- ^ User-submitted password
+data PostAuthBody = PostAuthBody -- ^ TODO
+    { password :: !Text          -- ^ User-submitted password
     } deriving Generic
 
 instance FromJSON PostAuthBody

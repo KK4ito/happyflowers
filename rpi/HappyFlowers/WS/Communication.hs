@@ -1,5 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | TODO document
 module HappyFlowers.WS.Communication
     (
       -- * Operations
@@ -18,6 +19,7 @@ import HappyFlowers.Type          (WSEventKind)
 notify :: ToJSON a => Connection -> WSEventKind -> a -> IO ()
 notify conn kind payload = sendTextData conn $ createMessage kind payload
 
+-- | TODO document
 createMessage :: ToJSON a => WSEventKind -> a -> Text
 createMessage kind payload = pack . unpack . encode $ object
     [ "kind" .= (show kind)

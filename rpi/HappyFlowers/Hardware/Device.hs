@@ -1,3 +1,4 @@
+-- | TODO document
 module HappyFlowers.Hardware.Device
     (
       -- * Operations

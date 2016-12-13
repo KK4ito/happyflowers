@@ -25,7 +25,7 @@ address :: Address
 address = 0x20
 
 -- | reads the value from a given I2C register.
-read :: Word8    -- Number of the register
+read :: Word8  -- Number of the register
      -> IO Int -- Parsed value
 read reg = withGPIO . withI2C $ do
     writeI2C address (BS.singleton reg)

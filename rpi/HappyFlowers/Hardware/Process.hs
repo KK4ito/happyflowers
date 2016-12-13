@@ -32,21 +32,25 @@ import qualified HappyFlowers.Hardware.DeviceMock as HW
 import qualified HappyFlowers.Hardware.Device     as HW
 #endif
 
+-- | TODO
 delayByInterval :: Int -- Delay in minutes
                 -> IO ()
 delayByInterval i = delay . (60000000 *) $ toInteger i
 
+-- | TODO
 updateBusy :: WS.Connection -> MVar BusyState -> BusyState -> IO ()
 updateBusy conn busy state = do
     b <- modifyMVar busy $ \s -> return (state, state)
     notify conn BusyChanged $ b == Busy
 
+-- | TODO
 saveMeasurement :: WS.Connection -> MeasurementKind -> Int -> IO ()
 saveMeasurement conn kind value = do
     DB.addMeasurement kind value
     m <- DB.queryLatestMeasurement kind
     notify conn MeasurementReceived m
 
+-- | TODO
 saveEvent :: WS.Connection -> EventKind -> IO ()
 saveEvent conn kind = do
     DB.addEvent kind

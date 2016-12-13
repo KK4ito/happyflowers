@@ -9,7 +9,6 @@ License     : GPL-3
 Maintainer  : schmid.sacha@gmail.com
 Stability   : stable
 -}
-
 module HappyFlowers.DB
     (
       -- * Settings
