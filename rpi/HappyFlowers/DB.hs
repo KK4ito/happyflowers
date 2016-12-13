@@ -51,7 +51,7 @@ querySettings = do
 
 -- | updates settings using a record containing new data.
 updateSettings :: S.ToRow a
-               => a -- ^ New DB entry
+               => a -- New DB entry
                -> IO ()
 updateSettings body = do
     conn <- S.open dbName
@@ -78,11 +78,10 @@ queryHistory = do
         otherwise          -> return Nothing
 
 -- | adds a new event entity of the given kind to the database.
-addEvent :: Text -- ^ Event kind
-         -> IO ()
+addEvent :: EventKind -> IO ()
 addEvent kind = do
     conn <- S.open dbName
-    S.execute conn "INSERT INTO events (kind) VALUES (?)" (S.Only (kind :: Text))
+    S.execute conn "INSERT INTO events (kind) VALUES (?)" (S.Only ((show kind) :: String))
     S.close conn
 
 -- | retrieves the latest event entity from the database.
@@ -94,20 +93,17 @@ queryLatestEvent = do
     return $ getSingleEntry rows
 
 -- | adds a new measurement entity with the given value to the database.
-addMeasurement :: Text -- ^ Measurement kind
-               -> Int  -- ^ Measurement value
-               -> IO ()
+addMeasurement :: MeasurementKind -> Int -> IO ()
 addMeasurement kind value = do
     conn <- S.open dbName
-    S.execute conn "INSERT INTO measurements (kind, value) VALUES (?, ?)" (kind :: Text, value :: Int)
+    S.execute conn "INSERT INTO measurements (kind, value) VALUES (?, ?)" ((show kind) :: String, value :: Int)
     S.close conn
 
 -- | retrieves the latest measurement entity from the database.
-queryLatestMeasurement :: Text -- ^ Measurement kind
-                       -> IO (Maybe Measurement)
+queryLatestMeasurement :: MeasurementKind -> IO (Maybe Measurement)
 queryLatestMeasurement kind = do
     conn <- S.open dbName
-    rows <- try (S.query conn "SELECT * FROM measurements WHERE kind = ? ORDER BY timestamp DESC LIMIT 1" (S.Only (kind :: Text))) :: IO (Either S.SQLError [Measurement])
+    rows <- try (S.query conn "SELECT * FROM measurements WHERE kind = ? ORDER BY timestamp DESC LIMIT 1" (S.Only ((show kind) :: String))) :: IO (Either S.SQLError [Measurement])
     S.close conn
     return $ getSingleEntry rows
 

@@ -17,6 +17,9 @@ module HappyFlowers.Type
     , History(..)
     , Settings(..)
     , BusyState(..)
+    , WSEventKind(..)
+    , MeasurementKind(..)
+    , EventKind(..)
     ) where
 
 import Data.Aeson             (ToJSON)
@@ -69,10 +72,26 @@ instance ToJSON Settings
 instance FromRow Settings where
     fromRow = Settings <$> field <*> field <*> field <*> field
 
-data BusyState = Busy | Idle
+data BusyState
+    = Busy
+    | Idle
+      deriving Eq
 
-instance Eq BusyState where
-    x == y = case (x, y) of
-        (Busy, Busy) -> True
-        (Idle, Idle) -> True
-        otherwise    -> False
+data WSEventKind
+    = MeasurementReceived
+    | EventReceived
+    | HistoryReceived
+    | SettingsChanged
+    | BusyChanged
+    | TriggerPump
+      deriving Show
+
+data MeasurementKind
+    = Moisture
+    | Temperature
+      deriving Show
+
+data EventKind
+    = Automatic
+    | Manual
+      deriving Show

@@ -1,0 +1,6 @@
+export const measurementReceived = 'MeasurementReceived'
+export const eventReceived = 'EventReceived'
+export const historyReceived = 'HistoryReceived'
+export const settingsChanged = 'SettingsChanged'
+export const busyChanged = 'BusyChanged'
+export const triggerPump = 'TriggerPump'

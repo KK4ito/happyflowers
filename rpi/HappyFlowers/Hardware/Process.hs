@@ -23,7 +23,7 @@ import qualified Data.Text                        as T
 import qualified Network.WebSockets               as WS
 
 import qualified HappyFlowers.DB                  as DB
-import           HappyFlowers.Type                (BusyState(..), Settings, interval, lower, upper)
+import           HappyFlowers.Type                (BusyState(..), Settings(..), WSEventKind(..), MeasurementKind(..), EventKind(..))
 import           HappyFlowers.WS.Communication    (notify)
 
 #ifdef Development
@@ -39,19 +39,19 @@ delayByInterval i = delay . (60000000 *) $ toInteger i
 updateBusy :: WS.Connection -> MVar BusyState -> BusyState -> IO ()
 updateBusy conn busy state = do
     b <- modifyMVar busy $ \s -> return (state, state)
-    notify conn "busyChanged" (b == Busy :: Bool)
+    notify conn BusyChanged $ b == Busy
 
-saveMeasurement :: WS.Connection -> T.Text -> Int -> IO ()
+saveMeasurement :: WS.Connection -> MeasurementKind -> Int -> IO ()
 saveMeasurement conn kind value = do
     DB.addMeasurement kind value
     m <- DB.queryLatestMeasurement kind
-    notify conn "measurementReceived" m
+    notify conn MeasurementReceived m
 
-saveEvent :: WS.Connection -> T.Text -> IO ()
+saveEvent :: WS.Connection -> EventKind -> IO ()
 saveEvent conn kind = do
     DB.addEvent kind
     e <- DB.queryLatestEvent
-    notify conn "eventReceived" e
+    notify conn EventReceived e
 
 -- | checks the plant's moisutre level and informs connected clients about the
 -- measurement. Triggers the pump if the lower moisture limit is reached.
@@ -63,16 +63,17 @@ checkMoisture conn busy = withSettings $ \settings' -> do
         updateBusy conn busy Busy
 
         m <- HW.readMoisture
-        saveMeasurement conn "moisture" m
+        saveMeasurement conn Moisture m
 
         t <- HW.readTemperature
-        saveMeasurement conn "temperature" t
+        saveMeasurement conn Temperature t
 
         if m < lower settings'
             then do
                 activatePump conn busy
             else do
                 updateBusy conn busy Idle
+
     delayByInterval $ interval settings'
     checkMoisture conn busy
 
@@ -86,12 +87,12 @@ activatePump conn busy = withSettings $ \settings' -> do
 
     if m >= upper settings'
         then do
-            saveMeasurement conn "moisture" m
+            saveMeasurement conn Moisture m
 
             t <- HW.readTemperature
-            saveMeasurement conn "temperature" t
+            saveMeasurement conn Temperature t
 
-            saveEvent conn "automatic"
+            saveEvent conn Automatic
             updateBusy conn busy Idle
         else do
             activatePump conn busy
@@ -106,19 +107,18 @@ manualPump conn busy = withSettings $ \settings' -> do
         updateBusy conn busy Busy
 
         m <- HW.readMoisture
-        saveMeasurement conn "moisture" m
+        saveMeasurement conn Moisture m
 
         t <- HW.readTemperature
-        saveMeasurement conn "temperature" t
+        saveMeasurement conn Temperature t
 
         unless (m >= upper settings') $ do
             HW.triggerPump
 
             m <- HW.readMoisture
-            saveMeasurement conn "moisture" m
+            saveMeasurement conn Moisture m
 
-            saveEvent conn "manual"
-
+            saveEvent conn Manual
     updateBusy conn busy Idle
 
 -- | retrieves settings from the database and handles them using a given action
@@ -132,6 +132,6 @@ client :: MVar BusyState -> WS.ClientApp ()
 client busy conn = do
     forkIO . forever $ do
         msg <- WS.receiveData conn
-        liftIO . when ("triggerPump" `T.isInfixOf` msg) $ manualPump conn busy
+        liftIO . when ((T.pack $ show TriggerPump) `T.isInfixOf` msg) $ manualPump conn busy
 
     liftIO $ checkMoisture conn busy

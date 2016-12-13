@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
+import * as events from '../events'
 
 export const fetchHistoryRequest = createAction('FETCH_HISTORY_REQUEST')
 export const fetchHistorySuccess = createAction('FETCH_HISTORY_SUCCESS')
@@ -27,7 +28,7 @@ export const eventReceived = createAction('EVENT_RECEIVED')
  */
 export const triggerPump = socket => dispatch => {
   const msg = JSON.stringify({
-    type: 'triggerPump'
+    type: events.triggerPump
   })
 
   if (socket) {

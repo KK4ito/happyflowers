@@ -28,7 +28,7 @@ import qualified Data.Text                     as T
 import qualified Network.WebSockets            as WS
 
 import qualified HappyFlowers.DB               as DB
-import           HappyFlowers.Type             (BusyState(..))
+import           HappyFlowers.Type             (BusyState(..), WSEventKind(..))
 import           HappyFlowers.WS.Communication (notify)
 
 -- | 'Client' is a type alias that connects a unique ID with a WebSockets
@@ -93,11 +93,11 @@ server state busy pending = do
                 modifyMVar_ state $ \s -> do
                     let s' = addClient client s
                     h <- DB.queryHistory
-                    notify conn "historyReceived" h
+                    notify conn HistoryReceived h
                     return s'
 
                 b <- readMVar busy
-                notify conn "busyChanged" (b == Busy :: Bool)
+                notify conn BusyChanged $ b == Busy
 
                 talk conn state client
 

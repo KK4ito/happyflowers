@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
 import { addNotification } from './notifications'
+import * as events from '../events'
 
 export const fetchSettingsRequest = createAction('FETCH_SETTINGS_REQUEST')
 export const fetchSettingsSuccess = createAction('FETCH_SETTINGS_SUCCESS')
@@ -81,7 +82,7 @@ export const submitSettings = (data, socket) => ({
   payload: { data },
   successCallback: res => {
     const msg = JSON.stringify({
-      type: 'settingsChanged',
+      type: events.settingsChanged,
       payload: res.data
     })
 

@@ -4,15 +4,8 @@ import Alert from 'react-s-alert'
 import { List } from 'immutable'
 import uuid from 'node-uuid'
 import * as actions from '../actions'
+import * as events from '../events'
 import '../components/Alert.css'
-
-const eventKinds = {
-  measurementReceived: 'measurementReceived',
-  eventReceived: 'eventReceived',
-  historyReceived: 'historyReceived',
-  settingsChanged: 'settingsChanged',
-  busyChanged: 'busyChanged'
-}
 
 /**
  * Class used for handling app-wide connection to the WebSockets server.
@@ -62,19 +55,19 @@ class Connector extends React.Component {
         const msg = JSON.parse(event.data)
 
         switch (msg.kind) {
-          case eventKinds.measurementReceived:
+          case events.measurementReceived:
             dispatch(actions.measurementReceived(msg.payload))
             break
-          case eventKinds.eventReceived:
+          case events.eventReceived:
             dispatch(actions.eventReceived(msg.payload))
             break
-          case eventKinds.historyReceived:
+          case events.historyReceived:
             dispatch(actions.fetchHistorySuccess({ res: { data: msg.payload }}))
             break
-          case eventKinds.settingsChanged:
+          case events.settingsChanged:
             dispatch(actions.fetchSettingsSuccess({ res: { data: msg.payload } }))
             break
-          case eventKinds.busyChanged:
+          case events.busyChanged:
             dispatch(actions.busy(msg.payload))
             break
           default:
