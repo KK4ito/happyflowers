@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
-import * as events from '../events'
+import { events } from '../strings'
 
 export const fetchHistoryRequest = createAction('FETCH_HISTORY_REQUEST')
 export const fetchHistorySuccess = createAction('FETCH_HISTORY_SUCCESS')

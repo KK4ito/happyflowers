@@ -4,6 +4,7 @@ import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
 import Widget from '../components/Widget'
 import defaultOptions from '../chartOptions'
+import { measurementKinds, eventKinds } from '../strings'
 
 // Default settings to use for the charts. See http://www.highcharts.com/docs
 // for more information about possible configuration options.
@@ -59,7 +60,7 @@ const Moisture = ({ events, measurements, settings, isFetching, socket }) => {
   if (!events.isEmpty()) {
     chartOptions = chartOptions
       .setIn([ 'xAxis', 'plotLines' ], events.map(e => ({
-        color: e.get('eventKind') === 'automatic' ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
+        color: e.get('eventKind') === eventKinds.automatic ? 'rgba(0, 0, 255, 0.5)' : 'rgba(255, 0, 0, 0.5)',
         value: (new Date(e.get('eventTimestamp'))).getTime(),
         width: 2,
         zIndex: 2
@@ -95,7 +96,7 @@ Moisture.propTypes = {
 
 const mapStateToProps = state => ({
   events: state.history.events,
-  measurements: state.history.measurements.filter(m => m.get('measurementKind') === 'moisture'),
+  measurements: state.history.measurements.filter(m => m.get('measurementKind') === measurementKinds.moisture),
   settings: state.settings.data,
   isFetching: state.settings.isFetching || state.history.isFetching
 })

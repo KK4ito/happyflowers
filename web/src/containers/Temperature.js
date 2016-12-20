@@ -4,6 +4,7 @@ import Highcharts from 'react-highcharts'
 import { connect } from 'react-redux'
 import Widget from '../components/Widget'
 import defaultOptions from '../chartOptions'
+import { measurementKinds } from '../strings'
 
 // Default settings to use for the charts. See http://www.highcharts.com/docs
 // for more information about possible configuration options.
@@ -70,7 +71,7 @@ Temperature.propTypes = {
 }
 
 const mapStateToProps = state => ({
-  measurements: state.history.measurements.filter(m => m.get('measurementKind') === 'temperature'),
+  measurements: state.history.measurements.filter(m => m.get('measurementKind') === measurementKinds.temperature),
   isFetching: state.history.isFetching
 })
 

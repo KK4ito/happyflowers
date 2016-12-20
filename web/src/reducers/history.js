@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { handleActions } from 'redux-actions'
 import { List, Map, fromJS } from 'immutable'
 import * as actions from '../actions'
+import { measurementKinds } from '../strings'
 
 /**
  * Creates a reducer to keep track of the snapshot, i.e. the current moisture
@@ -11,8 +12,8 @@ const snapshot = handleActions({
   [actions.fetchHistorySuccess]: (state, { payload }) => {
     const mes = List(payload.res.data.measurements)
 
-    const latestMoisture = mes.filter(m => m.measurementKind === 'moisture').last()
-    const latestTemperature = mes.filter(m => m.measurementKind === 'temperature').last()
+    const latestMoisture = mes.filter(m => m.measurementKind === measurementKinds.moisture).last()
+    const latestTemperature = mes.filter(m => m.measurementKind === measurementKinds.temperature).last()
 
     return state
       .set('moisture', (latestMoisture && latestMoisture.measurementValue) || 0)

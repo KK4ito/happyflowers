@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { createAction } from 'redux-actions'
 import { addNotification } from './notifications'
-import * as events from '../events'
+import { events } from '../strings'
 
 export const fetchSettingsRequest = createAction('FETCH_SETTINGS_REQUEST')
 export const fetchSettingsSuccess = createAction('FETCH_SETTINGS_SUCCESS')

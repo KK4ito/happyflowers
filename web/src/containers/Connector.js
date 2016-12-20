@@ -4,7 +4,7 @@ import Alert from 'react-s-alert'
 import { List } from 'immutable'
 import uuid from 'node-uuid'
 import * as actions from '../actions'
-import * as events from '../events'
+import { events } from '../strings'
 import '../components/Alert.css'
 
 /**
