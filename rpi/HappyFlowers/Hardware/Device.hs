@@ -33,7 +33,7 @@ convertMoisture :: Int -> Int
 convertMoisture val = do
     let numeral = fromIntegral (val - 100) :: Rational
     let relative = round (numeral / 700.0 * 100.0) :: Int
-    min 100 $ max 0 val
+    min 100 $ max 0 relative
 
 -- | reads data about temperature from the chirp sensor.
 readTemperature :: IO Int
