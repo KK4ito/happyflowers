@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Alert from 'react-s-alert'
 import { List } from 'immutable'
-import uuid from 'node-uuid'
+import { v4 } from 'uuid'
 import * as actions from '../actions'
 import { events } from '../strings'
 import '../components/Alert.css'
@@ -32,7 +32,7 @@ class Connector extends React.Component {
 
     // Connect to the WebSockets server using a UUID.
 
-    socket.onopen = () => socket.send(uuid.v4())
+    socket.onopen = () => socket.send(v4())
 
     // Notify users about missing WS connection.
 
@@ -74,8 +74,8 @@ class Connector extends React.Component {
             break
         }
       } catch (e) {
-        if (event.data === "User already exists") {
-          socket.send(uuid.v4())
+        if (event.data === 'User already exists') {
+          socket.send(v4())
         }
       }
     }
