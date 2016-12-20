@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import IPropTypes from 'react-immutable-proptypes'
 import Widget from '../components/Widget'
 import Flower from '../components/Flower'
+import { measurementKinds } from '../strings'
 import './Snapshot.css'
 
 /**
@@ -16,10 +17,10 @@ import './Snapshot.css'
 const Snapshot = ({ snapshot, settings, isFetching, busy }) => (
   <Widget title="Snapshot"
           isLoading={isFetching}>
-    <Flower moisture={snapshot.get('moisture') && settings.get('lower') && settings.get('upper')
-                      ? (snapshot.get('moisture') - Math.max((settings.get('lower') - 20), 0)) / Math.min((settings.get('upper') + 20), 100)
+    <Flower moisture={snapshot.get(measurementKinds.moisture) && settings.get('lower') && settings.get('upper')
+                      ? (snapshot.get(measurementKinds.moisture) - Math.max((settings.get('lower') - 20), 0)) / Math.min((settings.get('upper') + 20), 100)
                       : 0}
-            temperature={snapshot.get('temperature')}
+            temperature={snapshot.get(measurementKinds.temperature)}
             updating={busy} />
   </Widget>
 )

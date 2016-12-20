@@ -16,13 +16,13 @@ const snapshot = handleActions({
     const latestTemperature = mes.filter(m => m.measurementKind === measurementKinds.temperature).last()
 
     return state
-      .set('moisture', (latestMoisture && latestMoisture.measurementValue) || 0)
-      .set('temperature', (latestTemperature && latestTemperature.measurementValue) || 0)
+      .set(measurementKinds.moisture, (latestMoisture && latestMoisture.measurementValue) || 0)
+      .set(measurementKinds.temperature, (latestTemperature && latestTemperature.measurementValue) || 0)
   },
   [actions.measurementReceived]: (state, { payload }) => state.set(payload.measurementKind, payload.measurementValue)
 }, fromJS({
-  moisture: 0,
-  temperature: 0
+  [measurementKinds.moisture]: 0,
+  [measurementKinds.temperature]: 0
 }))
 
 /**
