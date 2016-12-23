@@ -5,8 +5,9 @@ The following guide documents the steps to setting up the React environment for 
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [yarn Tasks](#yarn-tasks)
-3. [Atom Integration](#atom-integration)
+2. [Folder Organisation](#folder-organisation)
+3. [yarn Tasks](#yarn-tasks)
+4. [Atom Integration](#atom-integration)
 
 ## Requirements
 
@@ -14,6 +15,23 @@ The following guide documents the steps to setting up the React environment for 
 | ---------- | ------- |
 | Node       | 7.2.0   |
 | yarn       | 0.16.0  |
+
+## Folder Organisation
+
+All JavaScript code for the React environment resides in the `web/` directory. Most of the folder organisation is either mandated by the use of React and yarn or by following established best practices.
+
+| Name            | Description                                                          |
+| --------------- | -------------------------------------------------------------------- |
+| public/         | Static files accessible on the web front end.                        |
+| src/actions/    | Redux action creators.                                               |
+| src/components/ | React components with per-component styling.                         |
+| src/containers/ | React / Redux containers with per-container styling.                 |
+| src/middleware/ | Custom Redux middleware.                                             |
+| src/reducers/   | Redux reducers.                                                      |
+| src/index.css   | Global application styles.                                           |
+| src/index.js    | Entrypoint for the React front end application.                      |
+| package.json    | yarn configuration file listing dependencies and executable scripts. |
+| yarn.lock       | Locks dependencies.                                                  |
 
 ## yarn Tasks
 

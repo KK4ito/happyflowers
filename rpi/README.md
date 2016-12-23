@@ -5,13 +5,14 @@ The following guide documents the steps to setting up the Haskell environment an
 ## Table of Contents
 
 1. [Requirements](#requirements)
-2. [Setting Up the RPi](#setting-up-the-rpi)
-3. [RPi Dependencies](#rpi-dependencies)
-3. [Cabal Sandbox](#cabal-sandbox)
-4. [SQLite](#sqlite)
-5. [Configuration](#configuration)
-6. [Cabal Tasks](#cabal-tasks)
-7. [Atom Integration](#atom-integration)
+2. [Folder Organisation](#folder-organisation)
+3. [Setting Up the RPi](#setting-up-the-rpi)
+4. [RPi Dependencies](#rpi-dependencies)
+5. [Cabal Sandbox](#cabal-sandbox)
+6. [SQLite](#sqlite)
+7. [Configuration](#configuration)
+8. [Cabal Tasks](#cabal-tasks)
+9. [Atom Integration](#atom-integration)
 
 ## Requirements
 
@@ -23,6 +24,20 @@ To use this project you will need the following minimal requirements.
 | Raspbian   | 8.0      |
 | cabal      | 1.22.9.0 |
 | sqlite     | 3.14.0   |
+
+## Folder Organisation
+
+All Haskell code resides in the `rpi/` directory. Most of the folder organisation is either mandated by the use of Haskell and Cabal or by following established best practices. Files marked as ‘local’ need to be created separately for each new installation as they should not be tracked by version control.
+
+| Name             | Local | Description                                                    |
+| ---------------- | ----- | -------------------------------------------------------------- |
+| HappyFlowers/    | No    | Contains Haskell source code.                                  |
+| happyflowers.db  | Yes   | SQLite database.                                               |
+| happyflowers.sql | No    | Contains SQLite database setup.                                |
+| cabal.config     | No    | Locks dependencies.                                            |
+| Main.hs          | No    | Entrypoint for the Haskell back end application.               |
+| rpi.cabal        | No    | Cabal configuration file listing dependencies and executables. |
+| rpi.cfg          | Yes   | Internal configuration file for the application.               |
 
 ## Setting Up the RPi
 
