@@ -1,0 +1,35 @@
+{
+  "name": "web",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-immutable-proptypes": "^2.1.0",
+    "react-scripts": "0.6.0"
+  },
+  "dependencies": {
+    "axios": "^0.15.0",
+    "immutable": "^3.8.1",
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-highcharts": "^10.0.0",
+    "react-redux": "^4.4.5",
+    "react-router": "^2.8.1",
+    "react-s-alert": "^1.2.0",
+    "redux": "^3.6.0",
+    "redux-actions": "^0.12.0",
+    "redux-logger": "^2.7.0",
+    "redux-thunk": "^2.1.0",
+    "timeago-react": "^1.0.7",
+    "uuid": "^3.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "proxy": "http://localhost:5000"
+}

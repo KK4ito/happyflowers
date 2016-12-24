@@ -1,0 +1,30 @@
+.flower {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: calc(16.5em + 2px);
+}
+
+.progress {
+  transition: stroke-dasharray 1s ease-in-out, stroke 1s ease-in-out;
+}
+
+.flower-temp {
+  font-weight: bold;
+  transform: scale(1);
+  transform-origin: center;
+}
+
+.flower-temp.is-updating {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.05); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.05); }
+  70% { transform: scale(1); }
+}

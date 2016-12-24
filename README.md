@@ -7,8 +7,9 @@ The final product is an automatic watering system for household flowers using a 
 ## Development
 
 1. Read the [documentation](docs/) for details about the project and its architecture
-2. Set up the [Haskell environment](rpi/)
-3. Set up the [React environment](web/)
+2. Set up the [React environment](dashboard/)
+3. Set up the [Haskell environment](backend/)
+4. Set up the [hardware environment](hardware/)
 
 ## Editorconfig
 

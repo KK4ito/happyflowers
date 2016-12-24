@@ -1,0 +1,48 @@
+.live-stream {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: pointer;
+}
+
+.full-screen {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  background-color: rgba(30, 30, 30, 0.95);
+  opacity: 0;
+  z-index: 100;
+  transition: opacity 0.25s ease-in-out;
+  will-change: opacity;
+  pointer-events: none;
+  cursor: pointer;
+}
+
+.full-screen.is-visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.full-screen .live-stream {
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: auto;
+  width: auto;
+  max-height: calc(100vh - 3em);
+  max-width: calc(100vw - 3em);
+  transform: translate(-50%, -40%);
+  border-radius: 5px;
+  box-shadow: 0 3px 5px rgba(30, 30, 30, 0.9);
+  opacity: 0;
+  transition: transform 0.25s ease-in-out 0.15s, opacity 0.25s ease-in-out 0.15s;
+  will-change: transform, opacity;
+}
+
+.full-screen.is-visible .live-stream {
+  opacity: 1;
+  transform: translate(-50%, -50%);
+}

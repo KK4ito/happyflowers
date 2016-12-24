@@ -1,0 +1,38 @@
+.login {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  min-width: 15em;
+  max-width: 20em;
+  padding: 1.5em;
+  background-color: #f5f5f5;
+  border-radius: 3px;
+  box-shadow: 0 3px 5px rgba(30, 30, 30, 0.15);
+  transform: translate(-50%, -50%);
+}
+
+.form-title {
+  margin: -0.75em -0.75em 0.75em;
+  color: #fff;
+  text-align: center;
+  background-color: #485563;
+  border-radius: 3px 3px 0 0;
+}
+
+.form-title a {
+  display: block;
+  padding: 1em;
+  border: 0;
+}
+
+@media (min-width: 50em) {
+  .login {
+    padding: 3em;
+    min-width: auto;
+  }
+
+  .form-title {
+    margin: -1.5em -1.5em 1.5em;
+  }
+}

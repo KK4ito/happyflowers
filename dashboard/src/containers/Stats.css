@@ -1,0 +1,8 @@
+.stats-item:first-child {
+  padding-top: 0;
+}
+
+.stats-item:last-child {
+  padding-bottom: 0;
+  border-bottom: 0;
+}

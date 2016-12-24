@@ -1,0 +1,18 @@
+.flower-body path,
+.flower-body ellipse {
+  transform: scale(1);
+  transform-origin: center;
+}
+
+.flower-body.is-updating path,
+.flower-body.is-updating ellipse {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  14% { transform: scale(1.05); }
+  28% { transform: scale(1); }
+  42% { transform: scale(1.05); }
+  70% { transform: scale(1); }
+}
