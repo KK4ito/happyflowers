@@ -8,6 +8,7 @@ The following guide documents the steps to setting up the React environment for 
 2. [Folder Organisation](#folder-organisation)
 3. [yarn Tasks](#yarn-tasks)
 4. [Atom Integration](#atom-integration)
+5. [Style Guide](#style-guide)
 
 ## Requirements
 
@@ -48,3 +49,15 @@ Atom offers easy integration of linting output directly in the editor.
 2. Install [linter-eslint](https://atom.io/packages/linter-eslint)
 3. Set up eslint [correctly](https://github.com/facebookincubator/create-react-app/blob/master/packages/react-scripts/template/README.md#displaying-lint-output-in-the-editor)
 4. Install [linter-stylelint](https://atom.io/packages/linter-stylelint)
+
+## Style Guide
+
+* [Airbnb JavaScript Style Guide](https://github.com/airbnb/javascript)
+* [Airbnb CSS Style Guide](https://github.com/airbnb/css#css)
+* [Code Guide](http://codeguide.co/#css)
+
+There is no automatic enforcement of these practices, however, linters for both JavaScript and CSS use these style guides as a base for their configuration.
+
+All JavaScript code is linted using `eslint`. The `react-app` configuration that is part of the create-react-app project is used as a base for the ruleset. This configuration is tailored to a modern React app with ES6, JSX, and React features.
+
+All CSS code is linted using `stylelint`. The standard `stylelint-config` that is the combination of multiple popular style guides is used as a base for the ruleset. The configuration in this project does not enforce rules like a fixed order of properties in order to keep the complexity low when authoring CSS code.

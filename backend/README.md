@@ -72,7 +72,6 @@ The build can be configured to run in development mode, where sensors are simula
 - `cabal install` installs all required dependencies.
 - `cabal build rpi` builds the project.
 - `cabal run rpi` builds and runs the project.
-- `cabal haddock --executables` generates documentation using Haddock.
 
 All tasks read the [rpi.cabal](./rpi.cabal) config and are based off the `rpi` executable.
 
@@ -90,3 +89,18 @@ Atom offers easy integration of linting output directly in the editor.
 1. Install [linter](https://atom.io/packages/linter)
 2. Install [linter-hlint](https://atom.io/packages/linter-hlint)
 3. Install hlint using `cabal install --global hlint`
+
+## Documentation
+
+Generating the documentation is included in the cabal setup and can be performed using `cabal haddock --executables`. This generates documentation for all packages that are part of an executable package.
+
+haddock can include documentation of dependencies so that internal documentation may reference other libraries. This requires passing the `--enable-documentation` flag during the cabal install step.
+
+## Style Guide
+
+* [Haskell Style Guide](https://github.com/tibbe/haskell-style-guide)
+* [UPENN Style Guide](http://www.seas.upenn.edu/~cis552/12fa/styleguide.html)
+
+There is no automatic enforcement of these practices, instead the code is reviewed for its conformance on a regular basis.
+
+All Haskell code is linted using `hlint` and its available IDE integrations. All available options (`Default`, `Dollar`, `Generalise`) are used in order to find possible improvements throughout the codebase.
