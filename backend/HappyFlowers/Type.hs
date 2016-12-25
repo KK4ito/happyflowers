@@ -20,12 +20,16 @@ module HappyFlowers.Type
     , WSEventKind(..)
     , MeasurementKind(..)
     , EventKind(..)
+    , Command(..)
+    , Client(..)
+    , ServerState(..)
     ) where
 
 import Data.Aeson             (ToJSON)
 import Data.Text              (Text)
 import Database.SQLite.Simple (field, FromRow(..))
 import GHC.Generics
+import Network.WebSockets     (Connection)
 
 -- | An event marks a watering, either `manual` or `automatic`.
 data Event = Event
@@ -102,3 +106,19 @@ data EventKind
     = Automatic
     | Manual
     deriving Show
+
+-- TODO: document
+data Command
+    = SaveEvent EventKind
+    | SaveMeasurement MeasurementKind Int
+    | UpdateBusy BusyState
+    | PumpRequired
+    | CheckRequired
+
+-- | 'Client' is a type alias that connects a unique ID with a WebSockets
+-- connection.
+type Client = (Text, Connection)
+
+-- | keeps track of the currently available Id and the list of connected
+-- clients.
+type ServerState = [Client]

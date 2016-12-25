@@ -13,14 +13,23 @@ module HappyFlowers.WS.Communication
     (
       -- * Operations
       notify
+    , notifyAll
     ) where
 
+import Control.Concurrent         (MVar, readMVar)
+import Control.Monad              (forM_)
 import Data.Aeson                 (ToJSON, encode, object, (.=))
 import Data.ByteString.Lazy.Char8 (unpack)
 import Data.Text                  (Text, pack)
 import Network.WebSockets         (Connection, sendTextData)
 
-import HappyFlowers.Type          (WSEventKind)
+import HappyFlowers.Type          (WSEventKind, ServerState)
+
+-- TODO document
+notifyAll :: ToJSON a => MVar ServerState -> WSEventKind -> a -> IO ()
+notifyAll state kind payload = do
+    clients <- readMVar state
+    forM_ clients $ \(_, conn) -> notify conn kind payload
 
 -- | sends WS notifications to all connected clients about measurements or
 -- events.

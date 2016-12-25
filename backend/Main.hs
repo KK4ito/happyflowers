@@ -15,10 +15,9 @@ module Main
 
 import Control.Concurrent                (newMVar, forkIO)
 
-import HappyFlowers.API.Application
-import HappyFlowers.Hardware.Application
-import HappyFlowers.Type                 (BusyState(..))
-import HappyFlowers.WS.Application
+import HappyFlowers.API.Application      (apiApp)
+import HappyFlowers.Type                 (BusyState(..), Command(..), ServerState(..))
+import HappyFlowers.WS.Application       (wsApp, callback)
 
 -- | determines which port the API application is run on.
 apiPort :: Int
@@ -28,17 +27,26 @@ apiPort = 5000
 wsPort :: Int
 wsPort = 9160
 
+-- TODO: document
 newBusyState :: BusyState
 newBusyState = Idle
+
+-- | creates a new 'ServerState' instance with the default values.
+newServerState :: ServerState
+newServerState = []
 
 -- | sets up the API application and the WebSockets application. The Hardware
 -- processes are started with communication to the WS server.
 main :: IO ()
 main = do
     busy <- newMVar newBusyState
+    state <- newMVar newServerState
+
     putStr "[API] Starting server on port " >> (putStr . show) apiPort >> putStrLn "..."
     forkIO $ apiApp apiPort
+
     putStr "[WS]  Starting server on port " >> (putStr . show) wsPort >> putStrLn "..."
-    forkIO $ wsApp wsPort busy
-    putStr "[HW]  Starting process using port " >> (putStr . show) wsPort >> putStrLn "..."
-    hwApp wsPort busy
+    forkIO $ wsApp wsPort state busy
+
+    putStrLn "[HW]  Starting processes..."
+    callback busy state CheckRequired

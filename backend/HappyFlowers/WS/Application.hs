@@ -11,37 +11,23 @@ Stability   : stable
 -}
 module HappyFlowers.WS.Application
     (
-      -- * Types
-      Client(..)
-    , ServerState(..)
       -- * Operations
-    , newServerState
-    , wsApp
+      wsApp
+    , callback
     ) where
 
 import           Control.Concurrent            (MVar, newMVar, modifyMVar_, modifyMVar, readMVar)
 import           Control.Exception             (finally)
-import           Control.Monad                 (forM_, forever)
+import           Control.Monad                 (forever)
 import           Data.Monoid                   (mappend)
 import           Data.Text                     (Text)
 import qualified Data.Text                     as T
 import qualified Network.WebSockets            as WS
 
 import qualified HappyFlowers.DB               as DB
-import           HappyFlowers.Type             (BusyState(..), WSEventKind(..))
-import           HappyFlowers.WS.Communication (notify)
-
--- | 'Client' is a type alias that connects a unique ID with a WebSockets
--- connection.
-type Client = (T.Text, WS.Connection)
-
--- | keeps track of the currently available Id and the list of connected
--- clients.
-type ServerState = [Client]
-
--- | creates a new 'ServerState' instance with the default values.
-newServerState :: ServerState
-newServerState = []
+import           HappyFlowers.Hardware.Process (checkMoisture, activatePump, manualPump)
+import           HappyFlowers.Type             (BusyState(..), WSEventKind(..), Command(..), Client, ServerState)
+import           HappyFlowers.WS.Communication (notify, notifyAll)
 
 -- | checks if a client with the given ID already exists.
 clientExists :: Client -> ServerState -> Bool
@@ -56,16 +42,21 @@ addClient client clients = (client : clients)
 removeClient :: Client -> ServerState -> ServerState
 removeClient client = filter ((/= fst client) . fst)
 
--- | sends a message to all connected clients.
-broadcast :: Text -> ServerState -> IO ()
-broadcast message clients = forM_ clients $ \(_, conn) -> WS.sendTextData conn message
-
 -- | retrieves a message from a connected 'Client' and broadcasts it to all
 -- other clients.
-talk :: WS.Connection -> MVar ServerState -> Client -> IO ()
-talk conn state _ = forever $ do
+listen :: WS.Connection -> MVar ServerState -> MVar BusyState -> IO ()
+listen conn state busy = forever $ do
     msg <- WS.receiveData conn
-    readMVar state >>= broadcast msg
+    case msg of
+        _ | (T.pack $ show TriggerPump) `T.isInfixOf` msg -> do
+            settings <- DB.querySettings
+            case settings of
+                Just settings' -> manualPump settings' busy $ callback busy state
+                Nothing        -> return ()
+          | (T.pack $ show SettingsChanged) `T.isInfixOf` msg -> do
+              -- broadcast
+              return ()
+          | otherwise -> return ()
 
 -- | removes a 'Client' from the current ServerState and broadcasts it to all
 -- other clients.
@@ -74,6 +65,32 @@ disconnect client state = do
     modifyMVar state $ \s -> do
         let s' = removeClient client s
         return (s', s')
+
+-- TODO: document
+callback :: MVar BusyState -> MVar ServerState -> Command -> IO ()
+callback busy state cmd = do
+    case cmd of
+        SaveEvent kind             -> do
+            DB.addEvent kind
+            e <- DB.queryLatestEvent
+            notifyAll state EventReceived e
+        SaveMeasurement kind value -> do
+            DB.addMeasurement kind value
+            m <- DB.queryLatestMeasurement kind
+            notifyAll state MeasurementReceived m
+        UpdateBusy busyState       -> do
+            b <- modifyMVar busy $ \s -> return (busyState, busyState)
+            notifyAll state BusyChanged $ b == Busy
+        PumpRequired               -> do
+            settings <- DB.querySettings
+            case settings of
+                Just settings' -> activatePump settings' busy $ callback busy state
+                Nothing        -> return ()
+        CheckRequired              -> do
+            settings <- DB.querySettings
+            case settings of
+                Just settings' -> checkMoisture settings' busy $ callback busy state
+                Nothing        -> return ()
 
 -- | starts a new WebSockets server instance. New connections recieve all
 -- broadcasts.
@@ -99,12 +116,11 @@ server state busy pending = do
                 b <- readMVar busy
                 notify conn BusyChanged $ b == Busy
 
-                talk conn state client
+                listen conn state busy
 
 -- | sets up a WebSockets server listening on a given port.
 wsApp :: Int -- Port
+      -> MVar ServerState
       -> MVar BusyState
       -> IO ()
-wsApp port busy = do
-    state <- newMVar newServerState
-    WS.runServer "0.0.0.0" port $ server state busy
+wsApp port state busy = WS.runServer "0.0.0.0" port $ server state busy
