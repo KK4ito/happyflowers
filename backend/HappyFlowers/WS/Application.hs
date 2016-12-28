@@ -84,7 +84,7 @@ callback busy state cmd = do
         PumpRequired               -> do
             settings <- DB.querySettings
             case settings of
-                Just settings' -> activatePump settings' $ callback busy state
+                Just settings' -> activatePump settings' busy $ callback busy state
                 Nothing        -> return ()
         CheckRequired              -> do
             settings <- DB.querySettings

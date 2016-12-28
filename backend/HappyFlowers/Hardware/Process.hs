@@ -60,16 +60,21 @@ checkMoisture settings busy callback = do
 
 -- | activates the pump and keeps repeating until the upper moisture limit is
 -- reached. Informs all connected clients about the watering.
-activatePump :: Settings -> (Command -> IO ()) -> IO ()
-activatePump settings callback = do
+activatePump :: Settings -> MVar BusyState -> (Command -> IO ()) -> IO ()
+activatePump settings busy callback = do
     HW.triggerPump
 
     m <- HW.readMoisture
 
     if m >= upper settings
         then do
+            callback $ SaveMeasurement Moisture m
+
+            t <- HW.readTemperature
+            callback $ SaveMeasurement Temperature t
+
             callback $ SaveEvent Automatic
-            callback CheckRequired
+            callback $ UpdateBusy Idle
         else do
             callback PumpRequired
 
