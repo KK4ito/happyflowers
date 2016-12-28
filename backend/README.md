@@ -19,7 +19,6 @@ To use this project you will need the following minimal requirements.
 | Technology | Version  |
 | ---------- | -------- |
 | GHC        | 7.10.3   |
-| Raspbian   | 8.0      |
 | cabal      | 1.22.9.0 |
 | sqlite     | 3.14.0   |
 
@@ -50,7 +49,7 @@ Depdendencies are locked using `cabal freeze`. The locked versions are noted in 
 
 - Create the database. Navigate to the `rpi` folder and run `sqlite3 happyflowers.db`.
 - Create the necessary tables using `.read happyflowers.sql`.
-- Insert data for application settings: `INSERT INTO settings (name, upper, lower, interval, busy) VALUES ("...", 80, 40, 60, 0);`
+- Insert data for application settings: `INSERT INTO settings (name, upper, lower, interval) VALUES ("...", 80, 40, 60);`
 
 ## Configuration
 
