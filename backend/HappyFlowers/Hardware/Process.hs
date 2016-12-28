@@ -100,4 +100,5 @@ manualPump settings busy callback = do
             callback $ SaveMeasurement Moisture m
 
             callback $ SaveEvent Manual
-    callback $ UpdateBusy Idle
+
+        callback $ UpdateBusy Idle
