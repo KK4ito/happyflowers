@@ -54,7 +54,7 @@ listen conn state busy = forever $ do
                 Just settings' -> manualPump settings' busy $ callback busy state
                 Nothing        -> return ()
           | (T.pack $ show SettingsChanged) `T.isInfixOf` msg -> do
-              -- broadcast
+              -- TODO: broadcast
               return ()
           | otherwise -> return ()
 
@@ -84,7 +84,7 @@ callback busy state cmd = do
         PumpRequired               -> do
             settings <- DB.querySettings
             case settings of
-                Just settings' -> activatePump settings' busy $ callback busy state
+                Just settings' -> activatePump settings' $ callback busy state
                 Nothing        -> return ()
         CheckRequired              -> do
             settings <- DB.querySettings
