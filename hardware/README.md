@@ -1,7 +1,8 @@
 1. [Requirements](#requirements)
 2. [Setting Up the RPi](#setting-up-the-rpi)
-3. [Headless RPi](#headless-rpi)
-4. [RPi Dependencies](#rpi-dependencies)
+3. [Setting Up a WiFi Connection](#setting-up-a-wifi-connection)
+4. [Headless RPi](#headless-rpi)
+5. [RPi Dependencies](#rpi-dependencies)
 
 ## Requirements
 
@@ -66,6 +67,25 @@ EXTRA_CONFIGURE_OPTS="" ./bootstrap.sh
 - Stack still does not support ARM systems natively so for the purpose of this project it was decided that Cabal would be sufficient.
 
 By following all these steps you get a working Haskell environment you can use to run the happy flowers project.
+
+## Setting Up a WiFi Connection
+
+The RPi can be configured to automatically connect to an available WiFi network on startup. In order to do this, edit the `wpa-supplicant` configuration:
+
+```bash
+sudo nano /etc/wpa_supplicant/wpa_supplicant.conf
+```
+
+Include the following lines:
+
+```
+network={
+    ssid="Your_SSID"
+    psk="Your_password"
+}
+```
+
+More detailed information about connection options is available on the [Raspberry Pi website](https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md).
 
 ## Headless RPi
 
