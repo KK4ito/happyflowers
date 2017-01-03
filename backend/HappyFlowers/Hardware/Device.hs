@@ -26,7 +26,14 @@ pumpDelay = 4000000
 
 -- | reads data about moisture from the chirp sensor.
 readMoisture :: IO Int
-readMoisture = fmap convertMoisture (I2C.read 0)
+readMoisture = do
+    val <- I2C.read 0
+
+    if val > 800
+        then do
+            readMoisture
+        else do
+            fmap convertMoisture val
 
 -- | converts I2C moisture to a relative value between 0 and 100.
 convertMoisture :: Int -> Int
@@ -37,7 +44,14 @@ convertMoisture val = do
 
 -- | reads data about temperature from the chirp sensor.
 readTemperature :: IO Int
-readTemperature = fmap convertTemperature (I2C.read 5)
+readTemperature = do
+    val <- I2C.read 5
+
+    if val > 50
+        then do
+            readTemperature
+        else do
+            fmap convertTemperature val
 
 -- | converts I2C temperature to degrees celcius.
 convertTemperature :: Int -> Int
