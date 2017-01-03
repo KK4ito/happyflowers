@@ -27,11 +27,11 @@ apiPort = 5000
 wsPort :: Int
 wsPort = 9160
 
--- TODO: document
+-- | creates a new 'BusyState' instance with the default value.
 newBusyState :: BusyState
 newBusyState = Idle
 
--- | creates a new 'ServerState' instance with the default values.
+-- | creates a new 'ServerState' instance with the default value.
 newServerState :: ServerState
 newServerState = []
 

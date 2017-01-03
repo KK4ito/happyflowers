@@ -34,6 +34,11 @@ delayByInterval :: Int -- Delay in minutes
                 -> IO ()
 delayByInterval i = delay . (60000000 *) $ toInteger i
 
+-- | determines the number of times the pump can be activated as part of an
+-- automatic watering.
+maxActivations :: Int
+maxActivations = 5
+
 -- | checks the plant's moisutre level and informs connected clients about the
 -- measurement. Triggers the pump if the lower moisture limit is reached.
 checkMoisture :: Settings -> MVar BusyState -> (Command -> IO ()) -> IO ()
@@ -51,7 +56,7 @@ checkMoisture settings busy callback = do
 
         if m < lower settings
             then do
-                callback PumpRequired
+                callback $ PumpRequired maxActivations
             else do
                 callback $ UpdateBusy Idle
 
@@ -60,8 +65,8 @@ checkMoisture settings busy callback = do
 
 -- | activates the pump and keeps repeating until the upper moisture limit is
 -- reached. Informs all connected clients about the watering.
-activatePump :: Settings -> MVar BusyState -> (Command -> IO ()) -> IO ()
-activatePump settings busy callback = do
+activatePump :: Int -> Settings -> MVar BusyState -> (Command -> IO ()) -> IO ()
+activatePump remaining settings busy callback = do
     HW.triggerPump
 
     m <- HW.readMoisture
@@ -76,7 +81,8 @@ activatePump settings busy callback = do
             callback $ SaveEvent Automatic
             callback $ UpdateBusy Idle
         else do
-            callback PumpRequired
+            when (remaining > 0) $ do
+                callback $ PumpRequired (remaining - 1)
 
 -- | activates the pump based on a user interaction if the flower is not already
 -- fully moisturised. Informs all connected clients about the watering.

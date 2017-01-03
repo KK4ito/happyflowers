@@ -107,12 +107,12 @@ data EventKind
     | Manual
     deriving Show
 
--- TODO: document
+-- | A command is used to control the hardware processes and the involved tasks.
 data Command
     = SaveEvent EventKind
     | SaveMeasurement MeasurementKind Int
     | UpdateBusy BusyState
-    | PumpRequired
+    | PumpRequired Int
     | CheckRequired
 
 -- | 'Client' is a type alias that connects a unique ID with a WebSockets

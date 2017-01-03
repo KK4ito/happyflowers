@@ -66,7 +66,8 @@ disconnect client state = do
         let s' = removeClient client s
         return (s', s')
 
--- TODO: document
+-- | handles a callback from the hardware process. Includes communication with
+-- the database and WS notifications.
 callback :: MVar BusyState -> MVar ServerState -> Command -> IO ()
 callback busy state cmd = do
     case cmd of
@@ -81,10 +82,10 @@ callback busy state cmd = do
         UpdateBusy busyState       -> do
             b <- modifyMVar busy $ \s -> return (busyState, busyState)
             notifyAll state BusyChanged $ b == Busy
-        PumpRequired               -> do
+        PumpRequired remaining     -> do
             settings <- DB.querySettings
             case settings of
-                Just settings' -> activatePump settings' busy $ callback busy state
+                Just settings' -> activatePump remaining settings' busy $ callback busy state
                 Nothing        -> return ()
         CheckRequired              -> do
             settings <- DB.querySettings

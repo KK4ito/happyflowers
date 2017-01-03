@@ -25,14 +25,13 @@ import Network.WebSockets         (Connection, sendTextData)
 
 import HappyFlowers.Type          (WSEventKind, ServerState)
 
--- TODO document
+-- | sends WS notifications to all connected clients.
 notifyAll :: ToJSON a => MVar ServerState -> WSEventKind -> a -> IO ()
 notifyAll state kind payload = do
     clients <- readMVar state
     forM_ clients $ \(_, conn) -> notify conn kind payload
 
--- | sends WS notifications to all connected clients about measurements or
--- events.
+-- | sends WS notifications to a specific client.
 notify :: ToJSON a => Connection -> WSEventKind -> a -> IO ()
 notify conn kind payload = sendTextData conn $ createMessage kind payload
 
