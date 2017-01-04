@@ -19,7 +19,7 @@ module HappyFlowers.Hardware.Process
 
 import           Control.Concurrent               (MVar, readMVar)
 import           Control.Concurrent.Thread.Delay  (delay)
-import           Control.Monad                    (unless)
+import           Control.Monad                    (when, unless)
 
 import           HappyFlowers.Type                (BusyState(..), Settings(..), WSEventKind(..), MeasurementKind(..), EventKind(..), Command(..))
 
