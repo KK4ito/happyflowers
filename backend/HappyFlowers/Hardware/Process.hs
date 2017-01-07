@@ -37,7 +37,7 @@ delayByInterval i = delay . (60000000 *) $ toInteger i
 -- | determines the number of times the pump can be activated as part of an
 -- automatic watering.
 maxActivations :: Int
-maxActivations = 5
+maxActivations = 3
 
 -- | checks the plant's moisutre level and informs connected clients about the
 -- measurement. Triggers the pump if the lower moisture limit is reached.

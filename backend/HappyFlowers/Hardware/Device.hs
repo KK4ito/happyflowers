@@ -22,7 +22,7 @@ import qualified HappyFlowers.Hardware.GPIO as GPIO
 
 -- | determines the length of the delay after the pump has been activated.
 pumpDelay :: Int
-pumpDelay = 4000000
+pumpDelay = 3000000
 
 -- | reads data about moisture from the chirp sensor.
 readMoisture :: IO Int
