@@ -8,7 +8,7 @@ export const events = {
 }
 
 export const eventKinds = {
-  maunal: 'Manual',
+  manual: 'Manual',
   automatic: 'Automatic'
 }
 
