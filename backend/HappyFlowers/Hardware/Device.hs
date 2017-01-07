@@ -28,12 +28,7 @@ pumpDelay = 4000000
 readMoisture :: IO Int
 readMoisture = do
     val <- I2C.read 0
-
-    if val > 800
-        then do
-            readMoisture
-        else do
-            fmap convertMoisture val
+    if val > 800 then readMoisture else return $ convertMoisture val
 
 -- | converts I2C moisture to a relative value between 0 and 100.
 convertMoisture :: Int -> Int
@@ -46,12 +41,7 @@ convertMoisture val = do
 readTemperature :: IO Int
 readTemperature = do
     val <- I2C.read 5
-
-    if val > 50
-        then do
-            readTemperature
-        else do
-            fmap convertTemperature val
+    if val > 50 then readTemperature else return $ convertTemperature val
 
 -- | converts I2C temperature to degrees celcius.
 convertTemperature :: Int -> Int
