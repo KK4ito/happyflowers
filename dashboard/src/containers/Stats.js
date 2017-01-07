@@ -4,7 +4,7 @@ import { Link } from 'react-router'
 import Widget from '../components/Widget'
 import Stat from '../components/Stat'
 import { triggerPump } from '../actions'
-import { measurementKinds } from '../strings'
+import { eventKinds } from '../strings'
 import './Stats.css'
 
 /**
@@ -116,8 +116,8 @@ const mapStateToProps = state => ({
   name: state.settings.data.get('name'),
   timestamps: {
     measurement: state.history.measurements.last(),
-    automatic: state.history.events.filter(e => e.get('eventKind') === measurementKinds.automatic).last(),
-    manual: state.history.events.filter(e => e.get('eventKind') === measurementKinds.manual).last()
+    automatic: state.history.events.filter(e => e.get('eventKind') === eventKinds.automatic).last(),
+    manual: state.history.events.filter(e => e.get('eventKind') === eventKinds.manual).last()
   },
   isFetching: state.settings.isFetching || state.history.isFetching
 })
