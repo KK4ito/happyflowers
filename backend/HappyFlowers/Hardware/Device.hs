@@ -41,7 +41,7 @@ convertMoisture val = do
 readTemperature :: IO Int
 readTemperature = do
     val <- I2C.read 5
-    if val > 50 then readTemperature else return $ convertTemperature val
+    if val > 500 then readTemperature else return $ convertTemperature val
 
 -- | converts I2C temperature to degrees celcius.
 convertTemperature :: Int -> Int
