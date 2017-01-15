@@ -54,8 +54,10 @@ listen conn state busy = forever $ do
                 Just settings' -> manualPump settings' busy $ callback busy state
                 Nothing        -> return ()
           | (T.pack $ show SettingsChanged) `T.isInfixOf` msg -> do
-              -- TODO: broadcast
-              return ()
+            settings <- DB.querySettings
+            case settings of
+                Just settings' -> notifyAll state SettingsChanged settings'
+                Nothing        -> return ()
           | otherwise -> return ()
 
 -- | removes a 'Client' from the current ServerState and broadcasts it to all
